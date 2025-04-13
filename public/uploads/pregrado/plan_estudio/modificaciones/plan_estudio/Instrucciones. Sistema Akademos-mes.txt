@@ -1,0 +1,4 @@
+sudo -s
+1qazXSW@
+cd /var/www/html/akademos-mes/
+php -S localhost:8000 -t public/

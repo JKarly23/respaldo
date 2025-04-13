@@ -1,0 +1,33 @@
+#FROM php:8.3.3RC1-apache-bullseye
+FROM php:7.4-apache-buster
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+COPY sources.list /etc/apt/sources.list
+
+RUN apt update \
+    && apt install -y --no-install-recommends --allow-remove-essential openssh-client curl zip unzip gettext nano gnupg libpq-dev libc-client-dev \
+    && a2enmod rewrite \
+    && apt -f install \
+    && rm -rf /var/lib/apt/lists/*
+
+USER root
+
+WORKDIR /var/www/html
+
+
+COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
+RUN install-php-extensions  pdo_pgsql pgsql exif pcntl bcmath ldap imap
+
+
+COPY vendor ./
+#COPY composer.* ./
+# Get latest Composer
+#COPY --from=composer:2.0.12 /usr/bin/composer /usr/local/bin/composer
+#RUN composer install --no-dev --ignore-platform-reqs --no-suggest --no-progress --no-scripts --prefer-dist
+#RUN composer install --no-dev --ignore-platform-reqs --prefer-dist
+
+
+RUN ln -fs /usr/share/zoneinfo/America/Havana /etc/localtime && dpkg-reconfigure -f noninteractive tzdata
+
+VOLUME /var/www/html

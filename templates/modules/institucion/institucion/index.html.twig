@@ -1,0 +1,139 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}IES{% endblock %}
+
+{% block body %}
+
+    {% include 'pages/modalDetail.html.twig' %}
+
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <div class="row" style="display: flex; justify-content: space-between; align-items: center">
+
+                <h3 class="card-title text-bold text-gray">Listado de IES</h3>
+                <div>
+                    <a title="Adicionar" class="btn btn-primary mr-2" href="{{ path('app_institucion_registrar') }}"><i
+                                class="fa fa-plus"></i>
+                    </a>
+                    <a title="Exportar a pdf" class="btn btn-primary" target="_blank"
+                       href="{{ path('app_institucion_exportar_pdf') }}"><i class="fa fa-file-pdf"></i>
+                    </a>
+                </div>
+            </div>aq!
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body">
+            <table class="table table-bordered table-striped dataTable">
+                <thead class="table-custom-header">
+                <tr>
+                    <th>No.</th>
+                    <th>Logo</th>
+                    <th>Nombre</th>
+                    <th>Siglas</th>
+                    <th>Rector</th>
+                    <th>Estado</th>
+                    <th class="text-center">Opciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in registros %}
+                    <tr>
+                        <td width="1%">{{ loop.index }}</td>
+                        <td width="1%">
+                            <a
+                                    href="{% if item.logo != null %}{{ app.request.getSchemeAndHttpHost() }}/uploads/institucion/logo/{{ item.logo }} {% else %} /assets/images/usuario.png {% endif %}"
+                                    target="_blank">
+                                <img src="{% if item.logo != null %}{{ app.request.getSchemeAndHttpHost() }}/uploads/institucion/logo/{{ item.logo }}{% else %} /assets/images/usuario.png {% endif %}"
+                                     style="width: 45px;height: 45px; object-fit: cover">
+                            </a>
+                        </td>
+                        <td>{{ item.nombre_siglas }}</td>
+                        <td>{{ item.siglas }}</td>
+                        <td>{{ item.rector }}</td>
+                        <td width="3%" class="-text-center">
+                            {% if '1' == item.activo %}
+                                <span class="ms-status -active">Habilitado</span>
+                            {% else %}
+                                <span class="ms-status">Deshabilitado</span>
+                            {% endif %}
+                        </td>
+                        <td width="35%" class="text-center">
+                            <button title="Detalles" class="btn btn-outline-primary modalDetailAction"
+                                    data-url="{{ path('app_institucion_detail', {'id' : item.id}) }}"
+                                    data-title="Detalles de la institución">
+                                <i class="fa fa-eye "></i>
+                            </button>
+
+                            <a title="Modificar" href="{{ path('app_institucion_modificar', {'id': item.id}) }}"
+                               class="btn btn-outline-primary"><i
+                                        class="fa fa-edit"></i>
+                            </a>
+                            <a title="Asociar facultades"
+                               href="{{ path('app_institucion_asignar_facultades', {'id': item.id}) }}"
+                               class="btn btn-outline-primary"><i
+                                        class="fa fa-school"></i>
+                            </a>
+                            <a title="Asociar centros de estudios"
+                               href="{{ path('app_institucion_asignar_centros_estudio', {'id': item.id}) }}"
+                               class="btn btn-outline-primary"><i
+                                        class="fa fa-university"></i>
+                            </a>
+                            <a title="Asociar sedes de la institución"
+                               href="{{ path('app_institucion_asignar_sede', {'id': item.id}) }}"
+                               class="btn btn-outline-primary"><i
+                                        class="fa fa-universal-access"></i>
+                            </a>
+                            <a title="Asociar redes sociales"
+                               href="{{ path('app_institucion_asignar_redes_sociales', {'id': item.id}) }}"
+                               class="btn btn-outline-primary"><i
+                                        class="fa fa-network-wired"></i>
+                            </a>
+                            <a title="Asociar editoriales"
+                               href="{{ path('app_institucion_asignar_editoriales', {'id': item.id}) }}"
+                               class="btn btn-outline-primary"><i
+                                        class="fa fa-book"></i>
+                            </a>
+                            <a title="Asociar redes nacionales e internacionales"
+                               href="{{ path('app_institucion_asignar_redes', {'id': item.id}) }}"
+                               class="btn btn-outline-primary"><i
+                                        class="fa fa-newspaper"></i>
+                            </a>
+                            <a title="Asociar revistas científicas"
+                               href="{{ path('app_institucion_asignar_revistas', {'id': item.id}) }}"
+                               class="btn btn-outline-primary"><i
+                                        class="fa fa-book-open"></i>
+                            </a>
+                            <a title="Programas de formación"
+                               href="{{ path('app_institucion_programas_formacion', {'id': item.id, 'option':'option1'}) }}"
+                               class="btn btn-outline-primary"><i
+                                        class="fa fa-book-reader"></i>
+                            </a>
+                            <a title="Recursos humanos"
+                               href="{{ path('app_institucion_asignar_recursos_humanos', {'id': item.id}) }}"
+                               class="btn btn-outline-primary"><i
+                                        class="fa fa-user-friends"></i>
+                            </a>
+                            <a title="Internacionalización"
+                               href="{{ path('app_institucion_internacionalizacion', {'id': item.id,'tab':'mecanismo'}) }}"
+                               class="btn btn-outline-primary"><i
+                                        class="fa fa-map-marked"></i>
+                            </a>
+                            <button title="Eliminar" class="btn btn-outline-danger elementRemove"
+                                    data-url="{{ path('app_institucion_eliminar', {'id': item.id}) }}">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+        <!-- /.card-body -->
+    </div>
+
+
+
+{% endblock %}
+
+

@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<root>
+  <filters_header/>
+  <header>
+    <element>
+      <column>nombre</column>
+      <column_title>Nombre</column_title>
+      <width>60%</width>
+    </element>
+    <element>
+      <column>categoria</column>
+      <column_title>Categor&#xED;a de estructura</column_title>
+      <width>20%</width>
+    </element>
+    <element>
+      <column>activo</column>
+      <column_title>Estado</column_title>
+      <width>16%</width>
+    </element>
+  </header>
+  <data>
+    <element>
+      <nombre>lolololololo</nombre>
+      <categoria>Inicial</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>jiji</nombre>
+      <categoria>Inicial</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>PPPP</nombre>
+      <categoria>Inicial</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Hija  4</nombre>
+      <categoria>Inicial</categoria>
+      <activo>Habilitado</activo>
+    </element>
+  </data>
+  <user>
+    <email>admin@admin.cu</email>
+    <password>$2y$13$vD9oS2QBm8TN0uMoUzPWUuaUEPy2.xZlMv0XmFVxxz6dnkL2RhXjO</password>
+    <role>ROLE_ADMIN</role>
+    <activo>1</activo>
+    <userRoles>
+      <element>
+        <nombre>Administrador</nombre>
+        <descripcion/>
+        <roleKey>ROLE_ADMIN</roleKey>
+        <activo>1</activo>
+        <funcionalidades/>
+        <id>1</id>
+        <creado>12/03/2023</creado>
+        <actualizado>12/03/2023</actualizado>
+      </element>
+    </userRoles>
+    <passwordChangeFirstTime>1</passwordChangeFirstTime>
+    <passwordPlainOld/>
+    <passwordPlainText/>
+    <id>1</id>
+    <creado>12/03/2023</creado>
+    <actualizado>12/03/2023</actualizado>
+    <username>admin@admin.cu</username>
+    <create_date>03/05/2023 15:14</create_date>
+    <title_document>Lista de estructuras</title_document>
+    <table_title>Lista de estructuras</table_title>
+  </user>
+</root>

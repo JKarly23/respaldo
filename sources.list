@@ -1,0 +1,21 @@
+deb http://debian.uci.cu/debian buster main contrib non-free
+deb http://debian.uci.cu/debian buster-updates main contrib non-free
+#deb http://debian.uci.cu/debian buster-backports main contrib non-free
+deb http://debian.uci.cu/debian buster-proposed-updates main contrib non-free
+
+#deb http://debian.uci.cu/debian bullseye main contrib non-free
+#deb http://debian.uci.cu/debian bullseye-updates main contrib non-free
+#deb http://debian.uci.cu/debian bullseye-backports main contrib non-free
+#deb http://debian.uci.cu/debian bullseye-proposed-updates main contrib non-free
+
+
+#deb http://ubuntu.uci.cu/ubuntu focal main restricted universe multiverse
+#deb http://ubuntu.uci.cu/ubuntu focal-security main restricted universe multiverse
+#deb http://ubuntu.uci.cu/ubuntu focal-updates main restricted universe multiverse
+#deb http://ubuntu.uci.cu/ubuntu focal-proposed main restricted universe multiverse
+#deb http://ubuntu.uci.cu/ubuntu focal-backports main restricted universe multiverse
+
+
+
+
+

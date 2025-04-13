@@ -1,0 +1,202 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Internacionalización{% endblock %}
+{% block stylesheets %}
+    <style>
+        #map {
+            height: 350px;
+        }
+    </style>
+
+{% endblock %}
+{% block body %}
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <div class="row" style="display: flex; justify-content: space-between; align-items: center">
+
+                <h3 class="card-title text-bold text-gray">Internacionalización</h3>
+
+            </div>
+        </div>
+        {{ include('modules/institucion/institucion/short_details.html.twig', { 'item': institucion }) }}
+        <!-- /.card-header -->
+
+        <div class="card-body">
+            <div class="card card-primary card-outline card-outline-tabs">
+                <div class="card-header p-0 border-bottom-0">
+                    <ul class="nav nav-tabs" id="custom-tabs-four-tab" role="tablist">
+                        <li class="nav-item" id="li_mecanismo">
+                            <a class="nav-link" style="width: 242px; padding-left: 25px"
+                               id="custom-tabs-four-mecanismo-tab" data-toggle="pill"
+                               href="#custom-tabs-four-mecanismo" role="tab"
+                               aria-controls="custom-tabs-four-mecanismo"
+                               aria-selected="true">Mecanismos de colaboración</a>
+                        </li>
+                        <li class="nav-item" id="li_programa">
+                            <a class="nav-link" style="width: 242px; padding-left: 25px"
+                               id="custom-tabs-four-programa-tab" data-toggle="pill"
+                               href="#custom-tabs-four-programa" role="tab" aria-controls="custom-tabs-four-programas"
+                               aria-selected="false">Programas de colaboración</a>
+                        </li>
+                        <li class="nav-item" id="li_proyecto">
+                            <a class="nav-link" style="width: 242px; padding-left: 25px"
+                               id="custom-tabs-four-proyecto-tab" data-toggle="pill"
+                               href="#custom-tabs-four-proyecto" role="tab" aria-controls="custom-tabs-four-proyectos"
+                               aria-selected="false">Proyectos</a>
+                        </li>
+                        <li class="nav-item" id="li_membresia">
+                            <a class="nav-link" style="width: 242px; padding-left: 25px"
+                               id="custom-tabs-four-membresia-tab" data-toggle="pill"
+                               href="#custom-tabs-four-membresia" role="tab"
+                               aria-controls="custom-tabs-four-membresia"
+                               aria-selected="false">Membresías</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body">
+                    <div class="tab-content" id="custom-tabs-four-tabContent">
+                        <div class="tab-pane fade active show" id="custom-tabs-four-mecanismo" role="tabpanel"
+                             aria-labelledby="custom-tabs-four-mecanismo-tab">
+
+                            <table id="tb1" class="display table table-bordered table-striped dataTable">
+                                <thead class="table-custom-header">
+                                <tr>
+                                    <th>No.</th>
+                                    <th>Mecanismo de colaboración</th>
+                                    <th>Tipo de mecanismo de colaboración</th>
+                                    <th>Estado</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% if mecanismosColaboracion | length > 0 %}
+                                    {% for item in mecanismosColaboracion %}
+                                        <tr id="tr_{{ item.id_mecanismo_colaboracion }}">
+                                            <td width="1%" style="width: 2%">{{ loop.index }}</td>
+                                            <td>{{ item.nombre_mecanismo_colaboracion | default('') }}</td>
+                                            <td>{{ item.nombre_tipo_mecanismo_colaboracion | default('') }}</td>
+                                            <td>{{ item.nombre_estado_mecanismo_colaboracion | default('') }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                {% endif %}
+                                </tbody>
+                            </table>
+
+                        </div>
+
+
+                        <div class="tab-pane fade" id="custom-tabs-four-programa" role="tabpanel"
+                             aria-labelledby="custom-tabs-four-programa-tab">
+                            <table id="tb2" class="display table table-bordered table-striped dataTable">
+                                <thead class="table-custom-header">
+                                <tr>
+                                    <th>No.</th>
+                                    <th>Programa de colaboración</th>
+                                    <th>Patrocinador</th>
+                                    <th>Estado</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% if programasColaboracion | length > 0 %}
+                                    {% for item in programasColaboracion %}
+                                        <tr id="tr_{{ item.id_programa_colaboracion }}">
+                                            <td width="1%" style="width: 2%">{{ loop.index }}</td>
+                                            <td>{{ item.nombre_programa_colaboracion | default('') }}</td>
+                                            <td>{{ item.nombre_patrocinador | default('') }}</td>
+                                            <td>{{ item.nombre_estado_programa | default('') }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                {% endif %}
+                                </tbody>
+                            </table>
+
+                        </div>
+                        <div class="tab-pane fade" id="custom-tabs-four-proyecto" role="tabpanel"
+                             aria-labelledby="custom-tabs-four-proyecto-tab">
+                            <table id="tb2" class="display table table-bordered table-striped dataTable">
+                                <thead class="table-custom-header">
+                                <tr>
+                                    <th>No.</th>
+                                    <th>Proyecto</th>
+                                    <th>Estado</th>
+                                    <th>Estado</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% if proyectos | length > 0%}
+                                    {% for item in proyectos %}
+                                        <tr id="tr_{{ item.id_proyecto }}">
+                                            <td width="1%" style="width: 2%">{{ loop.index }}</td>
+                                            <td>{{ item.nombre_proyecto | default('') }}</td>
+                                            <td>{{ item.nombre_estado_proyecto | default('') }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                {% endif %}
+                                </tbody>
+                            </table>
+
+                        </div>
+                        <div class="tab-pane fade" id="custom-tabs-four-membresia" role="tabpanel"
+                             aria-labelledby="custom-tabs-four-membresia-tab">
+                            <table id="tb4" class="display table table-bordered table-striped dataTable">
+                                <thead class="table-custom-header">
+                                <tr>
+                                    <th>No.</th>
+                                    <th>Membresía</th>
+                                    <th>Tipo</th>
+                                    <th>Estado</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% if membresias | length > 0 %}
+                                    {% for item in membresias %}
+                                        <tr id="tr_{{ item.id_membresia }}">
+                                            <td width="1%" style="width: 2%">{{ loop.index }}</td>
+                                            <td>{{ item.nombre_membresia | default('') }}</td>
+                                            <td>{{ item.nombre_tipo_membresia | default('') }}</td>
+                                            <td>{{ item.nombre_estado_membresia | default('') }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                {% endif %}
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    <script>
+        $(document).ready(function () {
+            $('li[id*=li_]').click(function (e) {
+                tabSelected = e.target.id.split('-')[3];
+                var tagUrl = window.location.pathname.split('/')[4];
+
+                $('a[id*=custom-tabs-four]').removeClass('active');
+                $('a[id*=' + tabSelected + ']').addClass('active');
+
+                $('div[class*=tab-pane]').removeClass('active show');
+                $('div[id*=' + tabSelected + ']').addClass('active show');
+
+
+                var nuevoPath = "/institucion/institucion/{{ id }}/" + tabSelected + "/internacionalizacion";
+                console.log(nuevoPath);
+                $(window).attr('location', nuevoPath)
+
+            });
+
+            var tagUrl = window.location.pathname.split('/')[4];
+            $('a[id*=custom-tabs-four]').removeClass('active');
+            $('a[id*=' + tagUrl + ']').addClass('active');
+
+            $('div[class*=tab-pane]').removeClass('active show');
+            $('div[id*=' + tagUrl + ']').addClass('active show');
+
+            localStorage.setItem('tabSelected', tagUrl);
+
+        });
+    </script>
+{% endblock %}

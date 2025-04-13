@@ -1,0 +1,262 @@
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('assets/css/HoldOn.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/fullCalendar/main.css') }}">
+
+    <link rel="stylesheet" href="{{ asset('assets/toastr/toastr.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/SimpleLineMES/simple-line-icons-es.css') }}">
+
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="{{ asset('assets/fontawesome-free/css/all.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/select2.min.css') }}">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="{{ asset('assets/dist/css/adminlte.min.css') }}">
+
+    {# <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"> #}
+
+    <link rel="stylesheet" href="{{ asset('assets/dist/css/adminlte.min.css') }}">
+
+    <link rel="stylesheet" href="{{ asset('assets/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
+
+    <link rel="stylesheet" href="{{ asset('assets/css/HoldOn.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/fullCalendar/main.css') }}">
+
+    <link rel="stylesheet" href="{{ asset('assets/toastr/toastr.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/SimpleLineMES/simple-line-icons-es.css') }}">
+
+
+
+    <link rel="stylesheet" href="{{ asset('assets/css/login/style_login.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/login/slik/slick.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i&display=swap"
+          rel="stylesheet">
+    <style>
+        body {
+            padding: 0 !important; /*background-color: #2a263b !important;*/
+        }
+
+        .password-icon {
+            float: right;
+            position: relative;
+            margin: -33px 10px 0 0;
+            cursor: pointer;
+        }
+    </style>
+
+    <script src="{{ asset('assets/jquery/jquery.min.js') }}"></script>
+    <!-- Bootstrap 4 -->
+    <script src="{{ asset('assets/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <!-- AdminLTE App -->
+    <script src="{{ asset('assets/dist/js/adminlte.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/css/login/slik/slick.min.js') }}"></script>
+
+{% endblock %}
+
+<head>
+    <title>Acceso - Akademos - MES</title>
+</head>
+
+
+{% block body %}
+    <div class="ms-box ms-new-login-2023">
+        <div class="ms-wrapper-box">
+            <div class="ms-box-a" style="background-color: #0E375F">
+                <div class="ms-logo" style="margin-top: -13%;margin-left: -4%;position: absolute;">
+                    <img src="{{ asset('images/02.png') }}" title="Akademos MES" width="50%" height="auto"/>
+                </div>
+                <div class="ms-wrapper-slider">
+                    <div class="ms-slider" id="sliderLogin" style="height: 80%; margin-top: 10%">
+                        <div class="ms-item">
+                            <h2 class="ms-slider-title -text-red-gradiente">Gestión de instituciones</h2>
+                            <ul class="ms-slider-list -text-red-gradiente">
+                                <li>Facultades</li>
+                                <li>Centros de estudios</li>
+                                <li>Sedes</li>
+                                <li>Redes sociales</li>
+                                <li>Redes nacionales e internacionales</li>
+                                <li>Editoriales</li>
+                                <li>Revistas científicas</li>
+                                <li>Programas de formación</li>
+                                <li>Recursos humanos</li>
+                            </ul>
+                            {#                            <picture> #}
+                            {#                                <source type="image/webp" srcset="{{ asset('bundles/cpanel/images/login_02.webp') }}"> #}
+                            {#                                <img src="{{ asset('bundles/cpanel/images/login_02.webp') }}" width="515" height="414" #}
+                            {#                                     alt="Ministerio de Educación Superior"> #}
+                            {#                            </picture> #}
+                        </div>
+                        <div class="ms-item">
+                            <h2 class="ms-slider-title -text-blue-gradiente">Procesos de pregrado</h2>
+                            <ul class="ms-slider-list -text-blue-gradiente">
+                                <li>Planes de estudios</li>
+                                <li>Solicitudes de programas</li>
+                                <li>Programas aprobados</li>
+                                <li>Programas extintos</li>
+                                <li>OACE</li>
+                                <li>Comisiones nacionales</li>
+                                <li>Organismos demandantes</li>
+                                <li>Cursos académicos</li>
+                                <li>Documentos</li>
+                            </ul>
+                            {#                            <picture> #}
+                            {#                                <source type="image/webp" srcset="{{ asset('bundles/cpanel/images/login_03.webp') }}"> #}
+                            {#                                <img src="{{ asset('bundles/cpanel/images/login_03.webp') }}" width="515" height="387" #}
+                            {#                                     alt="Ministerio de Educación Superior"> #}
+                            {#                            </picture> #}
+                        </div>
+                        <div class="ms-item">
+                            <h2 class="ms-slider-title -text-green-gradiente">Procesos de posgrado</h2>
+                            <ul class="ms-slider-list -text-green-gradiente">
+                                <li>Solicitudes de programas</li>
+                                <li>Programas aprobados</li>
+                                <li>Comisiones</li>
+                                <li>Copep</li>
+                                <li>Ramas de la ciencia</li>
+                                <li>Roles de comisiones</li>
+                                <li>Tipos de programas</li>
+                            </ul>
+                            {#                            <picture> #}
+                            {#                                <source type="image/webp" srcset="{{ asset('bundles/cpanel/images/login_04.webp') }}"> #}
+                            {#                                <img src="{{ asset('bundles/cpanel/images/login_04.webp') }}" width="515" height="407" #}
+                            {#                                     alt="Ministerio de Educación Superior"> #}
+                            {#                            </picture> #}
+                        </div>
+                        <div class="ms-item">
+                            <h2 class="ms-slider-title -text-orange-gradiente">Gestión de personas</h2>
+                            <ul class="ms-slider-list -text-orange-gradiente">
+                                <li>Datos laborales</li>
+                                <li>Datos de superación</li>
+                                <li>Datos de contactos</li>
+                                <li>Datos de acceso</li>
+                                <li>Afiliaciones</li>
+                                <li>Carreras</li>
+                                <li>Categorías docentes</li>
+                                <li>Grados académicos</li>
+                                <li>Niveles escolares</li>
+                            </ul>
+                            {#                            <picture> #}
+                            {#                                <source type="image/webp" srcset="{{ asset('bundles/cpanel/images/login_01.webp') }}"> #}
+                            {#                                <img src="{{ asset('bundles/cpanel/images/login_01.webp') }}" width="515" height="393" #}
+                            {#                                     alt="Ministerio de Educación Superior"> #}
+                            {#                            </picture> #}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ms-box-b">
+                <div class="ms-login-form">
+                    <div class="ms-login-header" style="padding-top: 5%;">
+                        {#                        <img src="{{ asset('images/06.png') }}" title="Akademos MES" width="250" style="margin-left: 20%; margin-top: -27%" #}
+                        {#                             height="auto"> #}
+                        <h1 class="ms-login-title">Iniciar sesión </h1>
+                        <p>Introduce tu correo y contraseña para acceder</p>
+                    </div>
+                    <div class="ms-login-body">
+                        {% if error %}
+                            <div class="alert alert-danger">{{ 'Credenciales inválidas' }}</div>
+                            {#                            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div> #}
+                        {% endif %}
+                        <div class="ms-wrapper-form">
+                            <form method="post" autocomplete="off">
+                                <input type="hidden" name="_csrf_token"
+                                       value="{{ csrf_token('authenticate') }}"
+                                >
+                                <div class="ms-input-form">
+                                    <label for="Username">User Name</label>
+                                    <input type="email" value="{{ last_username }}" name="email" id="inputEmail"
+                                           class="form-control" autocomplete="email" required autofocus
+                                           placeholder="Correo">
+                                </div>
+                                <div class="ms-input-form">
+                                    <label for="Password">Password</label>
+                                    <input type="password" name="password" id="inputPassword" class="form-control"
+                                           autocomplete="current-password" required placeholder="Contraseña">
+                                    {#                                    <span id="showpassord" class="icon-eye" action="hide"></span> #}
+                                    <span
+                                            class="fa fa-fw fa-eye password-icon show-password"></span>
+                                </div>
+                                <div class="ms-input-form">
+                                    <button type="submit">
+                                        <span>Entrar</span>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="ms-login-footer">
+
+                        <p>Para consultas de soporte <a href="mailto:mes@mes.gob.cu">Correo de soporte</a></p>
+                    </div>
+                </div>
+                <div class="ms-copyright">© <a target="_blank" href="https://www.uci.cu/">UCI</a> {{ date('Y') | date('Y') }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript">
+        // document.addEventListener("mousemove", parallax);
+        // function parallax(e){
+        //   this.querySelectorAll('.layer').forEach(layer => {
+        //     const speed = layer.getAttribute('data-speed')
+        //     const x = (window.innerWidth - e.pageX*speed)/100
+        //     const y = (window.innerHeight - e.pageY*speed)/100
+        //     layer.style.transform = `translateX(${x}px) translateY(${y}px)`
+        //   });
+        // }
+
+
+        // jQuery(".ms-slider").slick({
+        //   slidesToShow: 1,
+        //   slidesToScroll: 1,
+        //   arrows: false,
+        //   fade: true,
+        //   dots: true
+        // });
+
+        var sliderLogin = jQuery('#sliderLogin');
+        if (sliderLogin.length) {
+            sliderLogin.slick({
+                autoplay: true,
+                autoplaySpeed: 3000,
+                dots: true,
+                arrows: false,
+                infinite: true,
+                speed: 500,
+                fade: true,
+                cssEase: 'ease-in-out',
+                accessibility: false,
+                pauseOnHover: false,
+                pauseOnFocus: false,
+            });
+        }
+
+
+        window.addEventListener("load", function () {
+            // icono para mostrar contraseña
+            showPassword = document.querySelector('.show-password');
+            showPassword.addEventListener('click', () => {
+
+                // elementos input de tipo clave
+                password1 = $('#inputPassword');
+
+                if (password1.attr('type') === "text") {
+                    password1.attr('type', "password")
+                    showPassword.classList.remove('fa-eye-slash');
+                } else {
+                    password1.attr('type', "text")
+                    showPassword.classList.toggle("fa-eye-slash");
+                }
+            })
+        });
+
+    </script>
+{% endblock %}

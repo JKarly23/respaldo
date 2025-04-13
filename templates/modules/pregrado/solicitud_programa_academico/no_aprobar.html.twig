@@ -1,0 +1,56 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Rechazar programa{% endblock %}
+
+{% block body %}
+
+
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <div class="row" style="display: flex; justify-content: space-between; align-solicitudProgramas: center">
+                <h3 class="card-title text-bold text-gray">Rechazar programa</h3>
+            </div>
+        </div>
+
+        {{ include('modules/pregrado/solicitud_programa_academico/detail-partial.html.twig', { 'item': solicitudPrograma }) }}
+        <!-- /.card-header -->
+        {{ form_start(form) }}
+        <div class="card-body">
+            <div class="row">
+                <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4 form-group">
+                    {{ form_label(form.dictamen) }}
+                    {{ form_widget(form.dictamen) }}
+                    <span style="margin-top: 1%;position: absolute;margin-left: -95%;z-index: 100;"
+                          class="cargar-archivo1"> </span>
+                    {{ form_errors(form.dictamen) }}
+                    <a id="doc_container" target="_blank"
+                       href="{{ app.request.getSchemeAndHttpHost() }}/uploads/pregrado/dictamen/{{ solicitudPrograma.dictamen }}">{{ solicitudPrograma.dictamen }}</a>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-12 form-group">
+                    {{ form_label(form.descripcionNoAprobacion) }}
+                    {{ form_widget(form.descripcionNoAprobacion) }}
+                    {{ form_errors(form.descripcionNoAprobacion) }}
+                </div>
+            </div>
+        </div>
+
+        <div class="card-footer" style="display: flex; justify-content: flex-end; align-solicitudProgramas: center;">
+            <a class="btn btn-danger mr-2 btn-cancel" data-url="{{ path('app_solicitud_programa_academico_index') }}"
+               data-title=""
+               data-content="¿Está seguro que desea realizar la acción?" type="button">Cancelar</a>
+            <button id="btn_aceptar" class="btn btn-primary">Aceptar</button>
+        </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
+{% block javascripts %}
+    <script>
+        $('#no_aprobar_solicitud_programa_academico_dictamen').change(function () {
+            var filename = jQuery(this).val().split('\\').pop();
+            $('.cargar-archivo1').html(filename);
+        })
+    </script>
+{% endblock %}

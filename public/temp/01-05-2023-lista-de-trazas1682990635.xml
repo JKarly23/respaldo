@@ -1,0 +1,266 @@
+<?xml version="1.0"?>
+<root>
+  <filters_header/>
+  <header>
+    <element>
+      <column>creado</column>
+      <column_title>Fecha</column_title>
+      <width>7%</width>
+    </element>
+    <element>
+      <column>nombreCompleto</column>
+      <column_title>Usuario</column_title>
+      <width>20%</width>
+    </element>
+    <element>
+      <column>tipoTraza</column>
+      <column_title>Tipo de traza</column_title>
+      <width>10%</width>
+    </element>
+    <element>
+      <column>accion</column>
+      <column_title>Acci&#xF3;n</column_title>
+      <width>11%</width>
+    </element>
+    <element>
+      <column>objeto</column>
+      <column_title>Objeto</column_title>
+      <width>11%</width>
+    </element>
+    <element>
+      <column>ip</column>
+      <column_title>IP</column_title>
+      <width>11%</width>
+    </element>
+    <element>
+      <column>navegador</column>
+      <column_title>Navegador</column_title>
+      <width>11%</width>
+    </element>
+    <element>
+      <column>sistemaOperativo</column>
+      <column_title>Sistema operativo</column_title>
+      <width>15%</width>
+    </element>
+  </header>
+  <data>
+    <element>
+      <creado>01/05/2023</creado>
+      <nombreCompleto>Admin  Inial 123</nombreCompleto>
+      <tipoTraza>Sesi&#xF3;n</tipoTraza>
+      <accion>Inicio de sesi&#xF3;n</accion>
+      <objeto>Autenticaci&#xF3;n</objeto>
+      <ip>10.8.13.187</ip>
+      <navegador>Chrome 112.0.0.0</navegador>
+      <sistemaOperativo>Win</sistemaOperativo>
+    </element>
+    <element>
+      <creado>01/05/2023</creado>
+      <nombreCompleto>Admin  Inial 123</nombreCompleto>
+      <tipoTraza>Sesi&#xF3;n</tipoTraza>
+      <accion>Inicio de sesi&#xF3;n</accion>
+      <objeto>Autenticaci&#xF3;n</objeto>
+      <ip>10.8.13.187</ip>
+      <navegador>Chrome 112.0.0.0</navegador>
+      <sistemaOperativo>Win</sistemaOperativo>
+    </element>
+    <element>
+      <creado>27/04/2023</creado>
+      <nombreCompleto>Admin  Inial 123</nombreCompleto>
+      <tipoTraza>Sesi&#xF3;n</tipoTraza>
+      <accion>Inicio de sesi&#xF3;n</accion>
+      <objeto>Autenticaci&#xF3;n</objeto>
+      <ip>10.36.32.244</ip>
+      <navegador>Firefox 112.0</navegador>
+      <sistemaOperativo>Win</sistemaOperativo>
+    </element>
+    <element>
+      <creado>27/04/2023</creado>
+      <nombreCompleto>Admin  Inial 123</nombreCompleto>
+      <tipoTraza>Sesi&#xF3;n</tipoTraza>
+      <accion>Inicio de sesi&#xF3;n</accion>
+      <objeto>Autenticaci&#xF3;n</objeto>
+      <ip>10.36.32.247</ip>
+      <navegador>Firefox 112.0</navegador>
+      <sistemaOperativo>Win</sistemaOperativo>
+    </element>
+    <element>
+      <creado>27/04/2023</creado>
+      <nombreCompleto>Admin  Inial 123</nombreCompleto>
+      <tipoTraza>Sesi&#xF3;n</tipoTraza>
+      <accion>Cierre de sesi&#xF3;n</accion>
+      <objeto>Autenticaci&#xF3;n</objeto>
+      <ip>10.36.32.223</ip>
+      <navegador>Firefox 95.0</navegador>
+      <sistemaOperativo>Linux</sistemaOperativo>
+    </element>
+    <element>
+      <creado>27/04/2023</creado>
+      <nombreCompleto>Admin  Inial 123</nombreCompleto>
+      <tipoTraza>Sesi&#xF3;n</tipoTraza>
+      <accion>Inicio de sesi&#xF3;n</accion>
+      <objeto>Autenticaci&#xF3;n</objeto>
+      <ip>10.36.32.223</ip>
+      <navegador>Firefox 95.0</navegador>
+      <sistemaOperativo>Linux</sistemaOperativo>
+    </element>
+    <element>
+      <creado>27/04/2023</creado>
+      <nombreCompleto>Admin  Inial 123</nombreCompleto>
+      <tipoTraza>Sesi&#xF3;n</tipoTraza>
+      <accion>Inicio de sesi&#xF3;n</accion>
+      <objeto>Autenticaci&#xF3;n</objeto>
+      <ip>10.36.32.223</ip>
+      <navegador>Firefox 95.0</navegador>
+      <sistemaOperativo>Linux</sistemaOperativo>
+    </element>
+    <element>
+      <creado>27/04/2023</creado>
+      <nombreCompleto>Admin  Inial 123</nombreCompleto>
+      <tipoTraza>Sesi&#xF3;n</tipoTraza>
+      <accion>Cierre de sesi&#xF3;n</accion>
+      <objeto>Autenticaci&#xF3;n</objeto>
+      <ip>10.36.32.223</ip>
+      <navegador>Firefox 95.0</navegador>
+      <sistemaOperativo>Linux</sistemaOperativo>
+    </element>
+    <element>
+      <creado>27/04/2023</creado>
+      <nombreCompleto>Admin  Inial 123</nombreCompleto>
+      <tipoTraza>Sesi&#xF3;n</tipoTraza>
+      <accion>Inicio de sesi&#xF3;n</accion>
+      <objeto>Autenticaci&#xF3;n</objeto>
+      <ip>10.36.32.223</ip>
+      <navegador>Firefox 95.0</navegador>
+      <sistemaOperativo>Linux</sistemaOperativo>
+    </element>
+    <element>
+      <creado>27/04/2023</creado>
+      <nombreCompleto>Admin  Inial 123</nombreCompleto>
+      <tipoTraza>Sesi&#xF3;n</tipoTraza>
+      <accion>Cierre de sesi&#xF3;n</accion>
+      <objeto>Autenticaci&#xF3;n</objeto>
+      <ip>127.0.0.1</ip>
+      <navegador>Firefox 95.0</navegador>
+      <sistemaOperativo>Linux</sistemaOperativo>
+    </element>
+    <element>
+      <creado>27/04/2023</creado>
+      <nombreCompleto>Admin  Inial 123</nombreCompleto>
+      <tipoTraza>Sesi&#xF3;n</tipoTraza>
+      <accion>Inicio de sesi&#xF3;n</accion>
+      <objeto>Autenticaci&#xF3;n</objeto>
+      <ip>127.0.0.1</ip>
+      <navegador>Firefox 95.0</navegador>
+      <sistemaOperativo>Linux</sistemaOperativo>
+    </element>
+    <element>
+      <creado>27/04/2023</creado>
+      <nombreCompleto>Admin  Inial 123</nombreCompleto>
+      <tipoTraza>Sesi&#xF3;n</tipoTraza>
+      <accion>Cierre de sesi&#xF3;n</accion>
+      <objeto>Autenticaci&#xF3;n</objeto>
+      <ip>127.0.0.1</ip>
+      <navegador>Firefox 95.0</navegador>
+      <sistemaOperativo>Linux</sistemaOperativo>
+    </element>
+    <element>
+      <creado>27/04/2023</creado>
+      <nombreCompleto>Admin  Inial 123</nombreCompleto>
+      <tipoTraza>Sesi&#xF3;n</tipoTraza>
+      <accion>Inicio de sesi&#xF3;n</accion>
+      <objeto>Autenticaci&#xF3;n</objeto>
+      <ip>127.0.0.1</ip>
+      <navegador>Firefox 95.0</navegador>
+      <sistemaOperativo>Linux</sistemaOperativo>
+    </element>
+    <element>
+      <creado>27/04/2023</creado>
+      <nombreCompleto>Admin  Inial 123</nombreCompleto>
+      <tipoTraza>Sesi&#xF3;n</tipoTraza>
+      <accion>Cierre de sesi&#xF3;n</accion>
+      <objeto>Autenticaci&#xF3;n</objeto>
+      <ip>127.0.0.1</ip>
+      <navegador>Firefox 95.0</navegador>
+      <sistemaOperativo>Linux</sistemaOperativo>
+    </element>
+    <element>
+      <creado>27/04/2023</creado>
+      <nombreCompleto>Admin  Inial 123</nombreCompleto>
+      <tipoTraza>Sesi&#xF3;n</tipoTraza>
+      <accion>Inicio de sesi&#xF3;n</accion>
+      <objeto>Autenticaci&#xF3;n</objeto>
+      <ip>127.0.0.1</ip>
+      <navegador>Firefox 95.0</navegador>
+      <sistemaOperativo>Linux</sistemaOperativo>
+    </element>
+    <element>
+      <creado>27/04/2023</creado>
+      <nombreCompleto>Admin  Inial 123</nombreCompleto>
+      <tipoTraza>Sesi&#xF3;n</tipoTraza>
+      <accion>Inicio de sesi&#xF3;n</accion>
+      <objeto>Autenticaci&#xF3;n</objeto>
+      <ip>127.0.0.1</ip>
+      <navegador>Firefox 95.0</navegador>
+      <sistemaOperativo>Linux</sistemaOperativo>
+    </element>
+    <element>
+      <creado>27/04/2023</creado>
+      <nombreCompleto>Admin  Inial 123</nombreCompleto>
+      <tipoTraza>Sesi&#xF3;n</tipoTraza>
+      <accion>Cierre de sesi&#xF3;n</accion>
+      <objeto>Autenticaci&#xF3;n</objeto>
+      <ip>127.0.0.1</ip>
+      <navegador>Firefox 95.0</navegador>
+      <sistemaOperativo>Linux</sistemaOperativo>
+    </element>
+    <element>
+      <creado>27/04/2023</creado>
+      <nombreCompleto>Admin  Inial 123</nombreCompleto>
+      <tipoTraza>Sesi&#xF3;n</tipoTraza>
+      <accion>Inicio de sesi&#xF3;n</accion>
+      <objeto>Autenticaci&#xF3;n</objeto>
+      <ip>127.0.0.1</ip>
+      <navegador>Firefox 95.0</navegador>
+      <sistemaOperativo>Linux</sistemaOperativo>
+    </element>
+    <element>
+      <creado>27/04/2023</creado>
+      <nombreCompleto>Admin  Inial 123</nombreCompleto>
+      <tipoTraza>Sesi&#xF3;n</tipoTraza>
+      <accion>Cierre de sesi&#xF3;n</accion>
+      <objeto>Autenticaci&#xF3;n</objeto>
+      <ip>127.0.0.1</ip>
+      <navegador>Firefox 95.0</navegador>
+      <sistemaOperativo>Linux</sistemaOperativo>
+    </element>
+  </data>
+  <user>
+    <email>admin@admin.cu</email>
+    <password>$argon2id$v=19$m=65536,t=4,p=1$d/SdLgXCKge5KG7p1czR4w$gm6p3OsCKIltUVwhlXcyXYrngqGAhoVWgToAxu2GI4w</password>
+    <role>ROLE_ADMIN</role>
+    <activo>1</activo>
+    <userRoles>
+      <element>
+        <nombre>Administrador</nombre>
+        <descripcion/>
+        <roleKey>ROLE_ADMIN</roleKey>
+        <activo>1</activo>
+        <funcionalidades/>
+        <id>1</id>
+        <creado>31/03/2023</creado>
+        <actualizado>31/03/2023</actualizado>
+      </element>
+    </userRoles>
+    <passwordChangeFirstTime>1</passwordChangeFirstTime>
+    <passwordPlainOld/>
+    <passwordPlainText/>
+    <id>1</id>
+    <creado>31/03/2023</creado>
+    <actualizado>31/03/2023</actualizado>
+    <username>admin@admin.cu</username>
+    <create_date>01/05/2023 21:23</create_date>
+    <title_document>Lista de trazas</title_document>
+    <table_title>Lista de trazas</table_title>
+  </user>
+</root>

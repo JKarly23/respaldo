@@ -1,0 +1,46 @@
+version: '3.2'
+
+networks:
+  ak_mes_network:
+    external:
+      name: server_network
+
+services:
+  ak-mes:
+    container_name: ak-mes
+    image: docker.prod.uci.cu/fortes/ak-mes-base:0.0.1
+    restart: always
+    ports:
+      - '5902:80'
+    volumes:
+      - $PWD/000-default.conf:/etc/apache2/sites-enabled/000-default.conf
+      - ./:/var/www/html
+      - $PWD/logs:/var/log/apache2
+      - $PWD/php.ini:/usr/local/etc/php/php.ini
+    env_file:
+      - .env
+    networks:
+      - ak_mes_network
+
+  redis-mes:
+    container_name: redis-mes
+    image: redis:alpine
+    command: redis-server
+    networks:
+      - ak_mes_network
+
+
+  filebrowser-mes:
+    container_name: filebrowser-mes
+    image: hurlenko/filebrowser
+    restart: always
+    ports:
+      - 8085:8080
+    volumes:
+      - .:/data
+    environment:
+      - FB_BASEURL=/f
+
+    networks:
+      - ak_mes_network
+

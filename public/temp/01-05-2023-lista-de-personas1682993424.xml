@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<root>
+  <filters_header/>
+  <header>
+    <element>
+      <column>nombreCompleto</column>
+      <column_title>Nombre y apellidos</column_title>
+      <width>60%</width>
+    </element>
+    <element>
+      <column>carnetIdentidad</column>
+      <column_title>Carn&#xE9; de identidad</column_title>
+      <width>36%</width>
+    </element>
+  </header>
+  <data>
+    <element>
+      <nombreCompleto>Yaritza  Gonz&#xE1;lez Ram&#xED;rez</nombreCompleto>
+      <carnetIdentidad>92031344932</carnetIdentidad>
+    </element>
+    <element>
+      <nombreCompleto>Admin  Inial 123</nombreCompleto>
+      <carnetIdentidad>00000000000</carnetIdentidad>
+    </element>
+  </data>
+  <user>
+    <email>admin@admin.cu</email>
+    <password>$argon2id$v=19$m=65536,t=4,p=1$d/SdLgXCKge5KG7p1czR4w$gm6p3OsCKIltUVwhlXcyXYrngqGAhoVWgToAxu2GI4w</password>
+    <role>ROLE_ADMIN</role>
+    <activo>1</activo>
+    <userRoles>
+      <element>
+        <nombre>Administrador</nombre>
+        <descripcion/>
+        <roleKey>ROLE_ADMIN</roleKey>
+        <activo>1</activo>
+        <funcionalidades/>
+        <id>1</id>
+        <creado>31/03/2023</creado>
+        <actualizado>31/03/2023</actualizado>
+      </element>
+    </userRoles>
+    <passwordChangeFirstTime>1</passwordChangeFirstTime>
+    <passwordPlainOld/>
+    <passwordPlainText/>
+    <id>1</id>
+    <creado>31/03/2023</creado>
+    <actualizado>31/03/2023</actualizado>
+    <username>admin@admin.cu</username>
+    <create_date>01/05/2023 22:10</create_date>
+    <title_document>Lista de personas</title_document>
+    <table_title>Lista de personas</table_title>
+  </user>
+</root>

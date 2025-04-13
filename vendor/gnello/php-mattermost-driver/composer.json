@@ -1,0 +1,32 @@
+{
+    "name": "gnello/php-mattermost-driver",
+    "description": "The Php Driver to interact with the Mattermost Web Service API",
+    "keywords": ["mattermost", "chat"],
+    "homepage": "https://github.com/gnello/php-mattermost-driver",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Luca Agnello",
+            "email": "luca@gnello.com"
+        }
+    ],
+    "support": {
+        "email": "luca@gnello.com",
+        "issues": "https://github.com/gnello/php-mattermost-driver/issues"
+    },
+    "require": {
+        "php": ">=5.5.0",
+        "ext-json": "*",
+        "psr/http-message" : "^1.0",
+        "pimple/pimple"    : "~3.0",
+        "guzzlehttp/guzzle": "^6.2|^7.4"
+    },
+    "require-dev": {
+        "symfony/var-dumper": "^3.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Gnello\\Mattermost\\": "src/"
+        }
+    }
+}

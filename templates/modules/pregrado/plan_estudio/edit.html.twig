@@ -1,0 +1,288 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Modificar plan de estudio{% endblock %}
+
+{% block body %}
+
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <div class="row" style="display: flex; justify-content: space-between; align-items: center">
+
+                <h3 class="card-title text-bold text-gray">Modificar plan de estudio</h3>
+
+            </div>
+        </div>
+        <!-- /.card-header -->
+        {{ form_start(form) }}
+        <div class="card-body">
+            {#            <input type="hidden" id="id_plan_estudio" name="id_plan_estudio" value="{{ planEstudio.id }}"> #}
+            <div class="row">
+                <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4 form-group">
+                    {{ form_label(form.annoAprobacion) }}
+                    {{ form_widget(form.annoAprobacion) }}
+                    {{ form_errors(form.annoAprobacion) }}
+                </div>
+                <div class="col-4 form-group">
+                    {{ form_label(form.fechaAprobacion) }}
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                        </div>
+                        {{ form_widget(form.fechaAprobacion) }}
+                        {{ form_errors(form.fechaAprobacion) }}
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4 form-group">
+                    {{ form_label(form.tipoProgramaAcademico) }}
+                    {{ form_widget(form.tipoProgramaAcademico) }}
+                    {{ form_errors(form.tipoProgramaAcademico) }}
+                </div>
+
+
+            </div>
+
+            <div class="row">
+                <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4 form-group">
+                    {{ form_label(form.carrera) }}
+                    {{ form_widget(form.carrera) }}
+                    {{ form_errors(form.carrera) }}
+                </div>
+                <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4 form-group">
+                    {{ form_label(form.oace) }}
+                    {{ form_widget(form.oace) }}
+                    {{ form_errors(form.oace) }}
+                </div>
+                <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4 form-group" id="organismo">
+                    {{ form_label(form.organismoDemandante) }}
+                    {{ form_widget(form.organismoDemandante) }}
+                    {{ form_errors(form.organismoDemandante) }}
+                </div>
+                <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4 form-group" id="rama">
+                    {{ form_label(form.ramaCiencia) }}
+                    {{ form_widget(form.ramaCiencia) }}
+                    {{ form_errors(form.ramaCiencia) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4 form-group">
+                    {{ form_label(form.cursoAcademico) }}
+                    {{ form_widget(form.cursoAcademico) }}
+                    {{ form_errors(form.cursoAcademico) }}
+                </div>
+                <div class="col-4  form-group">
+                    {{ form_label(form.planEstudio) }}
+                    {{ form_widget(form.planEstudio) }}
+                    <span style="margin-top: 1%;position: absolute;margin-left: -95%;z-index: 100;"
+                          class="cargar-archivo"> </span>
+                    {{ form_errors(form.planEstudio) }}
+                    <a target="_blank"
+                       href="{{ app.request.getSchemeAndHttpHost() }}/uploads/pregrado/plan_estudio/plan_estudio/{{ planEstudio.planEstudio }}">{{ planEstudio.planEstudio }}</a>
+                </div>
+                <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4 form-group">
+                    {{ form_label(form.duracionCursoDiurno) }}
+                    {{ form_widget(form.duracionCursoDiurno) }}
+                    {{ form_errors(form.duracionCursoDiurno) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4 form-group">
+                    {{ form_label(form.duracionCursoPorEncuentro) }}
+                    {{ form_widget(form.duracionCursoPorEncuentro) }}
+                    {{ form_errors(form.duracionCursoPorEncuentro) }}
+                </div>
+                <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4 form-group">
+                    {{ form_label(form.duracionCursoDistancia) }}
+                    {{ form_widget(form.duracionCursoDistancia) }}
+                    {{ form_errors(form.duracionCursoDistancia) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 form-group">
+                    {{ form_label(form.descripcionPlanEstudio) }}
+                    {{ form_widget(form.descripcionPlanEstudio) }}
+                    {{ form_errors(form.descripcionPlanEstudio) }}
+                </div>
+            </div>
+            <input type="hidden" id="planEstudio" name="planEstudio" value="{{ planEstudio.id }}">
+            <hr>
+            <h6 class="mb-0"><b><p
+                            style="font-size: 20px; font-weight: bold; margin-top: 5px;">
+                        Documentos del expediente</p>
+                </b></h6>
+            <hr>
+            <div class="row">
+                <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4 form-group">
+                    <label class="required" for="documentoSelec">Documento</label>
+                    <select id="documentoSelec" name="documentoSelec"
+                            class="form-control select2-hidden-accessible" data-select2-id="documentoSelec"
+                            tabindex="-1" aria-hidden="true">
+                        <option value="">Seleccione</option>
+                        {% for item2 in documentos %}
+                            <option value="{{ item2.id }}">{{ item2.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-4 form-group">
+                    <label class="required" for="documento">Adjuntar documento </label>
+                    <div class="custom-file"><input type="file" id="documento"
+                                                    name="documento" class="custom-file-input"
+                                                    lang="en"><label for="documento"
+                                                                     class="custom-file-label"></label>
+                    </div>
+
+                    <span id="cargarElemento" style="margin-top: 1%;position: absolute;margin-left: -95%;z-index: 100;"
+                          class="cargar-archivo1"> </span>
+                </div>
+
+                <div class="col-4 form-group">
+                    <button id="btn_asociar" style="margin-top: 5%" class="btn btn-primary">Asociar</button>
+                </div>
+            </div>
+            <hr>
+            <table class="table table-bordered table-striped dataTable">
+                <thead class="table-custom-header">
+                <tr>
+                    <th>No.</th>
+                    <th>Documento</th>
+                    <th class="text-center">Opciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in registros %}
+                    <tr>
+                        <td width="1%">{{ loop.index }}</td>
+                        <td>{{ item.nombre | default('') }}</td>
+                        <td width="15%" class="text-center">
+                            <button type="button" id="eliminar-doc" title="Eliminar" class="btn btn-outline-danger elementRemove"
+                                    data-url="{{ path('app_plan_estudio_eliminar_documento_editar', {'id': item.id}) }}">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+
+            <div class="card-footer" style="display: flex; justify-content: flex-end; align-items: center;">
+                <a class="btn btn-danger mr-2 btn-cancel" data-url="{{ path('app_plan_estudio_index') }}" data-title=""
+                   data-content="¿Está seguro que desea realizar la acción?" type="button">Cancelar</a>
+                <button class="btn btn-primary">Aceptar</button>
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        $('#plan_estudio_planEstudio').change(function () {
+            var filename = jQuery(this).val().split('\\').pop();
+            $('.cargar-archivo').html(filename);
+        })
+        $('#eliminar-doc').click(function (e) {
+            e.preventDefault();
+        })
+        $('#documento').change(function () {
+            var filename = jQuery(this).val().split('\\').pop();
+            $('.cargar-archivo1').html(filename);
+        })
+
+        $('#plan_estudio_fechaAprobacion').datetimepicker({
+            format: 'DD/MM/YYYY'
+        });
+        $('#plan_estudio_annoAprobacion').datetimepicker({
+            format: 'YYYY'
+        }).on('dp.change', function (e) {
+            var anno = $(this).val();
+            var f = new Date();
+            console.log(anno);
+            var mes = (parseInt(f.getMonth()) + parseInt(1));
+            if (mes < 10) {
+                mes = '0' + mes;
+            }
+
+            $('#plan_estudio_fechaAprobacion').val(f.getDate() + '/' + mes + '/' + anno);
+        });
+        var fecha = "{% if planEstudio.fechaAprobacion is empty %}  {{ planEstudio.fechaAprobacion | default('') }} {% else %}  {{ planEstudio.fechaAprobacion|date('d/m/Y') }} {% endif %}".replace(' ', '');
+        $('#plan_estudio_fechaAprobacion').val(fecha.replace(' ', ''));
+
+        if ("{{ planEstudio.tipoProgramaAcademico.id == 1 }}") {
+            $('#organismo').hide();
+        } else {
+            $('#rama').hide();
+        }
+
+
+        $('#plan_estudio_annoAprobacion').on('keydown keypress', function (e) {
+            if (e.key.length === 1) {
+                if ($(this).val().length < 4) {
+                    $(this).val($(this).val() + e.key);
+                }
+                return false;
+            }
+        });
+        $('#plan_estudio_duracionCursoDiurno, #plan_estudio_duracionCursoPorEncuentro, #plan_estudio_duracionCursoDistancia').on('keydown keypress', function (e) {
+            if (e.key.length === 1) {
+                if ($(this).val().length < 3) {
+                    $(this).val($(this).val() + e.key);
+                }
+                return false;
+            }
+        });
+
+        $("#plan_estudio_annoAprobacion, #plan_estudio_duracionCursoDiurno, #plan_estudio_duracionCursoPorEncuentro, #plan_estudio_duracionCursoDistancia").bind("keypress", function (event) {
+            if (event.charCode != 0) {
+                var regex = new RegExp("^[0-9-]*$");
+                var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+                if (!regex.test(key)) {
+                    event.preventDefault();
+                    return false;
+                }
+            }
+        });
+        $('#plan_estudio_tipoProgramaAcademico').change(function (e) {
+            if ($('#plan_estudio_tipoProgramaAcademico').val() == 1) {
+                $('#organismo').hide();
+                $('#rama').show();
+            } else {
+                $('#rama').hide();
+                $('#organismo').show();
+            }
+        });
+
+        $('#btn_asociar').click(function (e) {
+            e.preventDefault();
+            HoldOn.open({
+                theme: "sk-cube-grid",
+                message: 'Por favor espere...',
+                textColor: "white"
+            });
+            if ($('#documentoSelec')[0].reportValidity() && $('#documento')[0].reportValidity()) {
+                var data, xhr;
+                var inputFileImage = document.getElementById("documento");
+                var file = inputFileImage.files[0]
+
+                data = new FormData();
+                data.append('file', file);
+                data.append('documento', $('#documentoSelec').val());
+                data.append('plan_estudio', $('#planEstudio').val());
+
+                xhr = new XMLHttpRequest();
+                xhr.open('POST', '{{ path('app_plan_estudio_registro_temporal_doc_edit') }}', true);
+                xhr.onreadystatechange = function (response) {
+                };
+               var res = xhr.send(data);
+
+                setTimeout(function () {
+                    location.href = location.href;
+                    HoldOn.close()
+                    toastr.success("Documento adicionado satisfactoriamente.");
+                }, 2500);
+
+            }
+            // location.href = location.href;
+        })
+    </script>
+{% endblock %}
