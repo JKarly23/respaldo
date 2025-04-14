@@ -112,99 +112,16 @@
         </div>
     </div>
 </div>
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('assets/css/components/filtros/main.css') }}">
+{% endblock %}
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Referencias a elementos
-    const crearFiltroBtn = document.getElementById('crearFiltroPersonalizado');
-    const aside = document.getElementById('filtroPersonalizadoAside');
-    const cerrarAsideBtn = document.getElementById('cerrarAside');
-    const cancelarFiltroBtn = document.getElementById('cancelarFiltro');
-    const agregarCondicionBtn = document.getElementById('agregarCondicion');
-    const condicionesContainer = document.getElementById('condicionesContainer');
-    const guardarFiltroBtn = document.getElementById('guardarFiltro');
-    const confirmarGuardarFiltroBtn = document.getElementById('confirmarGuardarFiltro');
-    const aplicarFiltroBtn = document.getElementById('aplicarFiltro');
-    
-    // Abrir el aside
-    crearFiltroBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        aside.style.right = '0';
-        document.body.style.overflow = 'hidden'; // Evitar scroll en el body
-    });
-    
-    // Cerrar el aside
-    function cerrarAside() {
-        aside.style.right = '-400px';
-        document.body.style.overflow = ''; // Restaurar scroll
-    }
-    
-    cerrarAsideBtn.addEventListener('click', cerrarAside);
-    cancelarFiltroBtn.addEventListener('click', cerrarAside);
-    
-    // Agregar nueva condición
-    agregarCondicionBtn.addEventListener('click', function() {
-        const nuevaCondicion = document.querySelector('.condicion').cloneNode(true);
-        // Limpiar valores
-        nuevaCondicion.querySelectorAll('select, input').forEach(el => {
-            if (el.tagName === 'SELECT') {
-                el.selectedIndex = 0;
-            } else if (el.type === 'text') {
-                el.value = '';
-            }
+{% block javascripts %}
+    <script type="module">
+        import { inicializarEventosAside } from '{{ asset('assets/js/components/filtros/events/asideEvents.js') }}';
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            inicializarEventosAside();
         });
-        
-        // Agregar evento para eliminar esta condición
-        nuevaCondicion.querySelector('.eliminar-condicion').addEventListener('click', function() {
-            nuevaCondicion.remove();
-        });
-        
-        condicionesContainer.appendChild(nuevaCondicion);
-    });
-    
-    // Eliminar condición (para la primera condición)
-    document.querySelector('.eliminar-condicion').addEventListener('click', function() {
-        if (document.querySelectorAll('.condicion').length > 1) {
-            this.closest('.condicion').remove();
-        } else {
-            alert('Debe haber al menos una condición');
-        }
-    });
-    
-    // Abrir modal para guardar filtro
-    guardarFiltroBtn.addEventListener('click', function() {
-        // Usar Bootstrap 4 modal
-        $('#guardarFiltroModal').modal('show');
-    });
-    
-    // Guardar filtro
-    confirmarGuardarFiltroBtn.addEventListener('click', function() {
-        const nombreFiltro = document.getElementById('nombreFiltro').value.trim();
-        
-        if (!nombreFiltro) {
-            alert('Por favor, ingrese un nombre para el filtro');
-            return;
-        }
-        
-        // Aquí iría la lógica para guardar el filtro
-        console.log('Filtro guardado:', nombreFiltro);
-        
-        // Cerrar modal y aside
-        $('#guardarFiltroModal').modal('hide');
-        cerrarAside();
-        
-        // Opcional: Actualizar la lista de filtros guardados
-        // actualizarListaFiltros(nombreFiltro);
-    });
-    
-    // Aplicar filtro sin guardar
-    aplicarFiltroBtn.addEventListener('click', function() {
-        // Aquí iría la lógica para aplicar el filtro
-        console.log('Aplicando filtro...');
-        // No cerramos el aside como solicitado
-        
-        // Opcional: Mostrar alguna indicación de que el filtro se aplicó
-        alert('Filtro aplicado correctamente');
-    });
-});
-</script>
+    </script>
+{% endblock %}

@@ -1,0 +1,57 @@
+.toggle-icon {
+    font-size: 1rem;
+    transition: transform 0.2s ease;
+}
+
+.toggle-icon.rotate {
+    transform: rotate(90deg);
+}
+
+.dropdown-item {
+    padding: 0.25rem 0;
+    display: block;
+    color: #212529;
+    text-decoration: none;
+}
+
+.dropdown-item:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}
+
+td {
+    cursor: pointer;
+}
+.filtro-activo {
+    display: inline-flex;
+    align-items: center;
+    background-color: #e9ecef;
+    border-radius: 4px;
+    padding: 0.25rem 0.5rem;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.filtro-activo .btn-eliminar {
+    background: none;
+    border: none;
+    color: #dc3545;
+    font-size: 1rem;
+    padding: 0 0 0 0.5rem;
+    cursor: pointer;
+}
+#filtrosActivos.hidden {
+    display: none;
+}
+
+#toggleFiltrosActivos:hover {
+    color: #007bff;
+}
+
+#toggleFiltrosActivos i {
+    transition: transform 0.3s ease;
+}
+#toggleFiltrosActivos.collapsed i {
+    transform: rotate(-90deg);
+}

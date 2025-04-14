@@ -1,143 +1,96 @@
 <!-- Botón de Filtros -->
 <div class="d-flex justify-content-end align-items-center mb-3 position-relative">
-    <button class="btn btn-outline-primary" type="button" id="btnFiltros">
-        <i class="fas fa-filter"></i> Filtros
-    </button>
+	<button class="btn btn-outline-primary" type="button" id="btnFiltros">
+		<i class="fas fa-filter"></i>
+		Filtros
+	</button>
 
-    <!-- Panel de filtros personalizado -->
-    <div id="filtrosPanel" class="card shadow-sm p-3 position-absolute bg-white" style="right: 0; top: 100%; min-width: 350px; z-index: 1050; display: none;">
-        <!-- Filtros Básicos -->
-        <div class="mb-2">
-            <div class="d-flex justify-content-between align-items-center toggle-section" data-target="#filtrosBasicosContent" style="cursor: pointer;">
-                <i class="fa fa-list" aria-hidden="true"></i>
-                <strong>Filtros Básicos</strong>
-                <span class="toggle-icon">&rsaquo;</span>
-            </div>
-            <div id="filtrosBasicosContent" class="mt-2 d-none">
-                <a class="dropdown-item" href="#"><i class="fas fa-check-circle text-muted mr-2"></i>Instituciones activas</a>
-                <a class="dropdown-item" href="#"><i class="fas fa-globe text-muted mr-2"></i>Con sitio web</a>
-                <a class="dropdown-item" href="#"><i class="fas fa-user-graduate text-muted mr-2"></i>Con rector y grado académico</a>
-                <a class="dropdown-item" href="#"><i class="fas fa-phone text-muted mr-2"></i>Con teléfono disponible</a>
-                <a class="dropdown-item" href="#"><i class="fas fa-award text-muted mr-2"></i>Acreditadas</a>
-            </div>
-        </div>
+	<!-- Panel de filtros personalizado -->
+	<div
+		id="filtrosPanel" class="card shadow-sm p-3 position-absolute bg-white" style="right: 0; top: 100%; min-width: 350px; z-index: 1050; display: none;">
+		<!-- Filtros Básicos -->
+		<div class="mb-2">
+			<div class="d-flex justify-content-between align-items-center toggle-section" data-target="#filtrosBasicosContent" style="cursor: pointer;">
+				<i class="fa fa-list" aria-hidden="true"></i>
+				<strong>Filtros Básicos</strong>
+				<span class="toggle-icon">&rsaquo;</span>
+			</div>
+			<div id="filtrosBasicosContent" class="mt-2 d-none">
+				<a class="dropdown-item" href="#">
+					<i class="fas fa-check-circle text-muted mr-2"></i>Instituciones activas</a>
+				<a class="dropdown-item" href="#">
+					<i class="fas fa-globe text-muted mr-2"></i>Con sitio web</a>
+				<a class="dropdown-item" href="#">
+					<i class="fas fa-user-graduate text-muted mr-2"></i>Con rector y grado académico</a>
+				<a class="dropdown-item" href="#">
+					<i class="fas fa-phone text-muted mr-2"></i>Con teléfono disponible</a>
+				<a class="dropdown-item" href="#">
+					<i class="fas fa-award text-muted mr-2"></i>Acreditadas</a>
+			</div>
+		</div>
 
-        <!-- Filtros Guardados -->
-        <div>
-            <div class="d-flex justify-content-between align-items-center toggle-section" data-target="#filtrosGuardadosContent" style="cursor: pointer;">
-               <i class="fas fa-save"></i>
-                <strong>Filtros Guardados</strong>
-                <span class="toggle-icon">&rsaquo;</span>
-            </div>
-            <div id="filtrosGuardadosContent" class="mt-2 d-none table-responsive" style="max-height: 250px; overflow-y: auto;">
-                <table class="table table-bordered table-sm mb-2">
-                    <thead class="thead-light">
-                        <tr>
-                            <th>Nombre</th>
-                            <th class="text-center">Opciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="dropdown-item">Universidades públicas</td>
-                            <td class="text-center">
-                                <a href="#" class="text-primary mr-2" title="Editar"><i class="fas fa-edit"></i></a>
-                                <a href="#" class="text-danger" title="Eliminar"><i class="fas fa-trash-alt"></i></a>
-                            </td>
-                        </tr>
-                        
-                        <tr>
-                            <td class="dropdown-item">Privadas con sitio web</td>
-                            <td class="text-center">
-                                <a href="#" class="text-primary mr-2"><i class="fas fa-edit"></i></a>
-                                <a href="#" class="text-danger"><i class="fas fa-trash-alt"></i></a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="dropdown-divider"></div>
-                <a href="#" class="dropdown-item text-success" id="crearFiltroPersonalizado">
-                    <i class="fas fa-plus-circle mr-2"></i>Crear filtro personalizado
-                </a>
-            </div>
-        </div>
-    </div>
+		<!-- Filtros Guardados -->
+		<div>
+			<div class="d-flex justify-content-between align-items-center toggle-section" data-target="#filtrosGuardadosContent" style="cursor: pointer;">
+				<i class="fas fa-save"></i>
+				<strong>Filtros Guardados</strong>
+				<span class="toggle-icon">&rsaquo;</span>
+			</div>
+			<div id="filtrosGuardadosContent" class="mt-2 d-none table-responsive" style="max-height: 250px; overflow-y: auto;">
+				<table class="table table-bordered table-sm mb-2">
+					<thead class="thead-light">
+						<tr>
+							<th>Nombre</th>
+							<th class="text-center">Opciones</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td class="dropdown-item">Universidades públicas</td>
+							<td class="text-center">
+								<a href="#" class="text-primary mr-2" title="Editar">
+									<i class="fas fa-edit"></i>
+								</a>
+								<a href="#" class="text-danger" title="Eliminar">
+									<i class="fas fa-trash-alt"></i>
+								</a>
+							</td>
+						</tr>
+
+						<tr>
+							<td class="dropdown-item">Privadas con sitio web</td>
+							<td class="text-center">
+								<a href="#" class="text-primary mr-2">
+									<i class="fas fa-edit"></i>
+								</a>
+								<a href="#" class="text-danger">
+									<i class="fas fa-trash-alt"></i>
+								</a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<div class="dropdown-divider"></div>
+				<a href="#" class="dropdown-item text-success" id="crearFiltroPersonalizado">
+					<i class="fas fa-plus-circle mr-2"></i>Crear filtro personalizado
+				</a>
+			</div>
+		</div>
+	</div>
 </div>
 
+
 <!-- Include the aside component -->
-{% include 'components/_filtro_personalizado_aside.html.twig' %}
+{% include 'components/_filtro_avanzado_aside.html.twig' %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('assets/css/components/filtros/main.css') }}">
+{% endblock %}
 
-<style>
-    .toggle-icon {
-        font-size: 1rem;
-        transition: transform 0.2s ease;
-    }
-
-    .toggle-icon.rotate {
-        transform: rotate(90deg);
-    }
-
-    .dropdown-item {
-        padding-left: 0;
-        display: block;
-        padding: .25rem 0;
-        color: #212529;
-        text-decoration: none;
-    }
-
-    .dropdown-item:hover {
-        color: #0056b3;
-        text-decoration: underline;
-    }
-
-    td{
-        cursor:pointer;
-    }
-</style>
-
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    const btnFiltros = document.getElementById('btnFiltros');
-    const filtrosPanel = document.getElementById('filtrosPanel');
-
-    // Mostrar/Ocultar panel de filtros
-    btnFiltros.addEventListener('click', function (event) {
-        event.stopPropagation(); // Evita que se dispare el cierre automático
-        filtrosPanel.style.display = (filtrosPanel.style.display === 'none' || filtrosPanel.style.display === '') ? 'block' : 'none';
-    });
-
-    // Mostrar/Ocultar secciones internas
-    document.querySelectorAll('.toggle-section').forEach(section => {
-        section.addEventListener('click', function (event) {
-            event.stopPropagation();
-
-            const targetId = this.getAttribute('data-target');
-            const content = document.querySelector(targetId);
-            const icon = this.querySelector('.toggle-icon');
-
-            if (content) {
-                content.classList.toggle('d-none');
-                icon.classList.toggle('rotate');
-            }
+{% block javascripts %}
+    <script type="module">
+        import { inicializarEventosFiltrosPanel } from '{{ asset('assets/js/components/filtros/events/filtrosPanelEvents.js') }}';
+        document.addEventListener('DOMContentLoaded', function() {
+            inicializarEventosFiltrosPanel();
         });
-    });
-
-    // Cerrar el panel si se hace clic fuera de él
-    document.addEventListener('click', function (event) {
-        const isClickInside = filtrosPanel.contains(event.target) || btnFiltros.contains(event.target);
-        if (!isClickInside) {
-            filtrosPanel.style.display = 'none';
-        }
-    });
-
-    // Modificación: Cerrar el panel de filtros cuando se abre el aside
-    document.getElementById('crearFiltroPersonalizado').addEventListener('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        
-        // Ocultar el panel de filtros
-        document.getElementById('filtrosPanel').style.display = 'none';
-    });
-});
-</script>
-
+    </script>
+{% endblock %}
