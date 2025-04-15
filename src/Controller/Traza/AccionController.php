@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
+
 /**
  * @Route("/traza/accion")
  * @IsGranted("ROLE_ADMIN", "ROLE_ACCTION_TRZ")
@@ -26,6 +27,7 @@ class AccionController extends AbstractController
      */
     public function index(AccionRepository $accionRepository)
     {
+       
 
         return $this->render('modules/traza/accion/index.html.twig', [
             'registros' => $accionRepository->findBy([], ['activo' => 'desc', 'id' => 'desc']),

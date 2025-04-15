@@ -35,6 +35,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Serializer\SerializerInterface;
 
+use App\Services\FilterService;
+
 /**
  * @Route("/postgrado/solicitud_programa")
  * @IsGranted("ROLE_ADMIN", "ROLE_GEST_CATDOC")
@@ -47,10 +49,17 @@ class SolicitudProgramaController extends AbstractController
      * @param SolicitudProgramaRepository $solicitudProgramaRepository
      * @return Response
      */
-    public function index(SolicitudProgramaRepository $solicitudProgramaRepository)
-    {
+    public function index(
+        SolicitudProgramaRepository $solicitudProgramaRepository,
+        Request $request,
+        FilterService $filterService
+    ) {
+        
+        $registros = $solicitudProgramaRepository->findBy([], ['activo' => 'desc', 'id' => 'desc']);
+        $result = $filterService->processFilters($request,SolicitudPrograma::class);
         return $this->render('modules/postgrado/solicitud_programa/index.html.twig', [
-            'registros' => $solicitudProgramaRepository->findBy([], ['activo' => 'desc', 'id' => 'desc']),
+            'registros' => $registros,
+            'filterableFields' => $result['filterableFields'],
         ]);
     }
 
@@ -516,17 +525,20 @@ class SolicitudProgramaController extends AbstractController
                     $notificacionesUsuarioRepository->add($nuevaNotificacion, true);
                 }
 
-                $solicitudPrograma->setEstadoPrograma($estadoProgramaRepository->find(4));//Revisado
+                $solicitudPrograma->setEstadoPrograma($estadoProgramaRepository->find(4)); //Revisado
                 $solicitudProgramaRepository->edit($solicitudPrograma, true);
 
                 $this->addFlash('success', 'El elemento ha sido creado satisfactoriamente.');
                 return $this->redirectToRoute('app_solicitud_programa_index', [], Response::HTTP_SEE_OTHER);
-
             }
 
-            return $this->render('modules/postgrado/solicitud_programa/revisar_dictamen.html.twig', ['form' => $form->createView(),
+            return $this->render(
+                'modules/postgrado/solicitud_programa/revisar_dictamen.html.twig',
+                [
+                    'form' => $form->createView(),
                     'solicitudPrograma' => $solicitudPrograma,
-                    'registros' => $solicitudProgramaDictamenRepository->findBy(['solicitudPrograma' => $solicitudPrograma->getId()])]
+                    'registros' => $solicitudProgramaDictamenRepository->findBy(['solicitudPrograma' => $solicitudPrograma->getId()])
+                ]
             );
         } catch (\Exception $exception) {
             $this->addFlash('error', $exception->getMessage());
@@ -547,10 +559,13 @@ class SolicitudProgramaController extends AbstractController
             $personaAutenticada = $personaRepository->findOneBy(['usuario' => $this->getUser()->getId()]);
             $miembroCopep = $miembrosCopepRepository->getMiembroCopepDadoIdPersona($personaAutenticada->getId());
 
-            return $this->render('modules/postgrado/solicitud_programa/votacion.html.twig', [
+            return $this->render(
+                'modules/postgrado/solicitud_programa/votacion.html.twig',
+                [
                     'solicitudPrograma' => $solicitudPrograma,
                     'miembroCopep' => $miembroCopep,
-                    'registros' => $solicitudProgramaVotacionRepository->findBy(['solicitudPrograma' => $solicitudPrograma->getId()], ['creado' => 'desc'])]
+                    'registros' => $solicitudProgramaVotacionRepository->findBy(['solicitudPrograma' => $solicitudPrograma->getId()], ['creado' => 'desc'])
+                ]
             );
         } catch (\Exception $exception) {
             $this->addFlash('error', $exception->getMessage());
@@ -587,11 +602,10 @@ class SolicitudProgramaController extends AbstractController
 
 
             if ($cantidadVotosSi > ($cantidadMiembrosCopep / 2) + 1) {
-                $solicitudProgramaEntidad->setEstadoPrograma($estadoProgramaRepository->find(5));// 'Aprobado'
+                $solicitudProgramaEntidad->setEstadoPrograma($estadoProgramaRepository->find(5)); // 'Aprobado'
                 $solicitudProgramaRepository->edit($solicitudProgramaEntidad, true);
-
             } else if ($cantidadVotosNo > ($cantidadMiembrosCopep / 2) + 1) {
-                $solicitudProgramaEntidad->setEstadoPrograma($estadoProgramaRepository->find(6));// 'Rechazado'
+                $solicitudProgramaEntidad->setEstadoPrograma($estadoProgramaRepository->find(6)); // 'Rechazado'
                 $solicitudProgramaRepository->edit($solicitudProgramaEntidad, true);
             }
 
@@ -602,6 +616,3 @@ class SolicitudProgramaController extends AbstractController
         }
     }
 }
-
-
-

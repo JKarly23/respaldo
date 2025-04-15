@@ -18,6 +18,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
+use App\Services\FilterService;
+
 /**
  * @Route("/pregrado/comision_nacional")
  * @IsGranted("ROLE_ADMIN", "ROLE_GEST_CATDOC")
@@ -31,11 +33,14 @@ class ComisionNacionalController extends AbstractController
      * @param ComisionNacionalRepository $comisionRepository
      * @return Response
      */
-    public function index(Request $request, ComisionNacionalRepository $comisionRepository)
+    public function index(Request $request, ComisionNacionalRepository $comisionRepository, FilterService $filterService)
     {
         $request->getSession()->remove('array_personas_asignadas');
+        $result = $filterService->processFilters($request, ComisionNacional::class);
+        $registro = $comisionRepository->findBy([], ['activo' => 'desc', 'id' => 'desc']);
         return $this->render('modules/pregrado/comision_nacional/index.html.twig', [
-            'registros' => $comisionRepository->findBy([], ['activo' => 'desc', 'id' => 'desc']),
+            'registros' => $registro,
+            'filterableFields' => $result['filterableFields'],
         ]);
     }
 

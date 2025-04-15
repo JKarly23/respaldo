@@ -36,6 +36,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
+use App\Services\FilterService;
+
 /**
  * @Route("/pregrado/solicitud_programa_academico_aprobado")
  * @IsGranted("ROLE_ADMIN", "ROLE_GEST_CATDOC")
@@ -50,8 +52,12 @@ class SolicitudProgramaAcademicoAprobadoController extends AbstractController
      * @param SolicitudProgramaAcademicoRepository $solicitudProgramaRepository
      * @return Response
      */
-    public function index(SolicitudProgramaAcademicoRepository $solicitudProgramaRepository, SolicitudProgramaAcademicoPlanEstudioRepository $solicitudProgramaAcademicoPlanEstudioRepository)
-    {
+    public function index(
+        SolicitudProgramaAcademicoRepository $solicitudProgramaRepository,
+        SolicitudProgramaAcademicoPlanEstudioRepository $solicitudProgramaAcademicoPlanEstudioRepository,
+        Request $request,
+        FilterService $filterService
+    ) {
         $response = [];
         $registros = $solicitudProgramaRepository->getSolicitudProgramaAcademicoAprobado([2, 4, 5, 6, 7]);
         if (is_array($registros)) {
@@ -63,8 +69,10 @@ class SolicitudProgramaAcademicoAprobadoController extends AbstractController
                 $response[] = $value;
             }
         }
+        $result = $filterService->processFilters($request, SolicitudProgramaAcademico::class, ['activo', 'estadoProgramaAcademico']);
         return $this->render('modules/pregrado/solicitud_programa_academico_aprobado/index.html.twig', [
             'registros' => $response,
+            'filterableFields' => $result['filterableFields'],
         ]);
     }
 
@@ -505,5 +513,4 @@ class SolicitudProgramaAcademicoAprobadoController extends AbstractController
             return $this->redirectToRoute('app_solicitud_programa_academico_aprobado_index', [], Response::HTTP_SEE_OTHER);
         }
     }
-
 }

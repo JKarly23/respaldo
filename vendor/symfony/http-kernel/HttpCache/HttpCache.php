@@ -27,6 +27,7 @@ use Symfony\Component\HttpKernel\TerminableInterface;
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
+
 class HttpCache implements HttpKernelInterface, TerminableInterface
 {
     private $kernel;

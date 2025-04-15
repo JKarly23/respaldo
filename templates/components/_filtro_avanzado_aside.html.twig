@@ -1,127 +1,132 @@
 <!-- Aside para crear filtro personalizado -->
-<div id="filtroPersonalizadoAside" class="position-fixed bg-white shadow-lg" style="top: 0; right: -400px; width: 400px; height: 100vh; z-index: 1060; transition: right 0.3s ease;">
-    <div class="d-flex flex-column h-100">
-        <!-- Cabecera -->
-        <div class="p-3 border-bottom">
-            <div class="d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Nuevo Filtro Personalizado</h5>
-                <button type="button" class="close" id="cerrarAside" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        </div>
-        
-        <!-- Cuerpo del formulario -->
-        <div class="p-3 flex-grow-1 overflow-auto">
-            <form id="formFiltroPersonalizado">
-                <div id="condicionesContainer">
-                    <!-- Condición inicial -->
-                    <div class="condicion mb-3">
-                        <div class="form-row">
-                            <div class="col-md-5">
-                                <label>Campo</label>
-                                <select class="form-control campo-select">
-                                    <option value="">Seleccionar campo</option>
-                                    <option value="nombre">Nombre</option>
-                                    <option value="tipo">Tipo</option>
-                                    <option value="estado">Estado</option>
-                                    <option value="rector">Rector</option>
-                                    <option value="sitio_web">Sitio Web</option>
-                                </select>
-                            </div>
-                            <div class="col-md-3">
-                                <label>Operador</label>
-                                <select class="form-control operador-select">
-                                    <option value="igual">Es igual a</option>
-                                    <option value="contiene">Contiene</option>
-                                    <option value="comienza">Comienza con</option>
-                                    <option value="termina">Termina con</option>
-                                    <option value="mayor">Mayor que</option>
-                                    <option value="menor">Menor que</option>
-                                </select>
-                            </div>
-                            <div class="col-md-3">
-                                <label>Valor</label>
-                                <input type="text" class="form-control valor-input">
-                            </div>
-                            <div class="col-md-1 d-flex align-items-end">
-                                <button type="button" class="btn btn-link text-danger eliminar-condicion p-0 mb-2">
-                                    <i class="fas fa-times"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Botón para agregar condición -->
-                <div class="mb-3">
-                    <button type="button" id="agregarCondicion" class="btn btn-sm btn-outline-primary">
-                        <i class="fas fa-plus-circle"></i> Agregar condición
-                    </button>
-                </div>
-                
-                <!-- Operador lógico -->
-                <div class="form-group mb-3">
-                    <label>Operador lógico entre condiciones</label>
-                    <div class="btn-group btn-group-toggle w-100" data-toggle="buttons">
-                        <label class="btn btn-outline-secondary active">
-                            <input type="radio" name="operadorLogico" id="opAND" value="AND" checked> AND (Y)
-                        </label>
-                        <label class="btn btn-outline-secondary">
-                            <input type="radio" name="operadorLogico" id="opOR" value="OR"> OR (O)
-                        </label>
-                    </div>
-                    <small class="form-text text-muted">Si no selecciona una opción, por defecto se aplicará el operador AND.</small>
-                </div>
-            </form>
-        </div>
-        
-        <!-- Pie con botones -->
-        <div class="p-3 border-top">
-            <div class="d-flex justify-content-between">
-                <button type="button" class="btn btn-secondary" id="cancelarFiltro">Cancelar</button>
-                <div>
-                    <button type="button" class="btn btn-primary mr-2" id="aplicarFiltro">Aplicar filtro</button>
-                    <button type="button" class="btn btn-success" id="guardarFiltro">Guardar filtro</button>
-                </div>
-            </div>
-        </div>
-    </div>
+<div id="filtroPersonalizadoAside" class="position-fixed bg-white shadow-lg" style="top: 0; right: -400px; width: 400px; height: 100vh; z-index: 1060; transition: right 0.3s ease; overflow: visible;">
+	<div
+		class="d-flex flex-column h-100">
+		<!-- Cabecera -->
+		<div class="p-3 border-bottom">
+			<div class="d-flex justify-content-between align-items-center">
+				<h5 class="mb-0">Nuevo Filtro Personalizado</h5>
+				<button type="button" class="close" id="cerrarAside" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+		</div>
+
+		<!-- Cuerpo del formulario -->
+		<div class="p-3 flex-grow-1" style="overflow: visible;">
+			<form id="formFiltroPersonalizado">
+				<div
+					id="condicionesContainer">
+					<!-- Condición inicial -->
+					<div class="condicion mb-3">
+						<div class="form-row">
+							<div class="col-md-5">
+								<label>Campo</label>
+								<select class="form-control campo-select">
+									{% for field in filterableFields %}
+										<option value="{{ field.name }}" data-type="{{ field.type }}">
+											{{ field.label }}{% if field.isRelation %} (relación){% endif %}
+										</option>
+									{% endfor %}
+								</select>
+							</div>
+							<div class="col-md-3">
+								<label>Operador</label>
+								<select class="form-control operador-select" style="position: relative; z-index: 1070;">
+									<option value="igual">Es igual a</option>
+									<option value="contiene">Contiene</option>
+									<option value="comienza">Comienza con</option>
+									<option value="termina">Termina con</option>
+									<option value="mayor">Mayor que</option>
+									<option value="menor">Menor que</option>
+								</select>
+							</div>
+							<div class="col-md-3">
+								<label>Valor</label>
+								<input type="text" class="form-control valor-input">
+							</div>
+							<div class="col-md-1 d-flex align-items-end">
+								<button type="button" class="btn btn-link text-danger eliminar-condicion p-0 mb-2">
+									<i class="fas fa-times"></i>
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Botón para agregar condición -->
+				<div class="mb-3">
+					<button type="button" id="agregarCondicion" class="btn btn-sm btn-outline-primary">
+						<i class="fas fa-plus-circle"></i>
+						Agregar condición
+					</button>
+				</div>
+
+				<!-- Operador lógico -->
+				<div class="form-group mb-3">
+					<label>Operador lógico entre condiciones</label>
+					<div class="btn-group btn-group-toggle w-100" data-toggle="buttons">
+						<label class="btn btn-outline-secondary active">
+							<input type="radio" name="operadorLogico" id="opAND" value="AND" checked>
+							AND (Y)
+						</label>
+						<label class="btn btn-outline-secondary">
+							<input type="radio" name="operadorLogico" id="opOR" value="OR">
+							OR (O)
+						</label>
+					</div>
+					<small class="form-text text-muted">Si no selecciona una opción, por defecto se aplicará el operador AND.</small>
+				</div>
+			</form>
+		</div>
+
+		<!-- Pie con botones -->
+		<div class="p-3 border-top">
+			<div class="d-flex justify-content-between">
+				<button type="button" class="btn btn-secondary" id="cancelarFiltro">Cancelar</button>
+				<div>
+					<button type="button" class="btn btn-primary mr-2" id="aplicarFiltro">Aplicar filtro</button>
+					<button type="button" class="btn btn-success" id="guardarFiltro">Guardar filtro</button>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 
 <!-- Modal para guardar filtro -->
 <div class="modal fade" id="guardarFiltroModal" tabindex="-1" role="dialog" aria-labelledby="guardarFiltroModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="guardarFiltroModalLabel">Guardar Filtro</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label for="nombreFiltro">Nombre del filtro</label>
-                    <input type="text" class="form-control" id="nombreFiltro" placeholder="Ej: Universidades públicas">
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-success" id="confirmarGuardarFiltro">Guardar</button>
-            </div>
-        </div>
-    </div>
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="guardarFiltroModalLabel">Guardar Filtro</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="form-group">
+					<label for="nombreFiltro">Nombre del filtro</label>
+					<input type="text" class="form-control" id="nombreFiltro" placeholder="Ej: Universidades públicas">
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+				<button type="button" class="btn btn-success" id="confirmarGuardarFiltro">Guardar</button>
+			</div>
+		</div>
+	</div>
 </div>
+
 {% block stylesheets %}
-    <link rel="stylesheet" href="{{ asset('assets/css/components/filtros/main.css') }}">
+	<link rel="stylesheet" href="{{ asset('assets/css/components/filtros/main.css') }}">
 {% endblock %}
 
 {% block javascripts %}
-    <script type="module">
-        import { inicializarEventosAside } from '{{ asset('assets/js/components/filtros/events/asideEvents.js') }}';
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            inicializarEventosAside();
-        });
-    </script>
+	<script type="module">
+		import {inicializarEventosAside} from '{{ asset('assets/js/components/filtros/events/asideEvents.js') }}';
+
+document.addEventListener('DOMContentLoaded', function () {
+inicializarEventosAside();
+});
+	</script>
 {% endblock %}

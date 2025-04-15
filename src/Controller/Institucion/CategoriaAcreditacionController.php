@@ -25,10 +25,12 @@ class CategoriaAcreditacionController extends AbstractController
      * @param CategoriaAcreditacionRepository $categoriaAcreditacionRepository
      * @return Response
      */
-    public function index(CategoriaAcreditacionRepository $categoriaAcreditacionRepository)
-    {
+    public function index(
+        CategoriaAcreditacionRepository $categoriaAcreditacionRepository
+    ) {
+        $registros = $categoriaAcreditacionRepository->findBy([], ['activo' => 'desc', 'id' => 'desc']);
         return $this->render('modules/institucion/categoria_acreditacion/index.html.twig', [
-            'registros' => $categoriaAcreditacionRepository->findBy([], ['activo' => 'desc', 'id' => 'desc']),
+            'registros' => $registros,
         ]);
     }
 
@@ -40,23 +42,23 @@ class CategoriaAcreditacionController extends AbstractController
      */
     public function registrar(Request $request, CategoriaAcreditacionRepository $categoriaAcreditacionRepository)
     {
-//        try {
-            $catDocenteEntity = new CategoriaAcreditacion();
-            $form = $this->createForm(CategoriaAcreditacionType::class, $catDocenteEntity, ['action' => 'registrar']);
-            $form->handleRequest($request);
-            if ($form->isSubmitted() && $form->isValid()) {
-                $categoriaAcreditacionRepository->add($catDocenteEntity, true);
-                $this->addFlash('success', 'El elemento ha sido creado satisfactoriamente.');
-                return $this->redirectToRoute('app_categoria_acreditacion_index', [], Response::HTTP_SEE_OTHER);
-            }
+        //        try {
+        $catDocenteEntity = new CategoriaAcreditacion();
+        $form = $this->createForm(CategoriaAcreditacionType::class, $catDocenteEntity, ['action' => 'registrar']);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $categoriaAcreditacionRepository->add($catDocenteEntity, true);
+            $this->addFlash('success', 'El elemento ha sido creado satisfactoriamente.');
+            return $this->redirectToRoute('app_categoria_acreditacion_index', [], Response::HTTP_SEE_OTHER);
+        }
 
-            return $this->render('modules/institucion/categoria_acreditacion/new.html.twig', [
-                'form' => $form->createView(),
-            ]);
-//        } catch (\Exception $exception) {
-//            $this->addFlash('error', $exception->getMessage());
-//            return $this->redirectToRoute('app_categoria_acreditacion_registrar', [], Response::HTTP_SEE_OTHER);
-//        }
+        return $this->render('modules/institucion/categoria_acreditacion/new.html.twig', [
+            'form' => $form->createView(),
+        ]);
+        //        } catch (\Exception $exception) {
+        //            $this->addFlash('error', $exception->getMessage());
+        //            return $this->redirectToRoute('app_categoria_acreditacion_registrar', [], Response::HTTP_SEE_OTHER);
+        //        }
     }
 
 
@@ -69,23 +71,23 @@ class CategoriaAcreditacionController extends AbstractController
      */
     public function modificar(Request $request, CategoriaAcreditacion $categoriaAcreditacion, CategoriaAcreditacionRepository $categoriaAcreditacionRepository)
     {
-//        try {
-            $form = $this->createForm(CategoriaAcreditacionType::class, $categoriaAcreditacion, ['action' => 'modificar']);
-            $form->handleRequest($request);
+        //        try {
+        $form = $this->createForm(CategoriaAcreditacionType::class, $categoriaAcreditacion, ['action' => 'modificar']);
+        $form->handleRequest($request);
 
-            if ($form->isSubmitted() && $form->isValid()) {
-                $categoriaAcreditacionRepository->edit($categoriaAcreditacion);
-                $this->addFlash('success', 'El elemento ha sido actualizado satisfactoriamente.');
-                return $this->redirectToRoute('app_categoria_acreditacion_index', [], Response::HTTP_SEE_OTHER);
-            }
+        if ($form->isSubmitted() && $form->isValid()) {
+            $categoriaAcreditacionRepository->edit($categoriaAcreditacion);
+            $this->addFlash('success', 'El elemento ha sido actualizado satisfactoriamente.');
+            return $this->redirectToRoute('app_categoria_acreditacion_index', [], Response::HTTP_SEE_OTHER);
+        }
 
-            return $this->render('modules/institucion/categoria_acreditacion/edit.html.twig', [
-                'form' => $form->createView(),
-            ]);
-//        } catch (\Exception $exception) {
-//            $this->addFlash('error', $exception->getMessage());
-//            return $this->redirectToRoute('app_categoria_acreditacion_modificar', ['id' => $categoriaAcreditacion], Response::HTTP_SEE_OTHER);
-//        }
+        return $this->render('modules/institucion/categoria_acreditacion/edit.html.twig', [
+            'form' => $form->createView(),
+        ]);
+        //        } catch (\Exception $exception) {
+        //            $this->addFlash('error', $exception->getMessage());
+        //            return $this->redirectToRoute('app_categoria_acreditacion_modificar', ['id' => $categoriaAcreditacion], Response::HTTP_SEE_OTHER);
+        //        }
     }
 
 
@@ -125,5 +127,4 @@ class CategoriaAcreditacionController extends AbstractController
             return $this->redirectToRoute('app_categoria_acreditacion_index', [], Response::HTTP_SEE_OTHER);
         }
     }
-
 }

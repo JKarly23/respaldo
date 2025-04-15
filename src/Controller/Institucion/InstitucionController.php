@@ -46,6 +46,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Serializer\SerializerInterface;
 
+use App\Services\FilterService;
+
 /**
  * @Route("/institucion/institucion")
  * @IsGranted("ROLE_ADMIN", "ROLE_GEST_CATDOC")
@@ -58,12 +60,18 @@ class InstitucionController extends AbstractController
      * @param InstitucionRepository $institucionRepository
      * @return Response
      */
-    public function index(InstitucionRepository $institucionRepository)
-    {
+    public function index(
+        InstitucionRepository $institucionRepository, FilterService $filterService, Request $request) {
+        $result = $filterService->processFilters($request, Institucion::class);
+        $registros = $institucionRepository->getInstituciones();
+
         return $this->render('modules/institucion/institucion/index.html.twig', [
-            'registros' => $institucionRepository->getInstituciones(),
+            'registros' => $registros,
+            'filterableFields' => $result['filterableFields'],
         ]);
     }
+
+
 
     /**
      * @Route("/registrar", name="app_institucion_registrar", methods={"GET", "POST"})
@@ -232,23 +240,23 @@ class InstitucionController extends AbstractController
      */
     public function eliminar(Request $request, Institucion $institucion, InstitucionRepository $tipoInstitucionRepository, SerializerInterface $serializer, EntityManagerInterface $entityManager, RequestStack $requestStack)
     {
-//        try {
-            if ($tipoInstitucionRepository->find($institucion) instanceof Institucion) {
-                $tipoInstitucionRepository->remove($institucion, true);
+        //        try {
+        if ($tipoInstitucionRepository->find($institucion) instanceof Institucion) {
+            $tipoInstitucionRepository->remove($institucion, true);
 
-                $traceService = new TraceService($requestStack, $entityManager, $serializer);
-                $traceService->registrar($this->getParameter('accion_eliminar'), $this->getParameter('objeto_institucion'), null, $institucion, $this->getParameter('tipo_traza_negocio'));
+            $traceService = new TraceService($requestStack, $entityManager, $serializer);
+            $traceService->registrar($this->getParameter('accion_eliminar'), $this->getParameter('objeto_institucion'), null, $institucion, $this->getParameter('tipo_traza_negocio'));
 
 
-                $this->addFlash('success', 'El elemento ha sido eliminado satisfactoriamente.');
-                return $this->redirectToRoute('app_institucion_index', [], Response::HTTP_SEE_OTHER);
-            }
-            $this->addFlash('error', 'Error en la entrada de datos');
+            $this->addFlash('success', 'El elemento ha sido eliminado satisfactoriamente.');
             return $this->redirectToRoute('app_institucion_index', [], Response::HTTP_SEE_OTHER);
-//        } catch (\Exception $exception) {
-//            $this->addFlash('error', $exception->getMessage());
-//            return $this->redirectToRoute('app_institucion_index', [], Response::HTTP_SEE_OTHER);
-//        }
+        }
+        $this->addFlash('error', 'Error en la entrada de datos');
+        return $this->redirectToRoute('app_institucion_index', [], Response::HTTP_SEE_OTHER);
+        //        } catch (\Exception $exception) {
+        //            $this->addFlash('error', $exception->getMessage());
+        //            return $this->redirectToRoute('app_institucion_index', [], Response::HTTP_SEE_OTHER);
+        //        }
     }
 
 
@@ -798,9 +806,8 @@ class InstitucionController extends AbstractController
                 $params['proyectos'] = [];
             }
 
-//        pr($params);
+            //        pr($params);
             return $this->render('modules/institucion/institucion/internacionalizacion.html.twig', $params);
-
         } catch (\Exception $exception) {
             $this->addFlash('error', $exception->getMessage());
             return $this->redirectToRoute('app_institucion_index', [], Response::HTTP_SEE_OTHER);

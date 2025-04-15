@@ -1,6 +1,3 @@
-/**
- * Inicializa los eventos para el componente de filtros activos
- */
 export function inicializarEventosFiltrosActivos() {
     const filtrosActivos = document.getElementById('filtrosActivos');
     const toggleFiltrosActivos = document.getElementById('toggleFiltrosActivos');

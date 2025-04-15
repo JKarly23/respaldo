@@ -468,7 +468,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
 </div>
 <!-- ./wrapper -->
 
-
 <!-- REQUIRED SCRIPTS -->
 
 <!-- jQuery -->
@@ -562,7 +561,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             $('[data-toggle="tooltip"]').tooltip()
         })
 
-        var table = $(".dataTable").DataTable({
+        $(".dataTable").DataTable({
             "lengthMenu": [[5, 25, 50, -1], [5, 25, 50, "All"]],
             "responsive": false, "lengthChange": true, "autoWidth": false, "scrollX": true,
             language: {
@@ -593,7 +592,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     "colvis": "Visibilidad"
                 }
             }
-        }); 
+        });
 
 
         $('.btn-cancel').click(function () {

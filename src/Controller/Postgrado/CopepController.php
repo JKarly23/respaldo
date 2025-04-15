@@ -17,6 +17,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
+use App\Services\FilterService;
+
+
 /**
  * @Route("/postgrado/copep")
  * @IsGranted("ROLE_ADMIN", "ROLE_GEST_CATDOC")
@@ -29,11 +32,13 @@ class CopepController extends AbstractController
      * @param CopepRepository $copepRepository
      * @return Response
      */
-    public function index(Request $request, CopepRepository $copepRepository)
+    public function index(Request $request, CopepRepository $copepRepository, FilterService $filterService)
     {
-        $request->getSession()->remove('array_personas_asignadas');
+        $request->getSession()->remove('array_personas_asignadas');        
+        $result = $filterService->processFilters($request, Copep::class);
         return $this->render('modules/postgrado/copep/index.html.twig', [
             'registros' => $copepRepository->findBy([], ['activo' => 'desc', 'id' => 'desc']),
+            'filterableFields' => $result['filterableFields'],
         ]);
     }
 

@@ -22,6 +22,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Serializer\SerializerInterface;
 
+use App\Services\FilterService;
+
 /**
  * @Route("/postgrado/programas_aprobados")
  * @IsGranted("ROLE_ADMIN", "ROLE_GEST_CATDOC")
@@ -34,10 +36,14 @@ class ProgramasAprobadosController extends AbstractController
      * @param SolicitudProgramaRepository $solicitudProgramaRepository
      * @return Response
      */
-    public function index(SolicitudProgramaRepository $solicitudProgramaRepository)
+    public function index(SolicitudProgramaRepository $solicitudProgramaRepository, Request $request,
+    FilterService $filterService)
     {
+        $registros =  $solicitudProgramaRepository->findBy(['estadoPrograma' => 5], ['activo' => 'desc', 'id' => 'desc']);
+        $result = $filterService->processFilters($request, SolicitudPrograma::class, ['estadoProgramaAcademico']);
         return $this->render('modules/postgrado/programas_aprobados/index.html.twig', [
-            'registros' => $solicitudProgramaRepository->findBy(['estadoPrograma' => 5], ['activo' => 'desc', 'id' => 'desc']),
+            'registros' => $registros,
+           'filterableFields' => $result['filterableFields'],
         ]);
     }
 

@@ -24,6 +24,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
+use App\Services\FilterService;
+
+
 /**
  * @Route("/estructura/estructura")
  */
@@ -36,12 +39,14 @@ class EstructuraController extends AbstractController
      * @return Response
      * @IsGranted("ROLE_ADMIN", "ROLE_GEST_ESTRUCT")
      */
-    public function index(Request $request, EstructuraRepository $estructuraRepository)
+    public function index(Request $request, EstructuraRepository $estructuraRepository,FilterService $filterService)
     {
         try {
             $registros = $estructuraRepository->findBy([], ['activo' => 'desc', 'id' => 'desc']);
+            $result = $filterService->processFilters($request, Estructura::class);
             return $this->render('modules/estructura/estructura/index.html.twig', [
                 'registros' => $registros,
+                'filterableFields' => $result['filterableFields'],
             ]);
         } catch (\Exception $exception) {
             $this->addFlash('error', $exception->getMessage());

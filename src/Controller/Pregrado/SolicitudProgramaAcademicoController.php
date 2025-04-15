@@ -17,6 +17,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
+use App\Services\FilterService;
+
 /**
  * @Route("/pregrado/solicitud_programa_academico")
  * @IsGranted("ROLE_ADMIN", "ROLE_GEST_CATDOC")
@@ -29,11 +31,13 @@ class SolicitudProgramaAcademicoController extends AbstractController
      * @param SolicitudProgramaAcademicoRepository $solicitudProgramaRepository
      * @return Response
      */
-    public function index(SolicitudProgramaAcademicoRepository $solicitudProgramaRepository)
+    public function index(SolicitudProgramaAcademicoRepository $solicitudProgramaRepository, Request $request, FilterService $filterService)
     {
+        $result = $filterService->processFilters($request, SolicitudProgramaAcademico::class, ['estadoProgramaAcademico']);
         $registros = $solicitudProgramaRepository->getSolicitudProgramaAcademico([1, 3]);
         return $this->render('modules/pregrado/solicitud_programa_academico/index.html.twig', [
-            'registros' => $registros
+            'registros' => $registros,
+            'filterableFields' => $result['filterableFields'],
         ]);
     }
 
@@ -63,7 +67,7 @@ class SolicitudProgramaAcademicoController extends AbstractController
                     $solicitudProgramaAcademico->setFundamentacion($file_name);
                     $file->move("uploads/pregrado/solicitud_programa_academico/fundamentacion", $file_name);
                 }
-                $solicitudProgramaAcademico->setEstadoProgramaAcademico($estadoProgramaAcademicoRepository->find(1));//Solicitado
+                $solicitudProgramaAcademico->setEstadoProgramaAcademico($estadoProgramaAcademicoRepository->find(1)); //Solicitado
                 $solicitudProgramaRepository->add($solicitudProgramaAcademico, true);
 
                 $utils->guardarHistoricoEstadoProgramaAcademico($solicitudProgramaAcademico->getId(), 1);

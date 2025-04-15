@@ -12,6 +12,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
+use App\Services\FilterService;
+
+
 /**
  * @Route("/estructura/entidad")
  * @IsGranted("ROLE_ADMIN", "ROLE_GEST_ENTITY")
@@ -24,11 +27,16 @@ class EntidadController extends AbstractController
      * @param EntidadRepository $entidadRepository
      * @return Response
      */
-    public function index(EntidadRepository $entidadRepository)
+    public function index(EntidadRepository $entidadRepository, Request $request,
+    FilterService $filterService)
     {
         try {
+           
+            $registros = $entidadRepository->findBy([], ['id' => 'desc']);
+            $result = $filterService->processFilters($request, Entidad::class);
             return $this->render('modules/estructura/entidad/index.html.twig', [
-                'registros' => $entidadRepository->findBy([], ['id' => 'desc']),
+                'registros' => $registros,
+                'filterableFields' => $result['filterableFields'],
             ]);
         } catch (\Exception $exception) {
             $this->addFlash('error', $exception->getMessage());

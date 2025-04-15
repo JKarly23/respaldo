@@ -19,6 +19,25 @@
         </div>
         <!-- /.card-header -->
         <div class="card-body">
+             {# 
+                This section contains the filter components and data table for displaying structures
+                - Includes active filters component
+                - Includes advanced filter dropdown
+                - Table shows:
+                    - Structure number
+                    - Name
+                    - Structure category  
+                    - Status
+                    - Action buttons for view/edit/manage/add child/delete
+            #}
+            <div class="d-flex justify-content-between align-items-center mb-3">
+				<div class="flex-grow-1">
+					{% include 'components/_filtros_activos_div.html.twig' %}
+				</div>
+				<div class="px-2 py-2 d-flex justify-content-end">
+					{% include 'components/_filtro_avanzado_dropdown.html.twig' %}
+				</div>
+			</div>
             <table class="table table-bordered table-striped dataTable">
                 <thead class="table-custom-header">
                 <tr>

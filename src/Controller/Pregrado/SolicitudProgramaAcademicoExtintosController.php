@@ -37,6 +37,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
+use App\Services\FilterService;
+
 /**
  * @Route("/pregrado/solicitud_programa_academico_extinto")
  * @IsGranted("ROLE_ADMIN", "ROLE_GEST_CATDOC")
@@ -49,11 +51,13 @@ class SolicitudProgramaAcademicoExtintosController extends AbstractController
      * @param SolicitudProgramaAcademicoRepository $solicitudProgramaRepository
      * @return Response
      */
-    public function index(SolicitudProgramaAcademicoRepository $solicitudProgramaRepository)
-    {
+    public function index(SolicitudProgramaAcademicoRepository $solicitudProgramaRepository, Request $request, FilterService $filterService)
+    {   
+        $result = $filterService->processFilters($request,SolicitudProgramaAcademico::class, ['estadoProgramaAcademico']);
         $registros = $solicitudProgramaRepository->getSolicitudProgramaAcademicoAprobado([8]);
         return $this->render('modules/pregrado/solicitud_programa_academico_extinto/index.html.twig', [
             'registros' => $registros,
+            'filterableFields' => $result['filterableFields'],
         ]);
     }
 

@@ -31,6 +31,9 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
+use App\Services\FilterService;
+
+
 /**
  * @Route("/personal/persona")
  * @IsGranted("ROLE_ADMIN", "ROLE_GEST_PERSON")
@@ -43,7 +46,7 @@ class PersonaController extends AbstractController
      * @param PersonaRepository $personaRepository
      * @return Response
      */
-    public function index(Request $request, PersonaRepository $personaRepository, ResponsableRepository $responsableRepository, Utils $utils)
+    public function index(Request $request, PersonaRepository $personaRepository, ResponsableRepository $responsableRepository, Utils $utils, FilterService $filterService)
     {
         try {
             $request->getSession()->remove('usuario_modificado');
@@ -55,8 +58,12 @@ class PersonaController extends AbstractController
                 $resp = $responsableRepository->findBy(['persona' => $value->getId(), 'activo' => true]);
                 $value->esResponsable = isset($resp[0]);
             }
+
+            $result = $filterService->processFilters($request,Persona::class);
+        
             return $this->render('modules/personal/persona/index.html.twig', [
                 'registros' => $registros,
+                'filterableFields' => $result['filterableFields'],
             ]);
         } catch (\Exception $exception) {
             $this->addFlash('error', $exception->getMessage());

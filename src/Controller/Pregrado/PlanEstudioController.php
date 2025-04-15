@@ -25,6 +25,9 @@ use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Validator\Constraints\DateTime;
 
+use App\Services\FilterService;
+
+
 /**
  * @Route("/pregrado/plan_estudio")
  * @IsGranted("ROLE_ADMIN", "ROLE_GEST_CATDOC")
@@ -37,11 +40,15 @@ class PlanEstudioController extends AbstractController
      * @param PlanEstudioRepository $planEstudioRepository
      * @return Response
      */
-    public function index(PlanEstudioRepository $planEstudioRepository, RequestStack $requestStack)
+    public function index(PlanEstudioRepository $planEstudioRepository, RequestStack $requestStack, Request $request, FilterService $filterService)
     {
         $requestStack->getSession()->remove('documentosPlanEstudio');
+        $registros = $planEstudioRepository->getPlanesEstudio();
+        $result = $filterService->processFilters($request, PlanEstudio::class);
+        
         return $this->render('modules/pregrado/plan_estudio/index.html.twig', [
-            'registros' => $planEstudioRepository->getPlanesEstudio(),
+            'registros' => $registros,
+            'filterableFields' => $result['filterableFields'],
         ]);
     }
 

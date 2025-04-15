@@ -19,6 +19,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Serializer\SerializerInterface;
 
+use App\Services\FilterService;
+
 /**
  * @Route("/traza/traza")
  * @IsGranted("ROLE_ADMIN", "ROLE_HOME_TRAZAS")
@@ -34,8 +36,14 @@ class TrazaController extends AbstractController
      * @param ConfiguracionTrazaRepository $configuracionTrazaRepository
      * @return Response
      */
-    public function index(TrazaRepository $trazaRepository, PersonaRepository $personaRepository, UserRepository $userRepository, ConfiguracionTrazaRepository $configuracionTrazaRepository)
-    {
+    public function index(
+        TrazaRepository $trazaRepository,
+        PersonaRepository $personaRepository,
+        UserRepository $userRepository,
+        ConfiguracionTrazaRepository $configuracionTrazaRepository,
+        Request $request,
+        FilterService $filterService
+    ) {
         $persona = $personaRepository->findOneBy(['usuario' => $userRepository->find($this->getUser()->getId())]);
         $idPersona = -1;
         if ($persona instanceof Persona && method_exists($persona, 'getId')) {
@@ -46,8 +54,13 @@ class TrazaController extends AbstractController
         if (isset($configuracionTraza) && !empty($configuracionTraza)) {
             $configuracionTrazaActivo = $configuracionTraza->getActivo();
         }
+        $result = $filterService->processFilters($request,Traza::class);
+        $registros = $trazaRepository->findBy([],['creado' => 'desc']);
+
         return $this->render('modules/traza/traza/index.html.twig', [
-            'registros' => $trazaRepository->findBy([], ['creado' => 'desc']), 'configuracionTraza' => $configuracionTrazaActivo
+            'registros' => $registros,
+            'configuracionTraza' => $configuracionTrazaActivo,
+            'filterableFields' => $result['filterableFields'],
         ]);
     }
 
@@ -58,9 +71,9 @@ class TrazaController extends AbstractController
      */
     public function detail(Traza $traza, Utils $utils)
     {
-       $registros = $utils->procesarTraza(json_decode($traza->getDataAnterior(), true), json_decode($traza->getData(), true));
+        $registros = $utils->procesarTraza(json_decode($traza->getDataAnterior(), true), json_decode($traza->getData(), true));
 
-//        pr($registros);
+        //        pr($registros);
         return $this->render('modules/traza/traza/detail.html.twig', [
             'data' => json_decode($traza->getData(), true),
             'traza' => $traza,

@@ -14,6 +14,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
+use App\Services\FilterService;
+
+
 /**
  * @Route("/personal/responsable")
  * @IsGranted("ROLE_ADMIN", "ROLE_GEST_RESPONS")
@@ -28,14 +31,15 @@ class ResponsableController extends AbstractController
      * @param Utils $utils
      * @return Response
      */
-    public function index(Request $request, ResponsableRepository $responsableRepository, Utils $utils)
+    public function index(Request $request, ResponsableRepository $responsableRepository, Utils $utils, FilterService $filterService)
     {
         try {
             $estructurasNegocio = $utils->procesarRolesUsuarioAutenticado($this->getUser()->getId());
             $registros = $responsableRepository->geResponsablesDadoArrayEstructuras($estructurasNegocio);
-
+            $resultados = $filterService->processFilters($request, Responsable::class);
             return $this->render('modules/personal/responsable/index.html.twig', [
                 'registros' => $registros,
+                'filtrablesFields' => $resultados['filtrablesFields'],
             ]);
         } catch (\Exception $exception) {
             $this->addFlash('error', $exception->getMessage());

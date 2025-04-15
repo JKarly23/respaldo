@@ -17,6 +17,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
+use App\Services\FilterService;
+
+
 /**
  * @Route("/postgrado/comision")
  * @IsGranted("ROLE_ADMIN", "ROLE_GEST_CATDOC")
@@ -29,11 +32,15 @@ class ComisionController extends AbstractController
      * @param ComisionRepository $comisionRepository
      * @return Response
      */
-    public function index(Request $request, ComisionRepository $comisionRepository)
+    public function index(Request $request, ComisionRepository $comisionRepository, FilterService $filterService)
     {
+
         $request->getSession()->remove('array_personas_asignadas');
+        $registros =  $comisionRepository->findBy([], ['activo' => 'desc', 'id' => 'desc']);
+        $result = $filterService->processFilters($request, Comision::class);   
         return $this->render('modules/postgrado/comision/index.html.twig', [
-            'registros' => $comisionRepository->findBy([], ['activo' => 'desc', 'id' => 'desc']),
+            'registros' => $registros,
+            'filtrables' => $result['filterableFields'],
         ]);
     }
 

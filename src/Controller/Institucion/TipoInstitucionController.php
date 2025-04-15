@@ -25,10 +25,12 @@ class TipoInstitucionController extends AbstractController
      * @param TipoInstitucionRepository $tipoInstitucionRepository
      * @return Response
      */
-    public function index(TipoInstitucionRepository $tipoInstitucionRepository)
-    {
+    public function index(
+        TipoInstitucionRepository $tipoInstitucionRepository
+    ) {
+        $registros = $tipoInstitucionRepository->findBy([], ['activo' => 'desc', 'id' => 'desc']);
         return $this->render('modules/institucion/tipo_institucion/index.html.twig', [
-            'registros' => $tipoInstitucionRepository->findBy([], ['activo' => 'desc', 'id' => 'desc']),
+            'registros' => $registros,
         ]);
     }
 
@@ -125,5 +127,4 @@ class TipoInstitucionController extends AbstractController
             return $this->redirectToRoute('app_tipo_institucion_index', [], Response::HTTP_SEE_OTHER);
         }
     }
-
 }
