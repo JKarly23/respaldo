@@ -1,27 +1,29 @@
-<!-- Filtros activos con botón toggle -->
+<!-- Filtros activos -->
 
-<div class="position-relative d-none">
-	<div id="toggleFiltrosActivos" class="d-flex align-items-center mb-2" style="cursor: pointer;">
-		<i id="iconToggleFiltros" class="fas fa-chevron-down mr-2"></i>
-		<strong>Filtros activos</strong>
-	</div>
-
-	<div
-		id="filtrosActivos" class="d-flex flex-wrap p-2 bg-light border rounded" style="max-width: 100%; transition: all 0.3s ease;"><!-- Filtros activos se insertan por JS -->
-	</div>
+<!-- Wrapper para mostrar los filtros activos -->
+<div id="filtrosActivosWrapper" class="mb-3" style="display: none;">
+    <div class="card border shadow-sm rounded">
+        <div class="card-header bg-light py-2 d-flex justify-content-between align-items-center">
+            <strong class="mb-0 text-muted">Filtros activos</strong>
+            <button id="toggleFiltrosActivos" class="btn btn-sm btn-outline-secondary" title="Mostrar/ocultar filtros">
+                <i class="fas fa-chevron-up"></i>
+            </button>
+        </div>
+        
+        <div id="filtrosActivos" class="card-body d-flex flex-wrap align-items-start">
+            <!-- Aquí se agregarán dinámicamente los filtros activos -->
+        </div>
+    </div>
 </div>
 
-{% block stylesheets %}
-    <link rel="stylesheet" href="{{ asset('assets/css/components/filtros/main.css') }}">
-{% endblock %}
-
+<style>
+.filtros-colapsado {
+    max-height: 0;
+    overflow: hidden;
+    padding: 0;
+    transition: max-height 0.3s ease;
+}
+</style>
 {% block javascripts %}
-    <script type="module">
-        import { inicializarEventosFiltrosActivos } from '{{ asset('assets/js/components/filtros/events/filtrosActivosEvents.js') }}';
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            inicializarEventosFiltrosActivos();
-        });
-    </script>
+    <script type="module" src="{{ asset('assets/js/components/filtros/main.js') }}"></script>
 {% endblock %}
-

@@ -1,85 +1,89 @@
-<!-- Botón de Filtros -->
 <div class="d-flex justify-content-end align-items-center mb-3 position-relative">
 	<button class="btn btn-outline-primary" type="button" id="btnFiltros">
-		<i class="fas fa-filter"></i>
+		<i class="fas fa-filter mr-2"></i>
 		Filtros
 	</button>
 
 	<!-- Panel de filtros personalizado -->
-	<div
-		id="filtrosPanel" class="card shadow-sm p-3 position-absolute bg-white" style="right: 0; top: 100%; min-width: 350px; z-index: 1050; display: none;">
+	<div id="filtrosPanel"
+		class="card shadow-lg border-0 p-3 position-absolute bg-white rounded-lg"
+		style="right: 0; top: 100%; min-width: 370px; z-index: 1050; display: none; transition: all 0.3s ease-in-out;">
+		
 		<!-- Filtros Básicos -->
-		<div class="mb-2">
-			<div class="d-flex justify-content-between align-items-center toggle-section" data-target="#filtrosBasicosContent" style="cursor: pointer;">
-				<i class="fa fa-list" aria-hidden="true"></i>
-				<strong>Filtros Básicos</strong>
-				<span class="toggle-icon">&rsaquo;</span>
+		<div class="mb-4">
+			<div class="d-flex justify-content-between align-items-center toggle-section px-2 py-2 bg-light rounded" data-target="#filtrosBasicosContent" style="cursor: pointer;">
+				<div class="d-flex align-items-center">
+					<i class="fa fa-list text-primary mr-2"></i>
+					<strong class="text-dark">Filtros Básicos</strong>
+				</div>
+				<span class="toggle-icon text-muted">&rsaquo;</span>
 			</div>
+
 			<div id="filtrosBasicosContent" class="mt-2 d-none">
-				<a class="dropdown-item" href="#">
-					<i class="fas fa-check-circle text-muted mr-2"></i>Instituciones activas</a>
-				<a class="dropdown-item" href="#">
-					<i class="fas fa-globe text-muted mr-2"></i>Con sitio web</a>
-				<a class="dropdown-item" href="#">
-					<i class="fas fa-user-graduate text-muted mr-2"></i>Con rector y grado académico</a>
-				<a class="dropdown-item" href="#">
-					<i class="fas fa-phone text-muted mr-2"></i>Con teléfono disponible</a>
-				<a class="dropdown-item" href="#">
-					<i class="fas fa-award text-muted mr-2"></i>Acreditadas</a>
+				<a class="dropdown-item py-2" href="#"><i class="fas fa-check-circle text-secondary mr-2"></i>Instituciones activas</a>
+				<a class="dropdown-item py-2" href="#"><i class="fas fa-globe text-secondary mr-2"></i>Con sitio web</a>
+				<a class="dropdown-item py-2" href="#"><i class="fas fa-user-graduate text-secondary mr-2"></i>Con rector y grado académico</a>
+				<a class="dropdown-item py-2" href="#"><i class="fas fa-phone text-secondary mr-2"></i>Con teléfono disponible</a>
+				<a class="dropdown-item py-2" href="#"><i class="fas fa-award text-secondary mr-2"></i>Acreditadas</a>
 			</div>
 		</div>
 
 		<!-- Filtros Guardados -->
 		<div>
-			<div class="d-flex justify-content-between align-items-center toggle-section" data-target="#filtrosGuardadosContent" style="cursor: pointer;">
-				<i class="fas fa-save"></i>
-				<strong>Filtros Guardados</strong>
-				<span class="toggle-icon">&rsaquo;</span>
+			<div class="d-flex justify-content-between align-items-center toggle-section px-2 py-2 bg-light rounded" data-target="#filtrosGuardadosContent" style="cursor: pointer;">
+				<div class="d-flex align-items-center">
+					<i class="fas fa-save text-primary mr-2"></i>
+					<strong class="text-dark">Filtros Guardados</strong>
+				</div>
+				<span class="toggle-icon text-muted">&rsaquo;</span>
 			</div>
+
 			<div id="filtrosGuardadosContent" class="mt-2 d-none table-responsive" style="max-height: 250px; overflow-y: auto;">
-				<table class="table table-bordered table-sm mb-2">
+				<table class="table table-sm table-hover mb-2">
 					<thead class="thead-light">
 						<tr>
 							<th>Nombre</th>
-							<th class="text-center">Opciones</th>
+							<th class="text-center">Acciones</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr>
-							<td class="dropdown-item">Universidades públicas</td>
+							<td>Universidades públicas</td>
 							<td class="text-center">
-								<a href="#" class="text-primary mr-2" title="Editar">
-									<i class="fas fa-edit"></i>
-								</a>
-								<a href="#" class="text-danger" title="Eliminar">
-									<i class="fas fa-trash-alt"></i>
-								</a>
+								<a href="#" class="text-primary mr-2" title="Editar"><i class="fas fa-edit"></i></a>
+								<a href="#" class="text-danger" title="Eliminar"><i class="fas fa-trash-alt"></i></a>
 							</td>
 						</tr>
-
 						<tr>
-							<td class="dropdown-item">Privadas con sitio web</td>
+							<td>Privadas con sitio web</td>
 							<td class="text-center">
-								<a href="#" class="text-primary mr-2">
-									<i class="fas fa-edit"></i>
-								</a>
-								<a href="#" class="text-danger">
-									<i class="fas fa-trash-alt"></i>
-								</a>
+								<a href="#" class="text-primary mr-2" title="Editar"><i class="fas fa-edit"></i></a>
+								<a href="#" class="text-danger" title="Eliminar"><i class="fas fa-trash-alt"></i></a>
 							</td>
 						</tr>
 					</tbody>
 				</table>
 				<div class="dropdown-divider"></div>
-				<a href="#" class="dropdown-item text-success" id="crearFiltroPersonalizado">
+				<a href="#" class="dropdown-item text-success font-weight-bold py-2" id="crearFiltroPersonalizado">
 					<i class="fas fa-plus-circle mr-2"></i>Crear filtro personalizado
 				</a>
 			</div>
 		</div>
 	</div>
-</div>
+</div>	
 
+<style>
+	#crearFiltroPersonalizado {
+	background-color: transparent !important;
+	}
 
+	#crearFiltroPersonalizado:hover,
+	#crearFiltroPersonalizado:focus {
+		background-color: #f8f9fa !important; /* o ponlo transparente si no quieres nada */
+		color: #28a745; /* mantiene el verde */
+		text-decoration: none;
+	}
+</style>
 <!-- Include the aside component -->
 {% include 'components/_filtro_avanzado_aside.html.twig' %}
 {% block stylesheets %}
@@ -87,10 +91,5 @@
 {% endblock %}
 
 {% block javascripts %}
-    <script type="module">
-        import { inicializarEventosFiltrosPanel } from '{{ asset('assets/js/components/filtros/events/filtrosPanelEvents.js') }}';
-        document.addEventListener('DOMContentLoaded', function() {
-            inicializarEventosFiltrosPanel();
-        });
-    </script>
+    <script type="module" src="{{ asset('assets/js/components/filtros/main.js') }}"></script>
 {% endblock %}

@@ -1,5 +1,5 @@
 <!-- Aside para crear filtro personalizado -->
-<div id="filtroPersonalizadoAside" class="position-fixed bg-white shadow-lg" style="top: 0; right: -400px; width: 400px; height: 100vh; z-index: 1060; transition: right 0.3s ease; overflow: visible;">
+<div id="filtroPersonalizadoAside" class="position-fixed bg-white shadow-lg" style="top: 0; right: -4150px; width: 415px; height: 100vh; z-index: 1060; transition: right 0.3s ease;">
 	<div
 		class="d-flex flex-column h-100">
 		<!-- Cabecera -->
@@ -13,70 +13,67 @@
 		</div>
 
 		<!-- Cuerpo del formulario -->
-		<div class="p-3 flex-grow-1" style="overflow: visible;">
+		<div class="p-3 flex-grow-1" style="overflow-y: auto; max-height: calc(100vh - 130px);">
 			<form id="formFiltroPersonalizado">
 				<div
 					id="condicionesContainer">
 					<!-- Condición inicial -->
 					<div class="condicion mb-3">
+						 <div class="showMessage mb-3"></div>
 						<div class="form-row">
-							<div class="col-md-5">
+							<div class="col-md-4">
 								<label>Campo</label>
 								<select class="form-control campo-select">
 									{% for field in filterableFields %}
 										<option value="{{ field.name }}" data-type="{{ field.type }}">
-											{{ field.label }}{% if field.isRelation %} (relación){% endif %}
+											{{ field.label }}
+											{% if field.isRelation %}
+												(relación)
+											{% endif %}
 										</option>
 									{% endfor %}
 								</select>
 							</div>
 							<div class="col-md-3">
 								<label>Operador</label>
-								<select class="form-control operador-select" style="position: relative; z-index: 1070;">
-									<option value="igual">Es igual a</option>
-									<option value="contiene">Contiene</option>
-									<option value="comienza">Comienza con</option>
-									<option value="termina">Termina con</option>
-									<option value="mayor">Mayor que</option>
-									<option value="menor">Menor que</option>
-								</select>
+								<select class="form-control operador-select" style="position: relative; z-index: 1070;"></select>
 							</div>
 							<div class="col-md-3">
 								<label>Valor</label>
 								<input type="text" class="form-control valor-input">
 							</div>
-							<div class="col-md-1 d-flex align-items-end">
-								<button type="button" class="btn btn-link text-danger eliminar-condicion p-0 mb-2">
+
+							<div class="col-md-2 d-flex align-items-end">
+								<button type="button" id="agregarCondicion" class="btn btn-link text-success agregar-condicion p-0 mb-2 " title="Agregar condicion">
+									<i class="fas fa-plus-circle"></i>
+								</button>
+								<button type="button" class="btn btn-link text-danger eliminar-condicion p-0 mb-2 mr-2" title="Eliminar condicion">
 									<i class="fas fa-times"></i>
 								</button>
+								<div class='operatorContainer'></div>
 							</div>
 						</div>
 					</div>
 				</div>
 
-				<!-- Botón para agregar condición -->
-				<div class="mb-3">
-					<button type="button" id="agregarCondicion" class="btn btn-sm btn-outline-primary">
-						<i class="fas fa-plus-circle"></i>
-						Agregar condición
-					</button>
+				<!-- Operador lógico -->
+				<div class="form-group mt-4 mb-4">
+					<h6 class="text-center font-weight-bold mb-3">Operador lógico entre condiciones</h6>
+					<div class="d-flex justify-content-center">
+						<div class="btn-group-toggle" data-toggle="buttons">
+							<label class="btn btn-outline-primary rounded-pill mx-3 px-4 py-2 operador-logico-btn active" data-value="AND">
+								<input type="radio" name="operadorLogico" value="AND" autocomplete="off" checked hidden>
+								<i class="fas fa-link mr-2"></i>AND (Y)
+							</label>
+							<label class="btn btn-outline-primary rounded-pill mx-3 px-4 py-2 operador-logico-btn" data-value="OR">
+								<input type="radio" name="operadorLogico" value="OR" autocomplete="off" hidden>
+								<i class="fas fa-code-branch mr-2"></i>OR (O)
+							</label>
+						</div>
+					</div>
+					<small class="form-text text-muted text-center mt-3">Si no selecciona una opción, se aplicará AND por defecto.</small>
 				</div>
 
-				<!-- Operador lógico -->
-				<div class="form-group mb-3">
-					<label>Operador lógico entre condiciones</label>
-					<div class="btn-group btn-group-toggle w-100" data-toggle="buttons">
-						<label class="btn btn-outline-secondary active">
-							<input type="radio" name="operadorLogico" id="opAND" value="AND" checked>
-							AND (Y)
-						</label>
-						<label class="btn btn-outline-secondary">
-							<input type="radio" name="operadorLogico" id="opOR" value="OR">
-							OR (O)
-						</label>
-					</div>
-					<small class="form-text text-muted">Si no selecciona una opción, por defecto se aplicará el operador AND.</small>
-				</div>
 			</form>
 		</div>
 
@@ -122,11 +119,5 @@
 {% endblock %}
 
 {% block javascripts %}
-	<script type="module">
-		import {inicializarEventosAside} from '{{ asset('assets/js/components/filtros/events/asideEvents.js') }}';
-
-document.addEventListener('DOMContentLoaded', function () {
-inicializarEventosAside();
-});
-	</script>
+    <script type="module" src="{{ asset('assets/js/components/filtros/main.js') }}"></script>
 {% endblock %}

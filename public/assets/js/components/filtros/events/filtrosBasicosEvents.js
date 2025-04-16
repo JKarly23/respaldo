@@ -1,22 +1,14 @@
-// events/filtrosBasicosEvents.js
-
-import { reemplazarFiltrosActivos } from '../utils/filtrosActivos.js';
-
 export function inicializarEventosFiltrosBasicos() {
     const filtrosPanel = document.getElementById('filtrosPanel');
 
-    document.querySelectorAll('#filtrosBasicosContent .dropdown-item').forEach(item => {
+    document.querySelectorAll('#filtrosBasicosContent .dropdown-item, #filtrosBasicosContent a').forEach(item => {
         item.addEventListener('click', function (e) {
             e.preventDefault();
 
             const texto = this.textContent.trim();
-            const filtro = {
-                campo: 'Filtro básico',
-                operador: '',
-                valor: texto
-            };
 
-            reemplazarFiltrosActivos([filtro]);
+            // Usar función global para mostrar el filtro activo
+            window.agregarFiltroActivo('basico', texto);
 
             if (filtrosPanel) {
                 filtrosPanel.style.display = 'none';

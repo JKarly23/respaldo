@@ -68,6 +68,7 @@ class InstitucionController extends AbstractController
         return $this->render('modules/institucion/institucion/index.html.twig', [
             'registros' => $registros,
             'filterableFields' => $result['filterableFields'],
+            'filtros' => $result['filters'],
         ]);
     }
 

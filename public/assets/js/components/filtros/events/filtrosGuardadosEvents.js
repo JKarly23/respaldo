@@ -1,7 +1,4 @@
 // events/filtrosGuardadosEvents.js
-
-import { reemplazarFiltrosActivos } from '../utils/filtrosActivos.js';
-
 export function inicializarEventosFiltrosGuardados() {
     const filtrosPanel = document.getElementById('filtrosPanel');
 
@@ -16,7 +13,7 @@ export function inicializarEventosFiltrosGuardados() {
                 valor: texto
             };
 
-            reemplazarFiltrosActivos([filtro]);
+            window.agregarFiltroActivo('basico', texto);
 
             if (filtrosPanel) {
                 filtrosPanel.style.display = 'none';

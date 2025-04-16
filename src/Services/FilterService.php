@@ -5,6 +5,7 @@ namespace App\Services;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Symfony\Component\HttpFoundation\Request;
+use Psr\Log\LoggerInterface;
 
 /**
  * FilterService
@@ -47,12 +48,11 @@ class FilterService
      */
     public function processFilters(Request $request, string $entityClass, array $extraExcludedFields = []): array
     {
-        $filtersJson = $request->query->get('filters');
+        $filtersJson = $request->query->get('filtros_activos');
         $filters = $filtersJson ? json_decode($filtersJson, true) : [];
         $filterableFields = $this->getFilterableFields($entityClass, $extraExcludedFields);
-
         return [
-            'filters' => $filters,
+            'filters' => $filters[0]['label'] ?? null,
             'filterableFields' => $filterableFields,
         ];
     }
@@ -143,4 +143,5 @@ class FilterService
 
         return $fields;
     }
+
 }
