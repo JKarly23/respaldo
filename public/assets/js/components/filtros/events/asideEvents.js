@@ -238,8 +238,14 @@ export function inicializarEventosAside() {
         localStorage.setItem('aside_abierto', '1');
         localStorage.setItem('condiciones_guardadas', condicionesJSON);
 
-        window.agregarFiltroActivo('personalizado', condiciones.label, condiciones.conditions);
-
+        // Pasar false como cuarto parámetro para evitar que se envíen los filtros automáticamente
+        window.agregarFiltroActivo('personalizado', condiciones.label, condiciones.conditions, false);
+        
+        // Enviar los filtros una sola vez
+        setTimeout(() => {
+            window.enviarFiltrosAlBackend(true);
+        }, 50);
+    
         console.log('Filtro aplicado');
         messageDiv.innerHTML = `
             <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -257,7 +263,7 @@ export function inicializarEventosAside() {
 
         if (asideAbierto === '1' && condicionesGuardadas) {
             try {
-                const { conditions, label } = JSON.parse(condicionesGuardadas);
+                const { conditions } = JSON.parse(condicionesGuardadas);
                 const aside = document.getElementById('filtroPersonalizadoAside');
                 const condicionesContainer = document.getElementById('condicionesContainer');
 
@@ -265,10 +271,10 @@ export function inicializarEventosAside() {
                 aside.style.right = '0';
                 document.body.style.overflow = 'hidden';
 
-                // Limpiar condiciones previas
+                // Limpiar condiciones existentes
                 condicionesContainer.innerHTML = '';
 
-                // Cargar condiciones guardadas
+                // Reconstruir condiciones guardadas
                 conditions.forEach((cond, index) => {
                     const nuevaCondicion = document.createElement('div');
                     nuevaCondicion.classList.add('condicion', 'mb-3');
@@ -281,23 +287,23 @@ export function inicializarEventosAside() {
                             </div>
                             <div class="col-md-3">
                                 <label>Operador</label>
-                                <select class="form-control operador-select" style="position: relative; z-index: 1070;">${operadorOptions}</select>
+                                <select class="form-control operador-select">${operadorOptions}</select>
                             </div>
                             <div class="col-md-3">
                                 <label>Valor</label>
-                                <input type="text" class="form-control valor-input" value="${cond.valor || ''}">
+                                <input type="text" class="form-control valor-input" value="${cond.valor}">
                             </div>
                             <div class="col-md-2 d-flex align-items-end justify-content-between">
                                 <div class="d-flex align-items-center">
                                     ${index === conditions.length - 1 ? `
-                                    <button type="button" id="agregarCondicion" class="btn btn-link text-success agregar-condicion p-0 mb-2 mr-2" title="Agregar condición">
-                                        <i class="fas fa-plus-circle"></i>
-                                    </button>` : ''}
+                                        <button type="button" id="agregarCondicion" class="btn btn-link text-success agregar-condicion p-0 mb-2 mr-2" title="Agregar condición">
+                                            <i class="fas fa-plus-circle"></i>
+                                        </button>` : ''}
                                     <button type="button" class="btn btn-link text-danger eliminar-condicion p-0 mb-2 mr-1" title="Eliminar condición">
                                         <i class="fas fa-times"></i>
                                     </button>
                                     <div class='operatorContainer'>
-                                        ${index !== 0 ? `<span class="badge badge-secondary px-2 py-1 ml-2 mb-2">${cond.operadorLogico || 'AND'}</span>` : ''}
+                                        ${cond.logico ? `<span class="badge badge-secondary px-2 py-1 ml-2 mb-2">${cond.logico}</span>` : ''}
                                     </div>
                                 </div>
                             </div>
@@ -306,12 +312,32 @@ export function inicializarEventosAside() {
                     `;
 
                     condicionesContainer.appendChild(nuevaCondicion);
+
+                    // Asignar valores al campo y operador
+                    const campoSelect = nuevaCondicion.querySelector('.campo-select');
+                    const operadorSelect = nuevaCondicion.querySelector('.operador-select');
+
+                    campoSelect.value = cond.campo;
+                    operadorSelect.value = cond.operador;
+
+                    // Event listeners
+                    campoSelect.addEventListener('change', () => actualizarOperadoresYValorInput(campoSelect, condicionesContainer));
+                    nuevaCondicion.querySelector('.eliminar-condicion').addEventListener('click', () => {
+                        if (document.querySelectorAll('.condicion').length > 1) {
+                            nuevaCondicion.remove();
+                            actualizarBotonAgregar();
+                        } else {
+                            mostrarMensajeError(condicionesContainer, 'Debe haber al menos una condición');
+                        }
+                    });
+
+                    setTimeout(() => actualizarOperadoresYValorInput(campoSelect, condicionesContainer), 0);
                 });
 
                 actualizarBotonAgregar();
                 actualizarOperadorActivo();
-            } catch (error) {
-                console.error('Error al restaurar condiciones guardadas:', error);
+            } catch (e) {
+                console.error('Error al restaurar condiciones:', e);
             }
         }
     });

@@ -5,13 +5,27 @@ export function inicializarFiltroActivoManager() {
 
     const STORAGE_KEY = 'filtros_activos';
     const SESSION_KEY = 'filtros_ya_enviados';
+    const URL_ORIGINAL_KEY = 'url_original';
 
-    // Mostrar/Ocultar contenedor al hacer clic en el botón del encabezado
     toggleBtn?.addEventListener('click', () => {
         const estaOculto = filtrosActivosDiv.classList.toggle('filtros-colapsado');
         toggleBtn.innerHTML = estaOculto
             ? '<i class="fas fa-chevron-down"></i>'
             : '<i class="fas fa-chevron-up"></i>';
+
+        if (estaOculto) {
+            // Only clean URL if there are no filters in localStorage
+            limpiarUrl();
+            sessionStorage.setItem('filtros_colapsados', 'true');
+        } else {
+            const filtros = window.obtenerFiltrosActivos();
+            if (filtros.length > 0) {
+                const url = new URL(window.location.href);
+                url.searchParams.set('filtros_activos', JSON.stringify(filtros));
+                window.history.replaceState({}, '', url.toString());
+            }
+            sessionStorage.removeItem('filtros_colapsados');
+        }
     });
 
     function guardarEnStorage() {
@@ -19,21 +33,49 @@ export function inicializarFiltroActivoManager() {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(filtros));
     }
 
+    // Modified limpiarUrl function to check localStorage first
     function limpiarUrl() {
-        const url = new URL(window.location.href);
-        if (url.searchParams.has('filtros_activos')) {
-            url.searchParams.delete('filtros_activos');
-            const newSearch = url.searchParams.toString();
-            const newUrl = newSearch ? `${url.pathname}?${newSearch}` : url.pathname;
-            window.history.replaceState({}, '', newUrl);
+        const filtrosEnStorage = localStorage.getItem(STORAGE_KEY);
+        // Only clean URL if there are no filters in localStorage
+        if (!filtrosEnStorage || JSON.parse(filtrosEnStorage).length === 0) {
+            const url = new URL(window.location.href);
+            if (url.searchParams.has('filtros_activos')) {
+                url.searchParams.delete('filtros_activos');
+                const newSearch = url.searchParams.toString();
+                const newUrl = newSearch ? `${url.pathname}?${newSearch}` : url.pathname;
+                window.history.replaceState({}, '', newUrl);
+            }
         }
     }
 
+    // Modified toggle button click handler
+    toggleBtn?.addEventListener('click', () => {
+        const estaOculto = filtrosActivosDiv.classList.toggle('filtros-colapsado');
+        toggleBtn.innerHTML = estaOculto
+            ? '<i class="fas fa-chevron-down"></i>'
+            : '<i class="fas fa-chevron-up"></i>';
+
+        if (estaOculto) {
+            // Only clean URL if there are no filters in localStorage
+            limpiarUrl();
+            sessionStorage.setItem('filtros_colapsados', 'true');
+        } else {
+            const filtros = window.obtenerFiltrosActivos();
+            if (filtros.length > 0) {
+                const url = new URL(window.location.href);
+                url.searchParams.set('filtros_activos', JSON.stringify(filtros));
+                window.history.replaceState({}, '', url.toString());
+            }
+            sessionStorage.removeItem('filtros_colapsados');
+        }
+    });
+
+    // Modified enviarFiltrosAlBackend function
     function enviarFiltrosAlBackend(forceSubmit = false) {
         const filtros = window.obtenerFiltrosActivos();
-        console.log(filtros);
-        
+
         if (filtros.length === 0) {
+            // Only clean URL if there are no filters in localStorage
             limpiarUrl();
             return;
         }
@@ -59,7 +101,6 @@ export function inicializarFiltroActivoManager() {
         form.submit();
     }
 
-    // Exponer función globalmente
     window.enviarFiltrosAlBackend = function (forceSubmit = true) {
         enviarFiltrosAlBackend(forceSubmit);
     };
@@ -70,9 +111,10 @@ export function inicializarFiltroActivoManager() {
             try {
                 const filtros = JSON.parse(data);
                 filtros.forEach(f => {
-                    window.agregarFiltroActivo(f.tipo, f.label || obtenerLabelDesdePayload(f), f.payload);
+                    const enviar = f.tipo === 'basico' || f.tipo === 'guardado';
+                    window.agregarFiltroActivo(f.tipo, f.label || obtenerLabelDesdePayload(f), f.payload, enviar);
                 });
-                enviarFiltrosAlBackend(false); // Envío automático si es necesario
+                enviarFiltrosAlBackend(false);
             } catch (error) {
                 console.error('Error al restaurar filtros desde localStorage', error);
             }
@@ -105,7 +147,7 @@ export function inicializarFiltroActivoManager() {
         return 'Filtro';
     }
 
-    window.agregarFiltroActivo = function (tipo, label, payload = null) {
+    window.agregarFiltroActivo = function (tipo, label, payload = null, enviar = null) {
         if (['basico', 'guardado', 'personalizado'].includes(tipo)) {
             [...filtrosActivosDiv.children].forEach(child => {
                 if (child.dataset.tipo === tipo) {
@@ -137,9 +179,10 @@ export function inicializarFiltroActivoManager() {
             guardarEnStorage();
             sessionStorage.removeItem(SESSION_KEY);
 
-            if (hayFiltros) {
-                enviarFiltrosAlBackend(true);
-            } else {
+            if (!hayFiltros) {
+                localStorage.removeItem(STORAGE_KEY);
+                sessionStorage.removeItem(URL_ORIGINAL_KEY);
+                sessionStorage.removeItem(SESSION_KEY);
                 limpiarUrl();
             }
         });
@@ -149,8 +192,14 @@ export function inicializarFiltroActivoManager() {
         filtrosActivosDiv.style.display = 'flex';
 
         guardarEnStorage();
-        // Force the submission to ensure it happens immediately
-        enviarFiltrosAlBackend(true);
+
+        const debeEnviar = enviar !== null
+            ? enviar
+            : (tipo === 'basico' || tipo === 'guardado');
+
+        if (debeEnviar) {
+            enviarFiltrosAlBackend(true);
+        }
     };
 
     window.obtenerFiltrosActivos = function () {
@@ -161,9 +210,16 @@ export function inicializarFiltroActivoManager() {
         }));
     };
 
-    // Restaurar filtros y limpiar URL si corresponde
-    restaurarDesdeStorage();
+    function verificarEstadoColapso() {
+        const estanColapsados = sessionStorage.getItem('filtros_colapsados') === 'true';
+        if (estanColapsados) {
+            filtrosActivosDiv.classList.add('filtros-colapsado');
+            toggleBtn.innerHTML = '<i class="fas fa-chevron-down"></i>';
+            limpiarUrl();
+        }
+    }
 
-    // Limpieza inicial de la URL en caso de que haya filtros viejos
-    limpiarUrl();
+    restaurarDesdeStorage();
+    verificarEstadoColapso();
+    limpiarUrl(); // Limpieza inicial si había filtros colapsados
 }
