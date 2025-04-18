@@ -64,11 +64,10 @@ class InstitucionController extends AbstractController
         InstitucionRepository $institucionRepository, FilterService $filterService, Request $request) {
         $result = $filterService->processFilters($request, Institucion::class);
         $registros = $institucionRepository->getInstituciones();
-
         return $this->render('modules/institucion/institucion/index.html.twig', [
             'registros' => $registros,
             'filterableFields' => $result['filterableFields'],
-            'filtros' => $result['filters'],
+            
         ]);
     }
 

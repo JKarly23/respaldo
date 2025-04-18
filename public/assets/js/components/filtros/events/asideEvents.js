@@ -1,5 +1,6 @@
+// Importaciones de validaciones y utilidades
 import { validateCantidadCondiciones, validateConditions } from '../validators/validateConditions.js';
-import { validateCampoRepetido } from '../validators/validateCampoRepetido.js'
+import { validateCampoRepetido } from '../validators/validateCampoRepetido.js';
 import { validateUltimaCondicion } from '../validators/validateUltimaCondicion.js';
 import { actualizarOperadoresYValorInput } from '../transforms/asideDynamicInputs.js';
 import { mostrarMensajeError } from '../utils/mostrarMensajeError.js';
@@ -13,22 +14,20 @@ export function inicializarEventosAside() {
     const guardarFiltroBtn = document.getElementById('guardarFiltro');
     const confirmarGuardarFiltroBtn = document.getElementById('confirmarGuardarFiltro');
     const aplicarFiltroBtn = document.getElementById('aplicarFiltro');
+    const messageDiv = document.querySelector('.showMessage');
 
     if (!crearFiltroBtn || !aside) return;
 
-    // Abrir Aside
-    crearFiltroBtn.addEventListener('click', function (e) {
+    crearFiltroBtn.addEventListener('click', (e) => {
         e.preventDefault();
         aside.style.right = '0';
         document.body.style.overflow = 'hidden';
 
-        //Activar chandge del campo
         const primerCampoSelect = aside.querySelector('.campo-select');
         if (primerCampoSelect) {
-            actualizarOperadoresYValorInput(primerCampoSelect, );
+            actualizarOperadoresYValorInput(primerCampoSelect);
         }
 
-        // Eliminar Select2 si se aplicó al primer select
         document.querySelectorAll('.campo-select, .operador-select').forEach(select => {
             if ($(select).hasClass('select2-hidden-accessible')) {
                 $(select).select2('destroy');
@@ -39,291 +38,281 @@ export function inicializarEventosAside() {
             select.style = '';
         });
 
-        // Eliminar contenedores extra de Select2
         document.querySelectorAll('.select2-container').forEach(container => container.remove());
     });
 
-    // Función para manejar la actualización de los operadores activos
+    // Lógica del operador lógico
     function actualizarOperadorActivo() {
-        const operadores = document.querySelectorAll('input[name="operadorLogico"]');
-        operadores.forEach(operador => {
-            operador.parentElement.classList.remove('active');
+        document.querySelectorAll('input[name="operadorLogico"]').forEach(op => {
+            op.parentElement.classList.remove('active');
         });
 
-        const operadorSeleccionado = document.querySelector('input[name="operadorLogico"]:checked');
-        operadorSeleccionado.parentElement.classList.add('active');
+        const seleccionado = document.querySelector('input[name="operadorLogico"]:checked');
+        if (seleccionado) {
+            seleccionado.parentElement.classList.add('active');
+        }
     }
 
-    // Inicializar la selección del operador lógico
     document.querySelectorAll('input[name="operadorLogico"]').forEach(input => {
         input.addEventListener('change', actualizarOperadorActivo);
     });
 
-    // Llamar a la función inicial para asegurar que el operador inicial sea el correcto
     actualizarOperadorActivo();
 
-    // Cerrar Aside
     function cerrarAside() {
-        // Reset aside position and scroll
         aside.style.right = '-415px';
         document.body.style.overflow = '';
+        localStorage.removeItem('aside_abierto');
+        localStorage.removeItem('condiciones_guardadas');
 
-        // Reset all conditions except the first one
         const conditions = condicionesContainer.querySelectorAll('.condicion');
-        conditions.forEach((condition, index) => {
-            if (index > 0) condition.remove();
+        conditions.forEach((condicion, index) => {
+            if (index > 0) condicion.remove();
         });
 
-        // Reset first condition values
-        const firstCondition = condicionesContainer.querySelector('.condicion');
-        if (firstCondition) {
-            const campoSelect = firstCondition.querySelector('.campo-select');
-            const operadorSelect = firstCondition.querySelector('.operador-select');
-            const valorInput = firstCondition.querySelector('.valor-input');
-
-            if (campoSelect) campoSelect.selectedIndex = 0;
-            if (operadorSelect) operadorSelect.selectedIndex = 0;
-            if (valorInput) valorInput.value = '';
+        const primera = condicionesContainer.querySelector('.condicion');
+        if (primera) {
+            primera.querySelector('.campo-select').selectedIndex = 0;
+            primera.querySelector('.operador-select').selectedIndex = 0;
+            primera.querySelector('.valor-input').value = '';
         }
 
-        // Reset operator to default (first one)
-        const defaultOperator = document.querySelector('input[name="operadorLogico"]');
-        if (defaultOperator) {
-            defaultOperator.checked = true;
+        const operadorDefault = document.querySelector('input[name="operadorLogico"]');
+        if (operadorDefault) {
+            operadorDefault.checked = true;
             actualizarOperadorActivo();
         }
 
-        // Reset any error messages
-        const messageDiv = condicionesContainer.querySelector('.showMessage');
-        if (messageDiv) messageDiv.innerHTML = '';
+        const mensaje = condicionesContainer.querySelector('.showMessage');
+        if (mensaje) mensaje.innerHTML = '';
 
-        // Update add button state
         actualizarBotonAgregar();
     }
 
-    if (cerrarAsideBtn) cerrarAsideBtn.addEventListener('click', cerrarAside);
-    if (cancelarFiltroBtn) cancelarFiltroBtn.addEventListener('click', cerrarAside);
+    cerrarAsideBtn?.addEventListener('click', cerrarAside);
+    cancelarFiltroBtn?.addEventListener('click', cerrarAside);
 
-    // Obtener opciones base desde la primera condición
     const condicionBase = document.querySelector('.condicion');
     const campoOptions = condicionBase.querySelector('.campo-select').innerHTML;
     const operadorOptions = condicionBase.querySelector('.operador-select').innerHTML;
 
     function crearCondicion(esUltima = false) {
+        if (condicionesContainer.children.length > 0) {
+            if (!validateUltimaCondicion(condicionesContainer).isValid) return;
+            if (!validateCampoRepetido(condicionesContainer).isValid) return;
+            if (!validateCantidadCondiciones(condicionesContainer, document.getElementById('agregarCondicion')).isValid) return;
+
+            const ultima = condicionesContainer.lastElementChild;
+            const operador = document.querySelector('input[name="operadorLogico"]:checked') || document.querySelector('input[name="operadorLogico"]');
+            operador.checked = true;
+
+            const operadorContainer = ultima.querySelector('.operatorContainer');
+            if (operadorContainer) {
+                operadorContainer.innerHTML = `
+                    <span class="badge badge-secondary px-2 py-1 ml-2 mb-2">${operador.value}</span>
+                `;
+            }
+        }
+
         const nuevaCondicion = document.createElement('div');
         nuevaCondicion.classList.add('condicion', 'mb-3');
 
-        // Validar solo si ya existe al menos una condición previa
-        if (condicionesContainer.children.length > 0) {
-            // 1. Validar la última condición
-            const resultadoUltima = validateUltimaCondicion(condicionesContainer);
-            if (!resultadoUltima.isValid) {
-                return;
-            }
-
-            // 2. Validar que no haya campos repetidos
-            const resultadoDuplicado = validateCampoRepetido(condicionesContainer);
-            if (!resultadoDuplicado.isValid) {
-                return;
-            }
-            // 3. Validar cantidad máxima de condiciones
-            const resultadoCantidad = validateCantidadCondiciones(condicionesContainer, document.getElementById('agregarCondicion'));
-            if (!resultadoCantidad.isValid) {
-                return;
-            }
-
-
-            // 4. Si todo está bien, agregar operador lógico a la condición anterior
-            const ultimaCondicion = condicionesContainer.lastElementChild;
-            const operatorContainer = ultimaCondicion.querySelector('.operatorContainer');
-
-            if (operatorContainer) {
-                let operadorSeleccionado = document.querySelector('input[name="operadorLogico"]:checked');
-                if (!operadorSeleccionado) {
-                    operadorSeleccionado = document.querySelector('input[name="operadorLogico"]');
-                    operadorSeleccionado.checked = true;
-                }
-
-                const valorOperador = operadorSeleccionado.value;
-                operatorContainer.innerHTML = `
-            <span class="badge badge-secondary px-2 py-1 ml-2 mb-2">${valorOperador}</span>
-        `;
-            }
-        }
-
-
         nuevaCondicion.innerHTML = `
-        <div class="form-row">
-            <div class="col-md-4">
-                <label>Campo</label>
-                <select class="form-control campo-select">
-                    ${campoOptions}
-                </select>
-            </div>
-            <div class="col-md-3">
-                <label>Operador</label>
-                <select class="form-control operador-select" style="position: relative; z-index: 1070;">
-                    ${operadorOptions}
-                </select>
-            </div>
-            <div class="col-md-3">
-                <label>Valor</label>
-                <input type="text" class="form-control valor-input">
-            </div>
-            <div class="col-md-2 d-flex align-items-end justify-content-between">
-                <div class="d-flex align-items-center">
-                    ${esUltima ? `<button type="button" id="agregarCondicion" class="btn btn-link text-success agregar-condicion p-0 mb-2 mr-2" title="Agregar condición">
-                        <i class="fas fa-plus-circle"></i>
-                    </button>` : ''}
-                    <button type="button" class="btn btn-link text-danger eliminar-condicion p-0 mb-2 mr-1" title="Eliminar condición">
-                        <i class="fas fa-times"></i>
-                    </button>
-                    <div class='operatorContainer'></div>
+            <div class="form-row">
+                <div class="col-md-4">
+                    <label>Campo</label>
+                    <select class="form-control campo-select">${campoOptions}</select>
+                </div>
+                <div class="col-md-3">
+                    <label>Operador</label>
+                    <select class="form-control operador-select" style="position: relative; z-index: 1070;">${operadorOptions}</select>
+                </div>
+                <div class="col-md-3">
+                    <label>Valor</label>
+                    <input type="text" class="form-control valor-input">
+                </div>
+                <div class="col-md-2 d-flex align-items-end justify-content-between">
+                    <div class="d-flex align-items-center">
+                        ${esUltima ? `
+                            <button type="button" id="agregarCondicion" class="btn btn-link text-success agregar-condicion p-0 mb-2 mr-2" title="Agregar condición">
+                                <i class="fas fa-plus-circle"></i>
+                            </button>` : ''}
+                        <button type="button" class="btn btn-link text-danger eliminar-condicion p-0 mb-2 mr-1" title="Eliminar condición">
+                            <i class="fas fa-times"></i>
+                        </button>
+                        <div class='operatorContainer'></div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="operador-logico"></div> <!-- Este queda como backup en caso de lógica extra -->
+            <div class="operador-logico"></div>
         `;
 
-        // Eliminar condición
-        const eliminarBtn = nuevaCondicion.querySelector('.eliminar-condicion');
-        eliminarBtn.addEventListener('click', function () {
+        nuevaCondicion.querySelector('.eliminar-condicion').addEventListener('click', () => {
+            const condiciones = condicionesContainer.querySelectorAll('.condicion');
+            if (condiciones.length <= 1) {
+                mostrarMensajeError(condicionesContainer, 'Debe haber al menos una condición');
+                return;
+            }
+
             nuevaCondicion.remove();
             actualizarBotonAgregar();
+            actualizarOperadorActivo();
         });
 
-        // Mostrar el operador lógico directamente en el badge (solo si no es la última)
-        if (!esUltima) {
-            const badge = nuevaCondicion.querySelector('.operador-logico-badge');
-            const operadorSeleccionado = document.querySelector('input[name="operadorLogico"]:checked');
-            if (badge && operadorSeleccionado) {
-                badge.textContent = operadorSeleccionado.value;
-            }
-        }
-
-        // Inicializar select dinámico
         const campoSelect = nuevaCondicion.querySelector('.campo-select');
         if (campoSelect) {
-            setTimeout(() => {
-                actualizarOperadoresYValorInput(campoSelect, condicionesContainer);
-            }, 0);
+            setTimeout(() => actualizarOperadoresYValorInput(campoSelect, condicionesContainer), 0);
         }
 
         condicionesContainer.appendChild(nuevaCondicion);
         actualizarBotonAgregar();
         actualizarOperadorActivo();
-        
     }
 
-
-    // Mantener solo un botón de agregar en la última condición
     function actualizarBotonAgregar() {
         document.querySelectorAll('.agregar-condicion').forEach(btn => btn.remove());
 
-        const ultimaCondicion = condicionesContainer.lastElementChild;
-        if (ultimaCondicion) {
-            const divBotones = ultimaCondicion.querySelector('.d-flex');
-            const nuevoBtnAgregar = document.createElement('button');
-            nuevoBtnAgregar.type = 'button';
-            nuevoBtnAgregar.id = 'agregarCondicion';
-            nuevoBtnAgregar.className = 'btn btn-link text-success agregar-condicion p-0 mb-2 mr-2';
-            nuevoBtnAgregar.title = 'Agregar condición';
-            nuevoBtnAgregar.innerHTML = '<i class="fas fa-plus-circle"></i>';
+        const ultima = condicionesContainer.lastElementChild;
+        if (ultima) {
+            const divBotones = ultima.querySelector('.d-flex');
+            const nuevoBtn = document.createElement('button');
+            nuevoBtn.type = 'button';
+            nuevoBtn.id = 'agregarCondicion';
+            nuevoBtn.className = 'btn btn-link text-success agregar-condicion p-0 mb-2 mr-2';
+            nuevoBtn.title = 'Agregar condición';
+            nuevoBtn.innerHTML = '<i class="fas fa-plus-circle"></i>';
 
-            nuevoBtnAgregar.addEventListener('click', function () {
-                validateCantidadCondiciones(condicionesContainer, nuevoBtnAgregar);
-                crearCondicion(true);
+            nuevoBtn.addEventListener('click', () => {
+                if (validateCantidadCondiciones(condicionesContainer, nuevoBtn).isValid) {
+                    crearCondicion(true);
+                }
             });
 
-            // Insertar al principio del div de botones
-            divBotones.insertBefore(nuevoBtnAgregar, divBotones.firstChild);
+            divBotones.insertBefore(nuevoBtn, divBotones.firstChild);
         }
     }
 
-    // Agregar nueva condición inicial
     actualizarBotonAgregar();
 
-    // Actualizar operadores y campo valor dinámicamente según el tipo
-    document.querySelector('#condicionesContainer').addEventListener('change', function (e) {
+    condicionesContainer.addEventListener('change', (e) => {
         if (e.target.classList.contains('campo-select')) {
             actualizarOperadoresYValorInput(e.target, condicionesContainer);
         }
     });
 
-    // Eliminar la primera condición si es más de una
-    const eliminarCondicionBtn = document.querySelector('.condicion .eliminar-condicion');
-    if (eliminarCondicionBtn) {
-        eliminarCondicionBtn.addEventListener('click', function () {
+    const eliminarPrimera = document.querySelector('.condicion .eliminar-condicion');
+    if (eliminarPrimera) {
+        eliminarPrimera.addEventListener('click', () => {
             if (document.querySelectorAll('.condicion').length > 1) {
-                eliminarCondicionBtn.closest('.condicion').remove();
+                eliminarPrimera.closest('.condicion').remove();
                 actualizarBotonAgregar();
             } else {
-                alert('Debe haber al menos una condición');
+                mostrarMensajeError(condicionesContainer, 'Debe haber al menos una condición');
             }
         });
     }
 
-    // Abrir modal para guardar
-    if (guardarFiltroBtn) {
-        guardarFiltroBtn.addEventListener('click', function () {
-            $('#guardarFiltroModal').modal('show');
-        });
-    }
+    guardarFiltroBtn?.addEventListener('click', () => {
+        $('#guardarFiltroModal').modal('show');
+    });
 
-    
+    confirmarGuardarFiltroBtn?.addEventListener('click', () => {
+        const nombre = document.getElementById('nombreFiltro').value.trim();
 
-    // Guardar filtro (simulado)
-    if (confirmarGuardarFiltroBtn) {
-        confirmarGuardarFiltroBtn.addEventListener('click', function () {
-            const nombreFiltro = document.getElementById('nombreFiltro').value.trim();
+        if (!nombre) {
+            alert('Por favor, ingrese un nombre para el filtro');
+            return;
+        }
 
-            if (!nombreFiltro) {
-                alert('Por favor, ingrese un nombre para el filtro');
-                return;
-            }
+        console.log('Filtro guardado:', nombre);
+        $('#guardarFiltroModal').modal('hide');
+        cerrarAside();
+    });
 
-            console.log('Filtro guardado:', nombreFiltro);
-            $('#guardarFiltroModal').modal('hide');
-            cerrarAside();
-        });
-    }
+    aplicarFiltroBtn?.addEventListener('click', () => {
+        const condiciones = validateConditions(condicionesContainer);
+        if (!condiciones.isValid) return mostrarMensajeError(condicionesContainer, condiciones.message);
 
-    // Aplicar filtro
-        if (aplicarFiltroBtn) {
-            aplicarFiltroBtn.addEventListener('click', function () {
-                
-                const resultadoDuplicado = validateCampoRepetido(condicionesContainer);
-                if (!resultadoDuplicado.isValid) {
-                    return;
-                }
-                const resultadoUltima = validateUltimaCondicion(condicionesContainer);
-                if (!resultadoUltima.isValid) {
-                    return;
-                }
-            
-                const resultado = validateConditions(condicionesContainer);
-                const condiciones = resultado.conditions;
-                const label = resultado.label;
-                console.log(condiciones);
-                
-                
-                if (condiciones.length > 0) {
-                    window.agregarFiltroActivo('personalizado',label,condiciones);
-                    window.enviarFiltrosAlBackend();
-                    const messageDiv = condicionesContainer.querySelector('.showMessage');
-                    if (!messageDiv) return;
+        // Guardar en localStorage
+        const condicionesJSON = JSON.stringify(condiciones);
+        localStorage.setItem('aside_abierto', '1');
+        localStorage.setItem('condiciones_guardadas', condicionesJSON);
 
-                    messageDiv.innerHTML = `
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            <strong>Éxito:</strong> Filtro aplicado correctamente
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+        window.agregarFiltroActivo('personalizado', condiciones.label, condiciones.conditions);
+
+        console.log('Filtro aplicado');
+        messageDiv.innerHTML = `
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>Éxito:</strong> Filtro aplicado correctamente
+                <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        `;
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const asideAbierto = localStorage.getItem('aside_abierto');
+        const condicionesGuardadas = localStorage.getItem('condiciones_guardadas');
+
+        if (asideAbierto === '1' && condicionesGuardadas) {
+            try {
+                const { conditions, label } = JSON.parse(condicionesGuardadas);
+                const aside = document.getElementById('filtroPersonalizadoAside');
+                const condicionesContainer = document.getElementById('condicionesContainer');
+
+                // Mostrar el aside
+                aside.style.right = '0';
+                document.body.style.overflow = 'hidden';
+
+                // Limpiar condiciones previas
+                condicionesContainer.innerHTML = '';
+
+                // Cargar condiciones guardadas
+                conditions.forEach((cond, index) => {
+                    const nuevaCondicion = document.createElement('div');
+                    nuevaCondicion.classList.add('condicion', 'mb-3');
+
+                    nuevaCondicion.innerHTML = `
+                        <div class="form-row">
+                            <div class="col-md-4">
+                                <label>Campo</label>
+                                <select class="form-control campo-select">${campoOptions}</select>
+                            </div>
+                            <div class="col-md-3">
+                                <label>Operador</label>
+                                <select class="form-control operador-select" style="position: relative; z-index: 1070;">${operadorOptions}</select>
+                            </div>
+                            <div class="col-md-3">
+                                <label>Valor</label>
+                                <input type="text" class="form-control valor-input" value="${cond.valor || ''}">
+                            </div>
+                            <div class="col-md-2 d-flex align-items-end justify-content-between">
+                                <div class="d-flex align-items-center">
+                                    ${index === conditions.length - 1 ? `
+                                    <button type="button" id="agregarCondicion" class="btn btn-link text-success agregar-condicion p-0 mb-2 mr-2" title="Agregar condición">
+                                        <i class="fas fa-plus-circle"></i>
+                                    </button>` : ''}
+                                    <button type="button" class="btn btn-link text-danger eliminar-condicion p-0 mb-2 mr-1" title="Eliminar condición">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                    <div class='operatorContainer'>
+                                        ${index !== 0 ? `<span class="badge badge-secondary px-2 py-1 ml-2 mb-2">${cond.operadorLogico || 'AND'}</span>` : ''}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+                        <div class="operador-logico"></div>
                     `;
-                } else {
-                    mostrarMensajeError(condicionesContainer, 'Debe agregar al menos una condición válida');
-                }
-            });
-    }
+
+                    condicionesContainer.appendChild(nuevaCondicion);
+                });
+
+                actualizarBotonAgregar();
+                actualizarOperadorActivo();
+            } catch (error) {
+                console.error('Error al restaurar condiciones guardadas:', error);
+            }
+        }
+    });
 }

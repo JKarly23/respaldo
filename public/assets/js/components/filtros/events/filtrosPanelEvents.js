@@ -1,4 +1,3 @@
-// events/filtrosPanelEvents.js
 
 // Función para inicializar los eventos del panel de filtros
 export function inicializarEventosFiltrosPanel() {

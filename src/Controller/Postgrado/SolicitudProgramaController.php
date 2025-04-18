@@ -60,6 +60,7 @@ class SolicitudProgramaController extends AbstractController
         return $this->render('modules/postgrado/solicitud_programa/index.html.twig', [
             'registros' => $registros,
             'filterableFields' => $result['filterableFields'],
+            'fitros' => $result['filters'],
         ]);
     }
 

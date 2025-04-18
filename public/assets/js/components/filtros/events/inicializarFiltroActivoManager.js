@@ -14,27 +14,36 @@ export function inicializarFiltroActivoManager() {
             : '<i class="fas fa-chevron-up"></i>';
     });
 
-    // Guardar filtros en localStorage
     function guardarEnStorage() {
         const filtros = window.obtenerFiltrosActivos();
         localStorage.setItem(STORAGE_KEY, JSON.stringify(filtros));
     }
 
-    // Enviar filtros al backend
+    function limpiarUrl() {
+        const url = new URL(window.location.href);
+        if (url.searchParams.has('filtros_activos')) {
+            url.searchParams.delete('filtros_activos');
+            const newSearch = url.searchParams.toString();
+            const newUrl = newSearch ? `${url.pathname}?${newSearch}` : url.pathname;
+            window.history.replaceState({}, '', newUrl);
+        }
+    }
+
     function enviarFiltrosAlBackend(forceSubmit = false) {
         const filtros = window.obtenerFiltrosActivos();
+        console.log(filtros);
+        
+        if (filtros.length === 0) {
+            limpiarUrl();
+            return;
+        }
 
-        // Si no hay filtros activos, no enviamos nada
-        if (filtros.length === 0) return;
-
-        // Solo verificamos sessionStorage en cargas automáticas, no en envíos manuales
         if (!forceSubmit && sessionStorage.getItem(SESSION_KEY) === '1') return;
 
         const form = document.createElement('form');
         form.method = 'GET';
-        form.action = window.location.href; // Enviar a la URL actual
+        form.action = window.location.pathname;
 
-        // Añadir los filtros al formulario
         const filtrosInput = document.createElement('input');
         filtrosInput.type = 'hidden';
         filtrosInput.name = 'filtros_activos';
@@ -42,23 +51,19 @@ export function inicializarFiltroActivoManager() {
         form.appendChild(filtrosInput);
 
         document.body.appendChild(form);
-        
-        // Marcamos como enviado solo en cargas automáticas
+
         if (!forceSubmit) {
             sessionStorage.setItem(SESSION_KEY, '1');
         }
-        
-        form.submit(); // Enviar formulario
+
+        form.submit();
     }
 
-    // Exponemos la función para poder llamarla desde otros archivos
-    window.enviarFiltrosAlBackend = function(forceSubmit = true) {
+    // Exponer función globalmente
+    window.enviarFiltrosAlBackend = function (forceSubmit = true) {
         enviarFiltrosAlBackend(forceSubmit);
     };
 
-    // Resto del código sin cambios...
-    
-    // Restaurar filtros desde localStorage
     function restaurarDesdeStorage() {
         const data = localStorage.getItem(STORAGE_KEY);
         if (data) {
@@ -67,16 +72,13 @@ export function inicializarFiltroActivoManager() {
                 filtros.forEach(f => {
                     window.agregarFiltroActivo(f.tipo, f.label || obtenerLabelDesdePayload(f), f.payload);
                 });
-
-                // Solo enviamos si aún no se enviaron y hay filtros
-                enviarFiltrosAlBackend(false); // Llamada automática, no forzada
+                enviarFiltrosAlBackend(false); // Envío automático si es necesario
             } catch (error) {
                 console.error('Error al restaurar filtros desde localStorage', error);
             }
         }
     }
 
-    // Genera un label legible desde el payload
     function obtenerLabelDesdePayload(filtro) {
         if (filtro.payload?.nombre) return filtro.payload.nombre;
 
@@ -103,10 +105,8 @@ export function inicializarFiltroActivoManager() {
         return 'Filtro';
     }
 
-    // Función pública para agregar un filtro activo
     window.agregarFiltroActivo = function (tipo, label, payload = null) {
-        // Si ya hay uno del mismo tipo y no es combinable, lo reemplaza
-        if (tipo === 'basico' || tipo === 'guardado' || tipo === 'personalizado') {
+        if (['basico', 'guardado', 'personalizado'].includes(tipo)) {
             [...filtrosActivosDiv.children].forEach(child => {
                 if (child.dataset.tipo === tipo) {
                     filtrosActivosDiv.removeChild(child);
@@ -128,15 +128,20 @@ export function inicializarFiltroActivoManager() {
             </button>
         `;
 
-        // Evento eliminar
         tag.querySelector('button.close').addEventListener('click', () => {
             filtrosActivosDiv.removeChild(tag);
-            if (filtrosActivosDiv.children.length === 0) {
-                filtrosActivosWrapper.style.display = 'none';
-            }
+
+            const hayFiltros = filtrosActivosDiv.children.length > 0;
+            filtrosActivosWrapper.style.display = hayFiltros ? 'block' : 'none';
+
             guardarEnStorage();
-            sessionStorage.removeItem(SESSION_KEY); // Habilitamos reenviar si se eliminó
-            enviarFiltrosAlBackend();
+            sessionStorage.removeItem(SESSION_KEY);
+
+            if (hayFiltros) {
+                enviarFiltrosAlBackend(true);
+            } else {
+                limpiarUrl();
+            }
         });
 
         filtrosActivosDiv.appendChild(tag);
@@ -144,9 +149,10 @@ export function inicializarFiltroActivoManager() {
         filtrosActivosDiv.style.display = 'flex';
 
         guardarEnStorage();
+        // Force the submission to ensure it happens immediately
+        enviarFiltrosAlBackend(true);
     };
 
-    // Función pública para obtener los filtros activos
     window.obtenerFiltrosActivos = function () {
         return [...filtrosActivosDiv.children].map(tag => ({
             tipo: tag.dataset.tipo,
@@ -155,9 +161,9 @@ export function inicializarFiltroActivoManager() {
         }));
     };
 
-    // Restaurar filtros al iniciar
+    // Restaurar filtros y limpiar URL si corresponde
     restaurarDesdeStorage();
-}
 
-// Eliminamos esta línea que causa el error
-// window.enviarFiltrosAlBackend = enviarFiltrosAlBackend;
+    // Limpieza inicial de la URL en caso de que haya filtros viejos
+    limpiarUrl();
+}

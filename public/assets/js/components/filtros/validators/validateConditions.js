@@ -24,14 +24,12 @@ export const nombresOperadores = {
 };
 
 export function validateConditions(container) {
-    console.log('Validando todas las condiciones...');
-
     let isValid = true;
-    const conditions = [];
     let messageError = '';
-    let expresionFinal = '';
-
+    const conditions = [];
     const condiciones = container.querySelectorAll('.condicion');
+
+    let expresionFinal = '';
 
     for (let i = 0; i < condiciones.length; i++) {
         const condicion = condiciones[i];
@@ -44,19 +42,21 @@ export function validateConditions(container) {
         const operador = operadorSelect?.value;
         const tipo = campoSelect?.selectedOptions[0]?.dataset?.type;
 
+        // Validación de campos incompletos
         if (!campo || !operador || valores.length === 0) {
             isValid = false;
             messageError = `La condición ${i + 1} está incompleta.`;
             break;
         }
 
+        // Validación especial para operador 'between'
         if (operador === 'between' && valores.length < 2) {
             isValid = false;
-            console.log('Valores de entre', valores);
-
             messageError = `La condición ${i + 1} requiere dos valores para 'Entre'.`;
             break;
         }
+
+        // Validar tipo de dato
         for (let valor of valores) {
             const tipoValidation = validateTipoDato(tipo, valor, i + 1);
             if (!tipoValidation.isValid) {
@@ -66,6 +66,7 @@ export function validateConditions(container) {
             }
         }
 
+        // Validar operador según tipo
         const opValidation = validateOperadorPorTipo(tipo, operador, i + 1);
         if (!opValidation.isValid) {
             isValid = false;
@@ -73,7 +74,7 @@ export function validateConditions(container) {
             break;
         }
 
-        // Obtener operador lógico desde la condición anterior
+        // Obtener operador lógico de la condición anterior (si existe)
         let operadorLogico = null;
         if (i > 0) {
             const condicionAnterior = condiciones[i - 1];
@@ -81,30 +82,24 @@ export function validateConditions(container) {
             operadorLogico = operadorBadge ? operadorBadge.textContent.trim() : null;
         }
 
-        // Armar la expresión individual en formato legible para backend
-        let expresion = '';
-
+        // Construir expresión legible para backend
         const nombreCampo = campoSelect.options[campoSelect.selectedIndex].text;
         const operadorLegible = operadorSelect.options[operadorSelect.selectedIndex].text;
 
+        let expresion = '';
         if (operador === 'between') {
             expresion = `(${nombreCampo} BETWEEN '${valores[0]}' AND '${valores[1]}')`;
         } else if (operador.toLowerCase().includes('contiene')) {
             expresion = `(${nombreCampo} LIKE '%${valores[0]}%')`;
-        } else if (operador === 'igual' || operador === 'Igual') {
+        } else if (['igual', 'Igual'].includes(operador)) {
             expresion = `(${nombreCampo} = '${valores[0]}')`;
-        } else if (operador === 'diferente' || operador === 'No igual') {
+        } else if (['diferente', 'No igual'].includes(operador)) {
             expresion = `(${nombreCampo} != '${valores[0]}')`;
         } else {
             expresion = `(${nombreCampo} ${operadorLegible} '${valores[0]}')`;
         }
 
-        // Agregar al string final
-        if (i === 0) {
-            expresionFinal = expresion;
-        } else {
-            expresionFinal += ` ${operadorLogico} ${expresion}`;
-        }
+        expresionFinal += i === 0 ? expresion : ` ${operadorLogico} ${expresion}`;
 
         conditions.push({
             campo: nombreCampo,
@@ -113,17 +108,13 @@ export function validateConditions(container) {
             logico: operadorLogico,
             tipo: tipo
         });
-
     }
 
     const mappedConditions = construirExpresionLegible(conditions);
 
     if (!isValid) {
-        mostrarMensajeError(container, messageError); // Mostrar el mensaje de error en el div .showMessage
+        mostrarMensajeError(container, messageError);
     }
-    console.table(conditions);
-    console.log("Conditions mapping ".mappedConditions);
-    
 
     return {
         isValid,
@@ -135,31 +126,19 @@ export function validateConditions(container) {
 
 export const validateTipoDato = (tipo, valor, index) => {
     if (tipo === 'number' && isNaN(valor)) {
-        return {
-            isValid: false,
-            messageError: `El valor de la condición ${index} debe ser un número.`
-        };
+        return { isValid: false, messageError: `El valor de la condición ${index} debe ser un número.` };
     }
 
     if (tipo === 'date' && !/^\d{4}-\d{2}-\d{2}$/.test(valor)) {
-        return {
-            isValid: false,
-            messageError: `El valor de la condición ${index} debe ser una fecha en formato YYYY-MM-DD.`
-        };
+        return { isValid: false, messageError: `El valor de la condición ${index} debe tener formato YYYY-MM-DD.` };
     }
 
     if (tipo === 'string' && valor.length > 255) {
-        return {
-            isValid: false,
-            messageError: `El valor de la condición ${index} excede 255 caracteres.`
-        };
+        return { isValid: false, messageError: `El valor de la condición ${index} excede 255 caracteres.` };
     }
 
     if (tipo === 'boolean' && !['true', 'false'].includes(valor.toLowerCase())) {
-        return {
-            isValid: false,
-            messageError: `El valor de la condición ${index} debe ser 'Sí' o 'No'.`
-        };
+        return { isValid: false, messageError: `El valor de la condición ${index} debe ser 'Sí' o 'No'.` };
     }
 
     return { isValid: true, messageError: '' };
@@ -178,11 +157,8 @@ export const validateOperadorPorTipo = (tipo, operador, index) => {
     return { isValid: true, messageError: '' };
 };
 
-
-// Validar que no haya más condiciones que campos filtrables disponibles
 export function validateCantidadCondiciones(condicionesContainer, nuevoBtnAgregar) {
     const condicionesActuales = condicionesContainer.querySelectorAll('.condicion').length;
-
     const primerSelect = condicionesContainer.querySelector('.campo-select');
     const camposDisponibles = primerSelect ? primerSelect.options.length : 0;
 
@@ -201,7 +177,7 @@ export function validateCantidadCondiciones(condicionesContainer, nuevoBtnAgrega
 function construirExpresionLegible(filtros) {
     return filtros.map(f => {
         const campo = f.campo;
-        const operador = traducirOperador(f.operador); // por ejemplo: "=" => "es igual a"
+        const operador = traducirOperador(f.operador);
         const valor = f.valor === true ? "Sí" : f.valor === false ? "No" : `"${f.valor}"`;
         const logico = f.logico ? ` ${f.logico} ` : '';
         return `${logico}${campo} ${operador} ${valor}`;
@@ -215,7 +191,7 @@ function traducirOperador(op) {
         '>': 'es mayor que',
         '<': 'es menor que',
         'like': 'contiene',
-        'between': 'está entre',
+        'between': 'está entre'
     };
     return mapa[op] || op;
 }
