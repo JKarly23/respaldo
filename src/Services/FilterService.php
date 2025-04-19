@@ -111,6 +111,7 @@ class FilterService
 
             // Verificar si es un campo de fecha
             $isDateField = isset($filtro['tipo']) && ($filtro['tipo'] === 'datetime' || $filtro['tipo'] === 'date');
+            $isCustomCondition = false; // Flag para indicar si ya creamos una condición personalizada
 
             if ($isDateField) {
                 if ($filtro['operador'] === 'Entre' && is_array($filtro['valor'])) {
@@ -130,15 +131,16 @@ class FilterService
                     $qb->setParameter($paramName, $fechaInicio);
                     $qb->setParameter($paramNameEnd, $fechaFin);
                     
-                    // Marcar como rango personalizado para evitar establecer el parámetro nuevamente
-                    $filtro['operador'] = 'RangoFechaPersonalizado';
+                    // Marcar como condición personalizada
+                    $isCustomCondition = true;
+                    $isRange = true;
                 } else {
                     $valor = new \DateTime($valor);
                 }
             }
 
-            // Solo procesar el switch si no hemos creado ya una condición personalizada
-            if ($cond === null) {
+            // Solo procesar el switch si no hemos creado una condición personalizada
+            if (!$isCustomCondition) {
                 switch ($filtro['operador']) {
                     case 'Igual':
                         $cond = $expr->eq($fieldPath, ':' . $paramName);
@@ -227,6 +229,7 @@ class FilterService
             }
             
             $qb->andWhere($exprTotal);
+            // dd($qb);
         }
     }
 

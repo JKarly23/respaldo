@@ -1,4 +1,5 @@
 import { mostrarMensajeError } from '../utils/mostrarMensajeError.js';
+import { validateCamposRepetidos } from './validateCamposRepetidos.js';
 
 export const operadoresPorTipo = {
     number: ['=', '!=', '>', '<', '>=', '<=', 'between'],
@@ -83,7 +84,7 @@ export function validateConditions(container) {
         }
 
         // Construir expresión legible para backend
-        const nombreCampo =  campoSelect.value;
+        const nombreCampo = campoSelect.value;
         const operadorLegible = operadorSelect.options[operadorSelect.selectedIndex].text;
 
         let expresion = '';
