@@ -61,7 +61,7 @@ class TrazaController extends AbstractController
         $fields = $filterService->getFilterableFields(Traza::class);
         $registros = $trazaRepository->findBy([],['creado' => 'desc']);
         if($filters){
-            $registros = $advancedFilterRepository->BuidBaseQuery(Traza::class, $filters,['creado' => 'desc'] );
+            $registros = $advancedFilterRepository->BuildBaseQuery(Traza::class, $filters,['creado' => 'desc'] );
         }
 
         return $this->render('modules/traza/traza/index.html.twig', [

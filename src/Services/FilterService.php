@@ -56,17 +56,21 @@ class FilterService
         return $filters;
     }
 
-    public function applyFiltersToQueryBuilder(QueryBuilder $qb, array  $filters, $alias = '')
+    public function applyFiltersToQueryBuilder(QueryBuilder $qb, array $filters, $alias = '')
     {
         if (empty($filters)) return;
 
         $expr = $qb->expr();
-        $parameters = [];
         $whereParts = [];
         $paramIndex = 0;
 
         foreach ($filters as $index => $filtro) {
            
+            // Verificar que existan los campos necesarios
+            if (!isset($filtro['campo']) || !isset($filtro['operador']) || !isset($filtro['valor'])) {
+                continue;
+            }
+            
             $fieldPath = $alias . '.' . $filtro['campo'];
             if (str_contains($filtro['campo'], '.')) {
                 $parts = explode('.', $filtro['campo']);
@@ -102,54 +106,88 @@ class FilterService
 
             $paramName = 'param' . $paramIndex++;
             $cond = null;
-            $tipo = $filtro['tipo'];
+            $tipo = $filtro['tipo'] ?? null;
             $valor = $filtro['valor'];
 
-            if ($filtro['tipo'] === 'datetime' || $filtro['tipo'] === 'date') {
+            // Verificar si es un campo de fecha
+            $isDateField = isset($filtro['tipo']) && ($filtro['tipo'] === 'datetime' || $filtro['tipo'] === 'date');
+
+            if ($isDateField) {
                 if ($filtro['operador'] === 'Entre' && is_array($filtro['valor'])) {
                     $valor[0] = new \DateTime($valor[0]);
                     $valor[1] = new \DateTime($valor[1]);
+                } else if ($filtro['operador'] === 'Igual') {
+                    // Para igualdad en fechas, crear un rango para todo el día
+                    $fechaInicio = new \DateTime($valor . ' 00:00:00');
+                    $fechaFin = new \DateTime($valor . ' 23:59:59');
+                    
+                    // Usar BETWEEN para comparar solo la fecha, ignorando la hora
+                    $paramNameEnd = $paramName . 'end';
+                    $cond = $expr->andX(
+                        $expr->gte($fieldPath, ':' . $paramName),
+                        $expr->lte($fieldPath, ':' . $paramNameEnd)
+                    );
+                    $qb->setParameter($paramName, $fechaInicio);
+                    $qb->setParameter($paramNameEnd, $fechaFin);
+                    
+                    // Marcar como rango personalizado para evitar establecer el parámetro nuevamente
+                    $filtro['operador'] = 'RangoFechaPersonalizado';
                 } else {
                     $valor = new \DateTime($valor);
                 }
             }
 
-            switch ($filtro['operador']) {
-                case 'Igual':
-                    $cond = $expr->eq($fieldPath, ':' . $paramName);
-                    break;
-                case 'Diferente':
-                    $cond = $expr->neq($fieldPath, ':' . $paramName);
-                    break;
-                case 'Contiene':
-                    $cond = $expr->like($fieldPath, ':' . $paramName);
-                    $valor = '%' . $valor . '%';
-                    break;
-                case 'Mayor que':
-                    $cond = $expr->gt($fieldPath, ':' . $paramName);
-                    break;
-                case 'Menor que':
-                    $cond = $expr->lt($fieldPath, ':' . $paramName);
-                    break;
-                case 'Mayor o igual':
-                    $cond = $expr->gte($fieldPath, ':' . $paramName);
-                    break;
-                case 'Menor o igual':
-                    $cond = $expr->lte($fieldPath, ':' . $paramName);
-                    break;
-                case 'Entre':
-                    // Asegura que venga un array con 2 valores
-                    if (is_array($filtro['valor']) && count($filtro['valor']) === 2) {
-                        $paramA = $paramName . 'a';
-                        $paramB = $paramName . 'b';
-                        $cond = $expr->andX(
-                            $expr->gte($fieldPath, ':' . $paramA),
-                            $expr->lte($fieldPath, ':' . $paramB)
-                        );
-                        $qb->setParameter($paramA, $valor[0]);
-                        $qb->setParameter($paramB, $valor[1]);
-                    }
-                    break;
+            // Solo procesar el switch si no hemos creado ya una condición personalizada
+            if ($cond === null) {
+                switch ($filtro['operador']) {
+                    case 'Igual':
+                        $cond = $expr->eq($fieldPath, ':' . $paramName);
+                        break;
+                    case 'Diferente':
+                        $cond = $expr->neq($fieldPath, ':' . $paramName);
+                        break;
+                    case 'Contiene':
+                        $cond = $expr->like($fieldPath, ':' . $paramName);
+                        $valor = '%' . $valor . '%';
+                        break;
+                    case 'No contiene':
+                        $cond = $expr->notLike($fieldPath, ':' . $paramName);
+                        $valor = '%' . $valor . '%';
+                        break;
+                    case 'Empieza con':
+                        $cond = $expr->like($fieldPath, ':' . $paramName);
+                        $valor = $valor . '%';
+                        break;
+                    case 'Termina con':
+                        $cond = $expr->like($fieldPath, ':' . $paramName);
+                        $valor = '%' . $valor;
+                        break;
+                    case 'Mayor':
+                        $cond = $expr->gt($fieldPath, ':' . $paramName);
+                        break;
+                    case 'Menor':
+                        $cond = $expr->lt($fieldPath, ':' . $paramName);
+                        break;
+                    case 'Mayor o igual':
+                        $cond = $expr->gte($fieldPath, ':' . $paramName);
+                        break;
+                    case 'Menor o igual':
+                        $cond = $expr->lte($fieldPath, ':' . $paramName);
+                        break;
+                    case 'Entre':
+                        // Asegura que venga un array con 2 valores
+                        if (is_array($filtro['valor']) && count($filtro['valor']) === 2) {
+                            $paramA = $paramName . 'a';
+                            $paramB = $paramName . 'b';
+                            $cond = $expr->andX(
+                                $expr->gte($fieldPath, ':' . $paramA),
+                                $expr->lte($fieldPath, ':' . $paramB)
+                            );
+                            $qb->setParameter($paramA, $valor[0]);
+                            $qb->setParameter($paramB, $valor[1]);
+                        }
+                        break;
+                }
             }
 
             if ($cond) {
@@ -158,6 +196,7 @@ class FilterService
                     'logical' => $filtro['logico'] ?? 'AND',
                     'param' => $paramName,
                     'value' => $valor,
+                    'isRange' => in_array($filtro['operador'], ['Entre', 'RangoFechaPersonalizado'])
                 ];
             }
         }
@@ -166,24 +205,28 @@ class FilterService
         if (!empty($whereParts)) {
             $exprTotal = null;
             foreach ($whereParts as $i => $part) {
+                // Establecer parámetros para condiciones que no son de rango
+                if (!($part['isRange'] ?? false)) {
+                    $qb->setParameter($part['param'], $part['value']);
+                }
+                
                 if ($i === 0) {
                     $exprTotal = $part['condition'];
                 } else {
-                    if (strtoupper($part['logical']) === 'OR') {
+                    $logical = strtoupper($part['logical']);
+                    if ($logical === 'OR') {
                         $exprTotal = $expr->orX($exprTotal, $part['condition']);
-                    } elseif (strtoupper($part['logical']) === 'NOT') {
+                    } elseif ($logical === 'NOT') {
+                        // Para NOT, necesitamos negar la condición pero aún así usar AND
                         $exprTotal = $expr->andX($exprTotal, $expr->not($part['condition']));
                     } else {
+                        // Por defecto usar AND
                         $exprTotal = $expr->andX($exprTotal, $part['condition']);
                     }
                 }
-
-                if (!in_array($part['logical'], ['NOT'])) {
-                    $qb->setParameter($part['param'], $part['value']);
-                }
             }
+            
             $qb->andWhere($exprTotal);
-            // dd($qb);
         }
     }
 

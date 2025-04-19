@@ -46,7 +46,7 @@ class AdvancedFilterRepository extends ServiceEntityRepository
         }
     }
 
-    public function BuidBaseQuery(string $entityClass, $filters, array $oder): array
+    public function BuildBaseQuery(string $entityClass, $filters, array $order = []): array
     {
         $qb = $this->entityManager->createQueryBuilder()
         ->select('af')
@@ -61,6 +61,7 @@ class AdvancedFilterRepository extends ServiceEntityRepository
                 $qb->addOrderBy("af.{$field}", $direction);
             }
         }
+        // dd($qb);
         $result = $qb->getQuery()->getResult();
         // dd($result);
         return $result;
