@@ -1,9 +1,9 @@
 // Importaciones de validaciones y utilidades
-import { validateCantidadCondiciones, validateConditions } from '../validators/validateConditions.js';
 import { validateCampoRepetido } from '../validators/validateCampoRepetido.js';
 import { validateUltimaCondicion } from '../validators/validateUltimaCondicion.js';
 import { actualizarOperadoresYValorInput } from '../transforms/asideDynamicInputs.js';
 import { mostrarMensajeError } from '../utils/mostrarMensajeError.js';
+import { validateCantidadCondiciones, validateConditions } from '../validators/validateconditions.js';
 
 export function inicializarEventosAside() {
     const crearFiltroBtn = document.getElementById('crearFiltroPersonalizado');

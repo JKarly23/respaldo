@@ -1,5 +1,4 @@
 import { mostrarMensajeError } from '../utils/mostrarMensajeError.js';
-import { validateCamposRepetidos } from './validateCamposRepetidos.js';
 
 export const operadoresPorTipo = {
     number: ['=', '!=', '>', '<', '>=', '<=', 'between'],
