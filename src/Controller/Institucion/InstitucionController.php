@@ -62,11 +62,12 @@ class InstitucionController extends AbstractController
      */
     public function index(
         InstitucionRepository $institucionRepository, FilterService $filterService, Request $request) {
-        $result = $filterService->processFilters($request, Institucion::class);
-        $registros = $institucionRepository->getInstituciones();
+        $fields = $filterService->getFilterableFields(Institucion::class);
+        $filtros = $filterService->getFilters($request);
+        $registros = $institucionRepository->getInstituciones($filtros);
         return $this->render('modules/institucion/institucion/index.html.twig', [
             'registros' => $registros,
-            'filterableFields' => $result['filterableFields'],
+            'filterableFields' => $fields,     
             
         ]);
     }

@@ -5,6 +5,8 @@ namespace App\Repository;
 use App\Entity\AdvancedFilter;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use App\Services\FilterService;
+use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * @extends ServiceEntityRepository<AdvancedFilter>
@@ -16,9 +18,14 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class AdvancedFilterRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private $filterService;
+    private $entityManager;
+
+    public function __construct(ManagerRegistry $registry, FilterService $filterService, EntityManagerInterface $entityManager)
     {
         parent::__construct($registry, AdvancedFilter::class);
+        $this->filterService = $filterService;
+        $this->entityManager = $entityManager;
     }
 
     public function add(AdvancedFilter $entity, bool $flush = false): void
@@ -39,28 +46,23 @@ class AdvancedFilterRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return AdvancedFilter[] Returns an array of AdvancedFilter objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('a')
-//            ->andWhere('a.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('a.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    public function BuidBaseQuery(string $entityClass, $filters, array $oder): array
+    {
+        $qb = $this->entityManager->createQueryBuilder()
+        ->select('af')
+        ->from($entityClass, 'af');
 
-//    public function findOneBySomeField($value): ?AdvancedFilter
-//    {
-//        return $this->createQueryBuilder('a')
-//            ->andWhere('a.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+        if($filters){
+            $this->filterService->applyFiltersToQueryBuilder($qb, $filters, 'af');
+        }
+
+        if (!empty($order)) {
+            foreach ($order as $field => $direction) {
+                $qb->addOrderBy("af.{$field}", $direction);
+            }
+        }
+        $result = $qb->getQuery()->getResult();
+        // dd($result);
+        return $result;
+    }
 }

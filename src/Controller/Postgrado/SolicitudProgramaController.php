@@ -51,16 +51,14 @@ class SolicitudProgramaController extends AbstractController
      */
     public function index(
         SolicitudProgramaRepository $solicitudProgramaRepository,
-        Request $request,
         FilterService $filterService
     ) {
         
         $registros = $solicitudProgramaRepository->findBy([], ['activo' => 'desc', 'id' => 'desc']);
-        $result = $filterService->processFilters($request,SolicitudPrograma::class);
+        $result = $filterService->getFilterableFields(SolicitudPrograma::class);
         return $this->render('modules/postgrado/solicitud_programa/index.html.twig', [
             'registros' => $registros,
             'filterableFields' => $result['filterableFields'],
-            'fitros' => $result['filters'],
         ]);
     }
 

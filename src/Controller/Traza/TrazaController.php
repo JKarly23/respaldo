@@ -20,6 +20,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Serializer\SerializerInterface;
 
 use App\Services\FilterService;
+use App\Repository\AdvancedFilterRepository;
 
 /**
  * @Route("/traza/traza")
@@ -42,7 +43,9 @@ class TrazaController extends AbstractController
         UserRepository $userRepository,
         ConfiguracionTrazaRepository $configuracionTrazaRepository,
         Request $request,
-        FilterService $filterService
+        FilterService $filterService,
+        AdvancedFilterRepository $advancedFilterRepository
+        
     ) {
         $persona = $personaRepository->findOneBy(['usuario' => $userRepository->find($this->getUser()->getId())]);
         $idPersona = -1;
@@ -54,13 +57,17 @@ class TrazaController extends AbstractController
         if (isset($configuracionTraza) && !empty($configuracionTraza)) {
             $configuracionTrazaActivo = $configuracionTraza->getActivo();
         }
-        $result = $filterService->processFilters($request,Traza::class);
+        $filters = $filterService->getFilters($request);
+        $fields = $filterService->getFilterableFields(Traza::class);
         $registros = $trazaRepository->findBy([],['creado' => 'desc']);
+        if($filters){
+            $registros = $advancedFilterRepository->BuidBaseQuery(Traza::class, $filters,['creado' => 'desc'] );
+        }
 
         return $this->render('modules/traza/traza/index.html.twig', [
             'registros' => $registros,
             'configuracionTraza' => $configuracionTrazaActivo,
-            'filterableFields' => $result['filterableFields'],
+            'filterableFields' => $fields,
         ]);
     }
 

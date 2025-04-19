@@ -5,6 +5,7 @@ namespace App\Repository\Institucion;
 use App\Entity\Institucion\Institucion;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use App\Services\FilterService;
 
 /**
  * @extends ServiceEntityRepository<Institucion>
@@ -16,9 +17,11 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class InstitucionRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private $filterService;
+    public function __construct(ManagerRegistry $registry, FilterService $filterService)
     {
         parent::__construct($registry, Institucion::class);
+        $this->filterService = $filterService;
     }
 
     public function add(Institucion $entity, bool $flush = false): void
@@ -49,8 +52,9 @@ class InstitucionRepository extends ServiceEntityRepository
         }
     }
 
-    public function getInstituciones()
+    public function getInstituciones(array $filters = [])
     {
+        
         $qb = $this->createQueryBuilder('qb')
             ->select(
                 "qb.id, 
@@ -62,6 +66,9 @@ class InstitucionRepository extends ServiceEntityRepository
                         qb.codigo,                      
                         concat(gradoAcademicoR.siglas,' ', qb.rector) as rector");
         $qb->leftJoin('qb.gradoAcademicoRector', 'gradoAcademicoR');
+        if($filters){
+            $this->filterService->applyFiltersToQueryBuilder($qb, $filters, 'qb');
+        }
         $qb->orderBy('qb.nombre');
         $resul = $qb->getQuery()->getArrayResult();
         return $resul;

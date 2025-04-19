@@ -14,7 +14,6 @@ export function inicializarFiltroActivoManager() {
             : '<i class="fas fa-chevron-up"></i>';
 
         if (estaOculto) {
-            // Only clean URL if there are no filters in localStorage
             limpiarUrl();
             sessionStorage.setItem('filtros_colapsados', 'true');
         } else {
@@ -33,10 +32,8 @@ export function inicializarFiltroActivoManager() {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(filtros));
     }
 
-    // Modified limpiarUrl function to check localStorage first
     function limpiarUrl() {
         const filtrosEnStorage = localStorage.getItem(STORAGE_KEY);
-        // Only clean URL if there are no filters in localStorage
         if (!filtrosEnStorage || JSON.parse(filtrosEnStorage).length === 0) {
             const url = new URL(window.location.href);
             if (url.searchParams.has('filtros_activos')) {
@@ -48,57 +45,41 @@ export function inicializarFiltroActivoManager() {
         }
     }
 
-    // Modified toggle button click handler
-    toggleBtn?.addEventListener('click', () => {
-        const estaOculto = filtrosActivosDiv.classList.toggle('filtros-colapsado');
-        toggleBtn.innerHTML = estaOculto
-            ? '<i class="fas fa-chevron-down"></i>'
-            : '<i class="fas fa-chevron-up"></i>';
-
-        if (estaOculto) {
-            // Only clean URL if there are no filters in localStorage
-            limpiarUrl();
-            sessionStorage.setItem('filtros_colapsados', 'true');
-        } else {
-            const filtros = window.obtenerFiltrosActivos();
-            if (filtros.length > 0) {
-                const url = new URL(window.location.href);
-                url.searchParams.set('filtros_activos', JSON.stringify(filtros));
-                window.history.replaceState({}, '', url.toString());
-            }
-            sessionStorage.removeItem('filtros_colapsados');
-        }
-    });
-
-    // Modified enviarFiltrosAlBackend function
     function enviarFiltrosAlBackend(forceSubmit = false) {
         const filtros = window.obtenerFiltrosActivos();
-
+        
         if (filtros.length === 0) {
-            // Only clean URL if there are no filters in localStorage
             limpiarUrl();
             return;
         }
 
         if (!forceSubmit && sessionStorage.getItem(SESSION_KEY) === '1') return;
 
-        const form = document.createElement('form');
-        form.method = 'GET';
-        form.action = window.location.pathname;
+    
+        const currentUrl = window.location.pathname;
+        const filtrosCodificados = encodeURIComponent(JSON.stringify(filtros[0]?.payload));
+        const nuevaUrl = `${currentUrl}?filtros_activos=${filtrosCodificados}`;
 
-        const filtrosInput = document.createElement('input');
-        filtrosInput.type = 'hidden';
-        filtrosInput.name = 'filtros_activos';
-        filtrosInput.value = JSON.stringify(filtros);
-        form.appendChild(filtrosInput);
+        // Actualizar la URL en la barra sin recargar
+        window.history.pushState({}, '', nuevaUrl);
 
-        document.body.appendChild(form);
+        // Hacer la petición GET al backend
+        fetch(nuevaUrl, {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+            .then(() => {
+                console.log('Filtros enviados exitosamente');
+            })
+            .catch(error => {
+                console.error('Error al enviar filtros:', error);
+            });
 
         if (!forceSubmit) {
             sessionStorage.setItem(SESSION_KEY, '1');
         }
-
-        form.submit();
     }
 
     window.enviarFiltrosAlBackend = function (forceSubmit = true) {

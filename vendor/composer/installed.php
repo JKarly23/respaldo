@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => '__root__',
-        'pretty_version' => 'dev-master',
-        'version' => 'dev-master',
-        'reference' => '7919cb69b51e03e8f8a164798d816dabf4ddb2b1',
+        'pretty_version' => 'dev-main',
+        'version' => 'dev-main',
+        'reference' => '1db7c8300f6c84484e797ee1fb9e01e04f93c567',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -11,9 +11,9 @@
     ),
     'versions' => array(
         '__root__' => array(
-            'pretty_version' => 'dev-master',
-            'version' => 'dev-master',
-            'reference' => '7919cb69b51e03e8f8a164798d816dabf4ddb2b1',
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
+            'reference' => '1db7c8300f6c84484e797ee1fb9e01e04f93c567',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -1092,9 +1092,9 @@
             'dev_requirement' => false,
         ),
         'symfony/monolog-bundle' => array(
-            'pretty_version' => 'v3.8.0',
-            'version' => '3.8.0.0',
-            'reference' => 'a41bbcdc1105603b6d73a7d9a43a3788f8e0fb7d',
+            'pretty_version' => 'v3.10.0',
+            'version' => '3.10.0.0',
+            'reference' => '414f951743f4aa1fd0f5bf6a0e9c16af3fe7f181',
             'type' => 'symfony-bundle',
             'install_path' => __DIR__ . '/../symfony/monolog-bundle',
             'aliases' => array(),
@@ -1198,7 +1198,7 @@
             'version' => '1.20.0.0',
             'reference' => '54b8cd7e6c1643d78d011f3be89f3ef1f9f4c675',
             'type' => 'metapackage',
-            'install_path' => NULL,
+            'install_path' => null,
             'aliases' => array(),
             'dev_requirement' => false,
         ),

@@ -83,7 +83,7 @@ export function validateConditions(container) {
         }
 
         // Construir expresión legible para backend
-        const nombreCampo = campoSelect.options[campoSelect.selectedIndex].text;
+        const nombreCampo =  campoSelect.value;
         const operadorLegible = operadorSelect.options[operadorSelect.selectedIndex].text;
 
         let expresion = '';
