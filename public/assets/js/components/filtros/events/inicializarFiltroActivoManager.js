@@ -188,7 +188,7 @@ export function inicializarFiltroActivoManager() {
         const tag = document.createElement('div');
         tag.className = 'filter-tag d-flex align-items-center px-3 py-2 mb-1 mr-2';
         tag.style.cssText = `
-            background-color: #e8f4fd;
+            background-color:rgb(214, 214, 214);
             color: #0056b3;
             border: 1px solid #b8daff;
             border-radius: 6px;
@@ -216,23 +216,25 @@ export function inicializarFiltroActivoManager() {
             </button>
         `;
 
-        tag.querySelector('button.close').addEventListener('click', () => {
-            filtrosActivosDiv.removeChild(tag);
-
-            const hayFiltros = filtrosActivosDiv.children.length > 0;
-            filtrosActivosWrapper.style.display = hayFiltros ? 'block' : 'none';
-
-            guardarEnStorage();
-            sessionStorage.removeItem(SESSION_KEY);
-
-            if (!hayFiltros) {
-                localStorage.removeItem(STORAGE_KEY);
-                sessionStorage.removeItem(URL_ORIGINAL_KEY);
+        const closeBtn = tag.querySelector('button.btn-close');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => {
+                filtrosActivosDiv.removeChild(tag);
+                const hayFiltros = filtrosActivosDiv.children.length > 0;
+                filtrosActivosWrapper.style.display = hayFiltros ? 'block' : 'none';
+        
+                guardarEnStorage();
                 sessionStorage.removeItem(SESSION_KEY);
-                restaurarDatosSinFiltros();
-                limpiarUrl();
-            }
-        });
+        
+                if (!hayFiltros) {
+                    localStorage.removeItem(STORAGE_KEY);
+                    sessionStorage.removeItem(URL_ORIGINAL_KEY);
+                    sessionStorage.removeItem(SESSION_KEY);
+                    restaurarDatosSinFiltros();
+                    limpiarUrl();
+                }
+            });
+        }
 
         filtrosActivosDiv.appendChild(tag);
         filtrosActivosWrapper.style.display = 'block';
