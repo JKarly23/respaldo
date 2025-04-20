@@ -44,47 +44,95 @@ export function inicializarFiltroActivoManager() {
             }
         }
     }
-
     function enviarFiltrosAlBackend(forceSubmit = false) {
         const filtros = window.obtenerFiltrosActivos();
-        
+
         if (filtros.length === 0) {
             limpiarUrl();
             return;
         }
 
+        // Agregar manejo de estado de carga
+        const loadingElement = document.createElement('div');
+        loadingElement.className = 'loading-overlay';
+        loadingElement.innerHTML = '<div class="spinner-border text-primary"></div>';
+        document.body.appendChild(loadingElement);
+
         if (!forceSubmit && sessionStorage.getItem(SESSION_KEY) === '1') return;
 
-    
         const currentUrl = window.location.pathname;
         const filtrosCodificados = encodeURIComponent(JSON.stringify(filtros[0]?.payload));
         const nuevaUrl = `${currentUrl}?filtros_activos=${filtrosCodificados}`;
 
-        // Actualizar la URL en la barra sin recargar
         window.history.pushState({}, '', nuevaUrl);
 
-        // Hacer la petición GET al backend
         fetch(nuevaUrl, {
             method: 'GET',
             headers: {
                 'X-Requested-With': 'XMLHttpRequest'
             }
         })
-            .then(() => {
-                console.log('Filtros enviados exitosamente');
+            .then(response => response.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const nuevaTabla = doc.querySelector('#contenedorTabla');
+                const tablaActual = document.querySelector('#contenedorTabla');
+
+                if (nuevaTabla && tablaActual) {
+                    tablaActual.innerHTML = nuevaTabla.innerHTML;
+                    restaurarDataTable();
+                }
+
+                // Eliminar indicador de carga
+                document.body.removeChild(loadingElement);
+
+                // Actualizar el estado de carga del navegador
+                document.querySelector('html').classList.remove('loading');
+
+                console.log('Filtros aplicados correctamente.');
             })
             .catch(error => {
                 console.error('Error al enviar filtros:', error);
+                document.body.removeChild(loadingElement);
+                document.querySelector('html').classList.remove('loading');
             });
-
-        if (!forceSubmit) {
-            sessionStorage.setItem(SESSION_KEY, '1');
-        }
     }
 
     window.enviarFiltrosAlBackend = function (forceSubmit = true) {
         enviarFiltrosAlBackend(forceSubmit);
     };
+
+    function restaurarDatosSinFiltros() {
+        const urlBase = window.location.pathname;
+
+        // Limpiar URL
+        window.history.pushState({}, '', urlBase);
+
+        fetch(urlBase, {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+            .then(response => response.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+
+                const nuevaTabla = doc.querySelector('#contenedorTabla');
+                const tablaActual = document.querySelector('#contenedorTabla');
+
+                if (nuevaTabla && tablaActual) {
+                    tablaActual.innerHTML = nuevaTabla.innerHTML;
+                    // Reinicializar DataTable
+                    restaurarDataTable();
+                }
+            })
+            .catch(error => {
+                console.error('Error al restaurar los datos:', error);
+            });
+    }
 
     function restaurarDesdeStorage() {
         const data = localStorage.getItem(STORAGE_KEY);
@@ -138,15 +186,32 @@ export function inicializarFiltroActivoManager() {
         }
 
         const tag = document.createElement('div');
-        tag.className = 'badge badge-pill badge-primary d-flex align-items-center px-3 py-2 mb-1 mr-2';
-        tag.style.cursor = 'default';
+        tag.className = 'filter-tag d-flex align-items-center px-3 py-2 mb-1 mr-2';
+        tag.style.cssText = `
+            background-color: #e8f4fd;
+            color: #0056b3;
+            border: 1px solid #b8daff;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            cursor: default;
+            transition: all 0.2s ease;
+        `;
         tag.dataset.tipo = tipo;
         tag.dataset.payload = payload ? JSON.stringify(payload) : '';
         tag.dataset.label = label;
 
         tag.innerHTML = `
             <span class="mr-2">${label}</span>
-            <button type="button" class="close ml-1 text-white" aria-label="Eliminar" style="opacity: 0.8;">
+            <button type="button" class="btn-close ml-1" aria-label="Eliminar" style="
+                background: none;
+                border: none;
+                color: #0056b3;
+                font-size: 1rem;
+                padding: 0 4px;
+                opacity: 0.7;
+                cursor: pointer;
+            ">
                 <span aria-hidden="true">&times;</span>
             </button>
         `;
@@ -164,6 +229,7 @@ export function inicializarFiltroActivoManager() {
                 localStorage.removeItem(STORAGE_KEY);
                 sessionStorage.removeItem(URL_ORIGINAL_KEY);
                 sessionStorage.removeItem(SESSION_KEY);
+                restaurarDatosSinFiltros();
                 limpiarUrl();
             }
         });
@@ -203,4 +269,53 @@ export function inicializarFiltroActivoManager() {
     restaurarDesdeStorage();
     verificarEstadoColapso();
     limpiarUrl(); // Limpieza inicial si había filtros colapsados
+}
+
+
+function restaurarDataTable() {
+    const tabla = $('.dataTable').DataTable({
+        lengthMenu: [[5, 25, 50, -1], [5, 25, 50, "All"]],
+        responsive: false,
+        lengthChange: true,
+        autoWidth: false,
+        scrollX: true,
+        language: {
+            sProcessing: "Procesando...",
+            sLengthMenu: "Mostrar _MENU_ registros",
+            sZeroRecords: "No se encontraron resultados",
+            sEmptyTable: "No existen resultados",
+            sInfo: "Registros del _START_ al _END_ de  _TOTAL_ ",
+            sInfoEmpty: "Rregistros del 0 al 0 de  0 ",
+            sInfoFiltered: "(filtrado de un total de _MAX_ registros)",
+            sInfoPostFix: "",
+            sSearch: "Buscar:",
+            sUrl: "",
+            sInfoThousands: ",",
+            sLoadingRecords: "Cargando...",
+            oPaginate: {
+                sFirst: "Primero",
+                sLast: "Último",
+                sNext: "Siguiente",
+                sPrevious: "Anterior"
+            },
+            oAria: {
+                sSortAscending: ": Activar para ordenar la columna de manera ascendente",
+                sSortDescending: ": Activar para ordenar la columna de manera descendente"
+            },
+            buttons: {
+                copy: "Copiar",
+                colvis: "Visibilidad"
+            }
+        }
+    });
+
+    // Restaurar los botones de la tabla
+    new $.fn.dataTable.Buttons(tabla, {
+        buttons: [
+            'copy', 'colvis'
+        ]
+    });
+
+    tabla.buttons().container()
+        .appendTo('#contenedorTabla_wrapper .col-md-6:eq(0)');
 }

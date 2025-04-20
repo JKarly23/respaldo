@@ -112,6 +112,9 @@ class FilterService
             // Verificar si es un campo de fecha
             $isDateField = isset($filtro['tipo']) && ($filtro['tipo'] === 'datetime' || $filtro['tipo'] === 'date');
             $isCustomCondition = false; // Flag para indicar si ya creamos una condición personalizada
+            
+            // Verificar si es un campo de texto para aplicar LOWER()
+            $isTextField = isset($filtro['tipo']) && ($filtro['tipo'] === 'string' || $filtro['tipo'] === 'text');
 
             if ($isDateField) {
                 if ($filtro['operador'] === 'Entre' && is_array($filtro['valor'])) {
@@ -143,25 +146,49 @@ class FilterService
             if (!$isCustomCondition) {
                 switch ($filtro['operador']) {
                     case 'Igual':
-                        $cond = $expr->eq($fieldPath, ':' . $paramName);
+                        if ($isTextField && is_string($valor)) {
+                            $cond = $expr->eq($expr->lower($fieldPath), $expr->lower(':' . $paramName));
+                        } else {
+                            $cond = $expr->eq($fieldPath, ':' . $paramName);
+                        }
                         break;
                     case 'Diferente':
-                        $cond = $expr->neq($fieldPath, ':' . $paramName);
+                        if ($isTextField && is_string($valor)) {
+                            $cond = $expr->neq($expr->lower($fieldPath), $expr->lower(':' . $paramName));
+                        } else {
+                            $cond = $expr->neq($fieldPath, ':' . $paramName);
+                        }
                         break;
                     case 'Contiene':
-                        $cond = $expr->like($fieldPath, ':' . $paramName);
+                        if ($isTextField && is_string($valor)) {
+                            $cond = $expr->like($expr->lower($fieldPath), $expr->lower(':' . $paramName));
+                        } else {
+                            $cond = $expr->like($fieldPath, ':' . $paramName);
+                        }
                         $valor = '%' . $valor . '%';
                         break;
                     case 'No contiene':
-                        $cond = $expr->notLike($fieldPath, ':' . $paramName);
+                        if ($isTextField && is_string($valor)) {
+                            $cond = $expr->notLike($expr->lower($fieldPath), $expr->lower(':' . $paramName));
+                        } else {
+                            $cond = $expr->notLike($fieldPath, ':' . $paramName);
+                        }
                         $valor = '%' . $valor . '%';
                         break;
                     case 'Empieza con':
-                        $cond = $expr->like($fieldPath, ':' . $paramName);
+                        if ($isTextField && is_string($valor)) {
+                            $cond = $expr->like($expr->lower($fieldPath), $expr->lower(':' . $paramName));
+                        } else {
+                            $cond = $expr->like($fieldPath, ':' . $paramName);
+                        }
                         $valor = $valor . '%';
                         break;
                     case 'Termina con':
-                        $cond = $expr->like($fieldPath, ':' . $paramName);
+                        if ($isTextField && is_string($valor)) {
+                            $cond = $expr->like($expr->lower($fieldPath), $expr->lower(':' . $paramName));
+                        } else {
+                            $cond = $expr->like($fieldPath, ':' . $paramName);
+                        }
                         $valor = '%' . $valor;
                         break;
                     case 'Mayor':
@@ -190,6 +217,11 @@ class FilterService
                         }
                         break;
                 }
+            }
+
+            // Si es un campo de texto, convertir el valor a minúsculas
+            if ($isTextField && is_string($valor)) {
+                $valor = strtolower($valor);
             }
 
             if ($cond) {

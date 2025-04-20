@@ -1,5 +1,4 @@
 <!-- Filtros activos -->
-
 <!-- Wrapper para mostrar los filtros activos -->
 <div id="filtrosActivosWrapper" class="mb-3" style="display: none;">
     <div class="card border shadow-sm rounded">
@@ -10,7 +9,7 @@
             </button>
         </div>
         
-        <div id="filtrosActivos" class="card-body d-flex flex-wrap align-items-start">
+        <div id="filtrosActivos" class="card-body d-flex flex-wrap align-items-start" style="max-width: 100%; overflow-x: auto; white-space: nowrap;">
             <!-- Aquí se agregarán dinámicamente los filtros activos -->
         </div>
     </div>
@@ -23,7 +22,18 @@
     padding: 0;
     transition: max-height 0.3s ease;
 }
+
+#filtrosActivos {
+    max-width: 100%; /* Asegura que el contenedor no crezca más allá del 100% del ancho disponible */
+    overflow-x: auto; /* Habilita desplazamiento horizontal si el contenido es largo */
+    white-space: nowrap; /* Impide que el texto se divida en varias líneas */
+}
+
+.card-body {
+    padding: 0.75rem;
+}
 </style>
+
 {% block javascripts %}
     <script type="module" src="{{ asset('assets/js/components/filtros/main.js') }}"></script>
 {% endblock %}
