@@ -44,60 +44,59 @@ export function inicializarFiltroActivoManager() {
             }
         }
     }
-    function enviarFiltrosAlBackend(forceSubmit = false) {
-        const filtros = window.obtenerFiltrosActivos();
+    function enviarFiltrosAlBackend() {
+        const filtros = window.obtenerFiltrosActivos(); // Debes tener esta función implementada
 
-        if (filtros.length === 0) {
-            limpiarUrl();
+        // Si no hay filtros, limpia la URL y detén
+        if (!filtros || filtros.length === 0) {
+            limpiarUrl(); // Si deseas limpiar la URL al quitar filtros
             return;
         }
 
-        // Agregar manejo de estado de carga
-        const loadingElement = document.createElement('div');
-        loadingElement.className = 'loading-overlay';
-        loadingElement.innerHTML = '<div class="spinner-border text-primary"></div>';
-        document.body.appendChild(loadingElement);
+        // Mostrar spinner de carga
+        const loadingOverlay = document.createElement('div');
+        loadingOverlay.className = 'loading-overlay';
+        loadingOverlay.innerHTML = '<div class="spinner-border text-primary"></div>';
+        document.body.appendChild(loadingOverlay);
 
-        if (!forceSubmit && sessionStorage.getItem(SESSION_KEY) === '1') return;
-
+        // Preparar URL actual + filtros codificados
         const currentUrl = window.location.pathname;
-        const filtrosCodificados = encodeURIComponent(JSON.stringify(filtros[0]?.payload));
-        const nuevaUrl = `${currentUrl}?filtros_activos=${filtrosCodificados}`;
+        const queryParam = encodeURIComponent(JSON.stringify(filtros[0]?.payload));
+        const ajaxUrl = `${currentUrl}?filtros_activos=${queryParam}`;
 
-        window.history.pushState({}, '', nuevaUrl);
+        // Actualiza la URL sin recargar (opcional)
+        window.history.pushState({}, '', ajaxUrl);
 
-        fetch(nuevaUrl, {
+        // Llamada AJAX al backend
+        fetch(ajaxUrl, {
             method: 'GET',
             headers: {
                 'X-Requested-With': 'XMLHttpRequest'
             }
         })
-            .then(response => response.text())
+            .then(response => {
+                if (!response.ok) throw new Error('Respuesta no OK');
+                return response.text();
+            })
             .then(html => {
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(html, 'text/html');
                 const nuevaTabla = doc.querySelector('#contenedorTabla');
-                const tablaActual = document.querySelector('#contenedorTabla');
+                const actual = document.querySelector('#contenedorTabla');
 
-                if (nuevaTabla && tablaActual) {
-                    tablaActual.innerHTML = nuevaTabla.innerHTML;
+                if (nuevaTabla && actual) {
+                    actual.innerHTML = nuevaTabla.innerHTML;
                     restaurarDataTable();
                 }
-
-                // Eliminar indicador de carga
-                document.body.removeChild(loadingElement);
-
-                // Actualizar el estado de carga del navegador
-                document.querySelector('html').classList.remove('loading');
-
-                console.log('Filtros aplicados correctamente.');
             })
             .catch(error => {
-                console.error('Error al enviar filtros:', error);
-                document.body.removeChild(loadingElement);
-                document.querySelector('html').classList.remove('loading');
+                console.error('Error al cargar filtros:', error);
+            })
+            .finally(() => {
+                document.body.removeChild(loadingOverlay);
             });
     }
+
 
     window.enviarFiltrosAlBackend = function (forceSubmit = true) {
         enviarFiltrosAlBackend(forceSubmit);
@@ -125,7 +124,6 @@ export function inicializarFiltroActivoManager() {
 
                 if (nuevaTabla && tablaActual) {
                     tablaActual.innerHTML = nuevaTabla.innerHTML;
-                    // Reinicializar DataTable
                     restaurarDataTable();
                 }
             })
@@ -222,10 +220,10 @@ export function inicializarFiltroActivoManager() {
                 filtrosActivosDiv.removeChild(tag);
                 const hayFiltros = filtrosActivosDiv.children.length > 0;
                 filtrosActivosWrapper.style.display = hayFiltros ? 'block' : 'none';
-        
+
                 guardarEnStorage();
                 sessionStorage.removeItem(SESSION_KEY);
-        
+
                 if (!hayFiltros) {
                     localStorage.removeItem(STORAGE_KEY);
                     sessionStorage.removeItem(URL_ORIGINAL_KEY);
@@ -273,8 +271,13 @@ export function inicializarFiltroActivoManager() {
     limpiarUrl(); // Limpieza inicial si había filtros colapsados
 }
 
-
 function restaurarDataTable() {
+    // Destruir cualquier instancia existente
+    if ($.fn.dataTable.isDataTable('#contenedorTabla table')) {
+        $('#contenedorTabla table').DataTable().destroy();
+    }
+
+    // Inicializar el dataTable en la tabla, no en el div
     const tabla = $('.dataTable').DataTable({
         lengthMenu: [[5, 25, 50, -1], [5, 25, 50, "All"]],
         responsive: false,

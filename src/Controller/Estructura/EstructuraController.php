@@ -25,6 +25,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 use App\Services\FilterService;
+use App\Repository\AdvancedFilterRepository;
 
 
 /**
@@ -39,14 +40,17 @@ class EstructuraController extends AbstractController
      * @return Response
      * @IsGranted("ROLE_ADMIN", "ROLE_GEST_ESTRUCT")
      */
-    public function index(Request $request, EstructuraRepository $estructuraRepository,FilterService $filterService)
+    public function index(Request $request, EstructuraRepository $estructuraRepository, FilterService $filterService, AdvancedFilterRepository $advancedFilterRepository)
     {
         try {
-            $registros = $estructuraRepository->findBy([], ['activo' => 'desc', 'id' => 'desc']);
-            $result = $filterService->processFilters($request, Estructura::class);
+            $fields = $filterService->getFilterableFields(Estructura::class);
+            $filtros = $filterService->getFilters($request);
+            $registros = $filtros
+                ? $advancedFilterRepository->BuildBaseQuery(Estructura::class, $filtros, ['activo' => 'desc', 'id' => 'desc'])
+                : $estructuraRepository->findBy([], ['activo' => 'desc', 'id' => 'desc']);
             return $this->render('modules/estructura/estructura/index.html.twig', [
                 'registros' => $registros,
-                'filterableFields' => $result['filterableFields'],
+                'filterableFields' => $fields,
             ]);
         } catch (\Exception $exception) {
             $this->addFlash('error', $exception->getMessage());
@@ -76,7 +80,6 @@ class EstructuraController extends AbstractController
         return $this->render('modules/estructura/estructura/arbol.html.twig', [
             'registros' => json_encode($registros),
         ]);
-
     }
 
     /**
@@ -318,10 +321,9 @@ class EstructuraController extends AbstractController
     public function getEstructuraDadoCategoria(Request $request, $id, EstructuraRepository $estructuraRepository, Utils $utils): JsonResponse
     {
         try {
-//            $estructurasNegocio = $utils->procesarRolesUsuarioAutenticado($this->getUser()->getId());
-//            return $this->json($utils->procesarNomenclador($estructuraRepository->geEstructurasDadoArrayEstructuras($id, $estructurasNegocio)));
+            //            $estructurasNegocio = $utils->procesarRolesUsuarioAutenticado($this->getUser()->getId());
+            //            return $this->json($utils->procesarNomenclador($estructuraRepository->geEstructurasDadoArrayEstructuras($id, $estructurasNegocio)));
             return $this->json($utils->procesarNomenclador($estructuraRepository->geEstructurasDadoArrayEstructurasTemp($id)));
-
         } catch (\Exception $exception) {
             return new JsonResponse([]);
         }

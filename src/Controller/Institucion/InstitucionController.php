@@ -64,29 +64,17 @@ class InstitucionController extends AbstractController
         InstitucionRepository $institucionRepository,
         FilterService $filterService,
         Request $request
-    ) {
+    ): Response {
         $fields = $filterService->getFilterableFields(Institucion::class);
         $filtros = $filterService->getFilters($request);
-        if ($request->isXmlHttpRequest()) {
-            $registros = $institucionRepository->getInstituciones($filtros);
-            // Renderiza TODO, pero extrae solo #contenedorTabla
-            $html = $this->renderView('modules/institucion/institucion/index.html.twig', [
-                'registros' => $registros,
-                'filterableFields' => $fields,
-            ]);
-            // Extraer solo el contenido del div que necesitas
-            $start = strpos($html, '<div id="contenedorTabla"');
-            $end = strpos($html, '</div>', $start) + 6; // incluye el cierre del div
-            $fragmento = substr($html, $start, $end - $start);
 
-            return new Response($fragmento, Response::HTTP_OK);
-        }
+        $registros = $filtros
+            ? $institucionRepository->getInstituciones($filtros)
+            : $institucionRepository->getInstituciones();
 
-        $registros = $institucionRepository->getInstituciones();
         return $this->render('modules/institucion/institucion/index.html.twig', [
             'registros' => $registros,
             'filterableFields' => $fields,
-
         ]);
     }
 
