@@ -28,6 +28,12 @@ class AdvancedFilter
     private $name;
 
     /**
+     * @ORM\Column(type="string", length=100)
+     */
+    private $nameEntity;
+
+
+    /**
      * @ORM\Column(type="json")
      */
     private $filterJson;
@@ -70,6 +76,17 @@ class AdvancedFilter
         return $this;
     }
 
+    public function getNameEntity(): ?string
+    {
+        return $this->nameEntity;
+    }
+
+    public function setNameEntity(string $nameEntity): self
+    {
+        $this->nameEntity = $nameEntity;
+        return $this;
+    }
+    
     public function getFilterJson(): ?array
     {
         return $this->filterJson;

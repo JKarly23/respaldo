@@ -5,6 +5,7 @@ import { actualizarOperadoresYValorInput } from '../transforms/asideDynamicInput
 import { mostrarMensajeError } from '../utils/mostrarMensajeError.js';
 import { validateCantidadCondiciones, validateConditions } from '../validators/validateConditions.js';
 import { restaurarEstadoAside } from './restaurarCondiciones.js';
+import { savedFilters } from '../api/filtroRequest.js';
 
 
 restaurarEstadoAside();
@@ -19,6 +20,7 @@ export function inicializarEventosAside() {
     const confirmarGuardarFiltroBtn = document.getElementById('confirmarGuardarFiltro');
     const aplicarFiltroBtn = document.getElementById('aplicarFiltro');
     const messageDiv = document.querySelector('.showMessage');
+    const messageModalSaved = document.getElementById('showMessageModal');
 
     if (!crearFiltroBtn || !aside) return;
 
@@ -259,10 +261,10 @@ export function inicializarEventosAside() {
         const nombre = document.getElementById('nombreFiltro').value.trim();
 
         if (!nombre) {
-            alert('Por favor, ingrese un nombre para el filtro');
+            mostrarMensajeError(messageModalSaved, 'El nombre del filtro no puede estar vacío');
             return;
         }
-
+        savedFilters();
         console.log('Filtro guardado:', nombre);
         $('#guardarFiltroModal').modal('hide');
         cerrarAside();
