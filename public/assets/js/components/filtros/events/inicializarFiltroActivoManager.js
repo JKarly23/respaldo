@@ -45,58 +45,33 @@ export function inicializarFiltroActivoManager() {
         }
     }
     function enviarFiltrosAlBackend() {
-        const filtros = window.obtenerFiltrosActivos(); // Debes tener esta función implementada
-
-        // Si no hay filtros, limpia la URL y detén
+        const filtros = window.obtenerFiltrosActivos(); // Implementada por ti
+    
+        // Si no hay filtros, simplemente recargar sin query string
         if (!filtros || filtros.length === 0) {
-            limpiarUrl(); // Si deseas limpiar la URL al quitar filtros
+            window.location.href = window.location.pathname;
             return;
         }
-
-        // Mostrar spinner de carga
+    
+        // Solo construir la URL si hay filtros nuevos
+        const queryParam = encodeURIComponent(JSON.stringify(filtros[0]?.payload));
+        const currentUrl = window.location.pathname;
+        const fullUrl = `${currentUrl}?filtros_activos=${queryParam}`;
+    
+        // Verifica si ya estás en la URL deseada para evitar recarga infinita
+        if (window.location.href === window.location.origin + fullUrl) {
+            return; // Ya estás en la misma URL con los filtros, no hagas nada
+        }
+    
+        // Spinner opcional
         const loadingOverlay = document.createElement('div');
         loadingOverlay.className = 'loading-overlay';
         loadingOverlay.innerHTML = '<div class="spinner-border text-primary"></div>';
         document.body.appendChild(loadingOverlay);
-
-        // Preparar URL actual + filtros codificados
-        const currentUrl = window.location.pathname;
-        const queryParam = encodeURIComponent(JSON.stringify(filtros[0]?.payload));
-        const ajaxUrl = `${currentUrl}?filtros_activos=${queryParam}`;
-
-        // Actualiza la URL sin recargar (opcional)
-        window.history.pushState({}, '', ajaxUrl);
-
-        // Llamada AJAX al backend
-        fetch(ajaxUrl, {
-            method: 'GET',
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        })
-            .then(response => {
-                if (!response.ok) throw new Error('Respuesta no OK');
-                return response.text();
-            })
-            .then(html => {
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, 'text/html');
-                const nuevaTabla = doc.querySelector('#contenedorTabla');
-                const actual = document.querySelector('#contenedorTabla');
-
-                if (nuevaTabla && actual) {
-                    actual.innerHTML = nuevaTabla.innerHTML;
-                    restaurarDataTable();
-                }
-            })
-            .catch(error => {
-                console.error('Error al cargar filtros:', error);
-            })
-            .finally(() => {
-                document.body.removeChild(loadingOverlay);
-            });
+    
+        // Redirige
+        window.location.href = fullUrl;
     }
-
 
     window.enviarFiltrosAlBackend = function (forceSubmit = true) {
         enviarFiltrosAlBackend(forceSubmit);
@@ -104,32 +79,7 @@ export function inicializarFiltroActivoManager() {
 
     function restaurarDatosSinFiltros() {
         const urlBase = window.location.pathname;
-
-        // Limpiar URL
-        window.history.pushState({}, '', urlBase);
-
-        fetch(urlBase, {
-            method: 'GET',
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        })
-            .then(response => response.text())
-            .then(html => {
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, 'text/html');
-
-                const nuevaTabla = doc.querySelector('#contenedorTabla');
-                const tablaActual = document.querySelector('#contenedorTabla');
-
-                if (nuevaTabla && tablaActual) {
-                    tablaActual.innerHTML = nuevaTabla.innerHTML;
-                    restaurarDataTable();
-                }
-            })
-            .catch(error => {
-                console.error('Error al restaurar los datos:', error);
-            });
+        window.location.href = urlBase; // Redirige sin filtros y recarga la página
     }
 
     function restaurarDesdeStorage() {
