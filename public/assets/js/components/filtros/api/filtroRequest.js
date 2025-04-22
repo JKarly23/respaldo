@@ -20,7 +20,7 @@ export function savedFilters() {
     const urlActual = window.location.pathname;
     const nameEntity = urlActual.split('/')[2];
     console.log(nameEntity);
-    
+
 
     const payload = {
         name: filtroNombre,
@@ -48,3 +48,18 @@ export function savedFilters() {
             alert('Hubo un problema al guardar el filtro');
         });
 }
+
+export const findAllByUser = async () => {
+    try {
+        const entity = window.location.pathname.split('/')[2];
+        const response = await fetch(`/filter/${entity}`);
+        if (!response.ok) {
+            throw new Error(`Error en la respuesta: ${response.status}`);
+        }
+        const { filters } = await response.json();
+        return filters.length ? filters : { message: 'No hay filtros guardados para esta vista' };
+    } catch (error) {
+        console.error('Error al obtener los filtros:', error);
+        return { message: 'Error al cargar los filtros' };
+    }
+};

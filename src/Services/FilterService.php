@@ -65,12 +65,12 @@ class FilterService
         $paramIndex = 0;
 
         foreach ($filters as $index => $filtro) {
-           
+
             // Verificar que existan los campos necesarios
             if (!isset($filtro['campo']) || !isset($filtro['operador']) || !isset($filtro['valor'])) {
                 continue;
             }
-            
+
             $fieldPath = $alias . '.' . $filtro['campo'];
             if (str_contains($filtro['campo'], '.')) {
                 $parts = explode('.', $filtro['campo']);
@@ -96,7 +96,7 @@ class FilterService
 
                 $fieldPath = $relationAlias . '.' . $relatedField;
             }
-           
+
             if ($filtro['operador'] === 'Entre' && is_string($filtro['valor'])) {
                 $partes = explode(' - ', $filtro['valor']);
                 if (count($partes) === 2) {
@@ -112,7 +112,7 @@ class FilterService
             // Verificar si es un campo de fecha
             $isDateField = isset($filtro['tipo']) && ($filtro['tipo'] === 'datetime' || $filtro['tipo'] === 'date');
             $isCustomCondition = false; // Flag para indicar si ya creamos una condición personalizada
-            
+
             // Verificar si es un campo de texto para aplicar LOWER()
             $isTextField = isset($filtro['tipo']) && ($filtro['tipo'] === 'string' || $filtro['tipo'] === 'text');
 
@@ -124,7 +124,7 @@ class FilterService
                     // Para igualdad en fechas, crear un rango para todo el día
                     $fechaInicio = new \DateTime($valor . ' 00:00:00');
                     $fechaFin = new \DateTime($valor . ' 23:59:59');
-                    
+
                     // Usar BETWEEN para comparar solo la fecha, ignorando la hora
                     $paramNameEnd = $paramName . 'end';
                     $cond = $expr->andX(
@@ -133,7 +133,7 @@ class FilterService
                     );
                     $qb->setParameter($paramName, $fechaInicio);
                     $qb->setParameter($paramNameEnd, $fechaFin);
-                    
+
                     // Marcar como condición personalizada
                     $isCustomCondition = true;
                     $isRange = true;
@@ -243,7 +243,7 @@ class FilterService
                 if (!($part['isRange'] ?? false)) {
                     $qb->setParameter($part['param'], $part['value']);
                 }
-                
+
                 if ($i === 0) {
                     $exprTotal = $part['condition'];
                 } else {
@@ -259,9 +259,8 @@ class FilterService
                     }
                 }
             }
-            
+
             $qb->andWhere($exprTotal);
-            // dd($qb);
         }
     }
 
@@ -277,112 +276,83 @@ class FilterService
      * 
      * @return array An array of filterable fields with their metadata
      */
+
     public function getFilterableFields(string $entityClass, array $extraExcludedFields = []): array
     {
-        $meta = $this->em->getClassMetadata($entityClass);
-        $excludedFields = array_merge($this->getDefaultExcludedFields(), $extraExcludedFields);
+        static $cache = [];
 
-        $fields = array_merge(
-            $this->getSimpleFields($meta, $excludedFields),
-            $this->getRelationFields($meta, $excludedFields)
+        // Generamos una clave única para esta combinación
+        $cacheKey = $entityClass . ':' . md5(implode(',', $extraExcludedFields));
+
+        if (isset($cache[$cacheKey])) {
+            return $cache[$cacheKey];
+        }
+
+        $meta = $this->em->getClassMetadata($entityClass);
+        $excluded = array_flip(array_merge($this->getDefaultExcludedFields(), $extraExcludedFields));
+
+        $result = array_merge(
+            $this->getSimpleFields($meta, $excluded),
+            $this->getRelationFields($meta, $excluded)
         );
 
-        return $fields;
+        // Guardamos en caché
+        $cache[$cacheKey] = $result;
+        return $result;
     }
 
-    /**
-     * Gets the default excluded fields
-     * 
-     * @return array Array of default excluded fields
-     */
     private function getDefaultExcludedFields(): array
     {
-        return ['id', 'logo', 'descripcion', 'coordenadasSedePrincipal', 'foto', 'nombre'];
+        static $defaults = ['id', 'logo', 'descripcion', 'coordenadasSedePrincipal', 'foto', 'nombre'];
+        return $defaults;
     }
 
-    /**
-     * Get simple fields that are eligible for filtering
-     * 
-     * @param ClassMetadata $meta Entity metadata
-     * @param array $excludedFields Fields to exclude from the filterable list
-     * @return array Filterable simple fields
-     */
-    private function getSimpleFields(ClassMetadata $meta, array $excludedFields): array
+    private function getSimpleFields(ClassMetadata $meta, array $excluded): array
     {
         $fields = [];
 
         foreach ($meta->getFieldNames() as $field) {
-            if (in_array($field, $excludedFields, true) || $meta->hasAssociation($field)) {
+            if (isset($excluded[$field]) || $meta->hasAssociation($field)) {
                 continue;
             }
 
             $mapping = $meta->getFieldMapping($field);
-            if ($this->isFieldFilterable($mapping)) {
-                $fields[] = $this->buildFieldMetadata($field, $mapping);
+            $type = $mapping['type'] ?? null;
+
+            if (
+                in_array($type, ['string', 'integer', 'boolean', 'float', 'datetime', 'date'], true)
+                && $type !== 'text'
+                && empty($mapping['unique'])
+            ) {
+                $fields[] = [
+                    'name' => $field,
+                    'label' => $this->beautifyFieldName($field),
+                    'type' => $type,
+                    'isRelation' => false,
+                ];
             }
         }
 
         return $fields;
     }
 
-    /**
-     * Determine if a field is filterable based on its type and other attributes
-     * 
-     * @param array $mapping Field mapping data
-     * @return bool True if the field is filterable, false otherwise
-     */
-    private function isFieldFilterable(array $mapping): bool
-    {
-        $type = $mapping['type'] ?? null;
-        return in_array($type, ['string', 'integer', 'boolean', 'float', 'datetime', 'date'], true)
-            && $type !== 'text'
-            && !($mapping['unique'] ?? false);
-    }
-
-    /**
-     * Build metadata for a filterable field
-     * 
-     * @param string $field Field name
-     * @param array $mapping Field mapping data
-     * @return array Filterable field metadata
-     */
-    private function buildFieldMetadata(string $field, array $mapping): array
-    {
-        return [
-            'name' => $field,
-            'label' => ucfirst(preg_replace('/(?<=\\w)([A-Z])/', ' $1', $field)),
-            'type' => $mapping['type'],
-            'isRelation' => false,
-        ];
-    }
-
-    /**
-     * Get relation fields (ManyToOne, OneToOne) that are eligible for filtering
-     * 
-     * @param ClassMetadata $meta Entity metadata
-     * @param array $excludedFields Fields to exclude from the filterable list
-     * @return array Filterable relation fields
-     */
-    private function getRelationFields(ClassMetadata $meta, array $excludedFields): array
+    private function getRelationFields(ClassMetadata $meta, array $excluded): array
     {
         $fields = [];
 
-        foreach ($meta->getAssociationMappings() as $assocField => $assocData) {
-            if (!in_array($assocData['type'], [ClassMetadata::MANY_TO_ONE, ClassMetadata::ONE_TO_ONE])) {
+        foreach ($meta->getAssociationMappings() as $field => $assoc) {
+            if (
+                !in_array($assoc['type'], [ClassMetadata::MANY_TO_ONE, ClassMetadata::ONE_TO_ONE], true)
+                || isset($excluded[$field])
+            ) {
                 continue;
             }
 
-            if (in_array($assocField, $excludedFields, true)) {
-                continue;
-            }
-
-            $targetClass = $assocData['targetEntity'];
-            $targetMeta = $this->em->getClassMetadata($targetClass);
-
+            $targetMeta = $this->em->getClassMetadata($assoc['targetEntity']);
             if ($targetMeta->hasField('nombre')) {
                 $fields[] = [
-                    'name' => $assocField . '.nombre',
-                    'label' => ucfirst(preg_replace('/(?<=\\w)([A-Z])/', ' $1', $assocField)),
+                    'name' => $field . '.nombre',
+                    'label' => $this->beautifyFieldName($field),
                     'type' => 'string',
                     'isRelation' => true,
                     'relatedField' => 'nombre',
@@ -391,5 +361,10 @@ class FilterService
         }
 
         return $fields;
+    }
+
+    private function beautifyFieldName(string $name): string
+    {
+        return ucfirst(preg_replace('/(?<=\\w)([A-Z])/', ' $1', $name));
     }
 }
