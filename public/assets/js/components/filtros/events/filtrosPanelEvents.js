@@ -1,4 +1,5 @@
-import { findAllByUser } from "../api/filtroRequest.js";
+import { editarFiltro, findAllByUser } from "../api/filtroRequest.js";
+import { inicializarModalDelete } from "./filtroDelete.js";
 
 let cachedFilters = null;
 
@@ -104,7 +105,7 @@ function showFiltersSaved(filters) {
 
     filters.forEach(filter => {
         const row = document.createElement('tr');
-    
+
         // --- Celda del nombre del filtro ---
         const cellName = document.createElement('td');
         const nameButton = document.createElement('button');
@@ -112,19 +113,19 @@ function showFiltersSaved(filters) {
         nameButton.classList.add('btn', 'btn-link', 'p-0', 'm-0');
         nameButton.style.textAlign = 'left';
         nameButton.title = 'Aplicar filtro';
-    
+
         // Al hacer clic en el nombre, se activa el filtro
         nameButton.addEventListener('click', () => {
             window.agregarFiltroActivo('guardado', filter.name, filter.payload, true);
         });
-    
+
         cellName.appendChild(nameButton);
         row.appendChild(cellName);
-    
+
         // --- Celda de acciones ---
         const cellActions = document.createElement('td');
         cellActions.classList.add('text-center');
-    
+
         // Botón Editar
         const editButton = document.createElement('button');
         editButton.type = 'button';
@@ -133,7 +134,7 @@ function showFiltersSaved(filters) {
         editButton.id = `edit-filter-${filter.id}`;
         editButton.dataset.id = filter.id;
         editButton.innerHTML = '<i class="fas fa-edit"></i>';
-    
+
         // Botón Eliminar
         const deleteButton = document.createElement('button');
         deleteButton.type = 'button';
@@ -142,23 +143,23 @@ function showFiltersSaved(filters) {
         deleteButton.id = `delete-filter-${filter.id}`;
         deleteButton.dataset.id = filter.id;
         deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i>';
-    
+
         cellActions.appendChild(editButton);
         cellActions.appendChild(deleteButton);
         row.appendChild(cellActions);
         tablaBody.appendChild(row);
-    
+
         // Eventos para editar y eliminar
         editButton.addEventListener('click', (event) => {
             event.preventDefault();
-            const filterId = event.currentTarget.dataset.id;
-            editarFiltro(filterId);
+            console.log(filter.filterJson);
+            editarFiltro(filter.filterJson);
         });
-    
+
         deleteButton.addEventListener('click', (event) => {
             event.preventDefault();
             const filterId = event.currentTarget.dataset.id;
-            eliminarFiltro(filterId);
+            inicializarModalDelete(filterId);
         });
     });
 }

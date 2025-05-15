@@ -9,7 +9,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Psr\Log\LoggerInterface;
 
 /**
  * @Route("/filter", name="filter")
@@ -17,11 +16,48 @@ use Psr\Log\LoggerInterface;
 
 class AdvancedFilterController extends AbstractController
 {
-    private LoggerInterface $logger;
+    private EntityManagerInterface $entityManager;
+    private AdvancedFilterRepository $filterRepository;
 
-    public function __construct(LoggerInterface $logger){
-        $this->logger = $logger;
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        AdvancedFilterRepository $filterRepository
+    ) {
+        $this->entityManager = $entityManager;
+        $this->filterRepository = $filterRepository;
     }
+
+    /**
+     * @Route("/{entity}", name="getFilter", methods={"GET"})
+     */
+    public function findAllFiltersByUser(AdvancedFilterRepository $advancedFilterRepository, string $entity)
+    {
+        try {
+            $userId = $this->getUser()->getId();
+            if (!$userId) {
+                throw new \Exception('User not authenticated');
+            }
+            $filters = $advancedFilterRepository->findBy([
+                'userId' => $userId,
+                'nameEntity' => $entity
+            ]);
+            $filtersData = [];
+            foreach ($filters as $filter) {
+                $filtersData[] = [
+                    'id' => $filter->getId(),
+                    'name' => $filter->getName(),
+                    'payload' => $filter->getFilterJson(),
+                ];
+            }
+            return new JsonResponse(['filters' => $filtersData]);
+        } catch (\Exception $e) {
+            return new JsonResponse([
+                'error' => 'Error interno del servidor',
+                'exception' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     /**
      * @Route("/", name="savedFilter", methods={"POST"})
      */
@@ -59,35 +95,85 @@ class AdvancedFilterController extends AbstractController
         }
     }
     /**
-     * @Route("/{entity}", name="getFilter", methods={"GET"})
+     * Actualiza un filtro existente.
+     *
+     * @Route("/{id}", name="update", methods={"PUT"})
+     *
+     * @param Request $request
+     * @param int $id
+     * @return JsonResponse
      */
-    public function findAllFiltersByUser(AdvancedFilterRepository $advancedFilterRepository, string $entity)
+    public function update(Request $request, int $id): JsonResponse
     {
         try {
-            $userId = $this->getUser()->getId();
-            $this->logger->info('User ID: ' . $userId);
-            if (!$userId) {
-                throw new \Exception('User not authenticated');
+            $data = json_decode($request->getContent(), true);
+
+            $filter = $this->filterRepository->find($id);
+            if (!$filter) {
+                return $this->json([
+                    'success' => false,
+                    'message' => 'Filtro no encontrado.',
+                ], 404);
             }
-            $filters = $advancedFilterRepository->findBy([
-                'userId' => $userId,
-                'nameEntity' => $entity
+
+            $filter->setName($data['name']);
+            $filter->setFilterJson($data['filterJson']);
+            $filter->setUpdatedAt(new \DateTime());
+
+            $this->entityManager->flush();
+
+            return $this->json([
+                'success' => true,
+                'message' => 'Filtro actualizado exitosamente.',
             ]);
-            $this->logger->info('Filters: '. json_encode($filters));    
-            $filtersData = [];
-            foreach ($filters as $filter) {
-                $filtersData[] = [
-                    'id' => $filter->getId(),
-                    'name' => $filter->getName(),
-                    'payload' => $filter->getFilterJson(),
-                ];
-            }
-            return new JsonResponse(['filters' => $filtersData]);
         } catch (\Exception $e) {
-            return new JsonResponse([
-                'error' => 'Error interno del servidor',
-                'exception' => $e->getMessage()
-            ], 500);
+            return $this->handleException($e);
         }
+    }
+
+    /**
+     * Elimina un filtro existente.
+     *
+     * @Route("/{id}", name="delete", methods={"DELETE"})
+     *
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function delete(int $id): JsonResponse
+    {
+        try {
+            $filter = $this->filterRepository->find($id);
+            if (!$filter) {
+                return $this->json([
+                    'success' => false,
+                    'message' => 'Filtro no encontrado.',
+                ], 404);
+            }
+
+            $this->entityManager->remove($filter);
+            $this->entityManager->flush();
+
+            return $this->json([
+                'success' => true,
+                'message' => 'Filtro eliminado exitosamente.',
+            ]);
+        } catch (\Exception $e) {
+            return $this->handleException($e);
+        }
+    }
+
+    /**
+     * Maneja las excepciones y devuelve una respuesta JSON adecuada.
+     *
+     * @param \Exception $exception
+     * @return JsonResponse
+     */
+    private function handleException(\Exception $exception): JsonResponse
+    {
+        return new JsonResponse([
+            'success' => false,
+            'message' => 'Ocurrió un error inesperado.',
+            'exception' => $exception->getMessage(),
+        ], 500);
     }
 }

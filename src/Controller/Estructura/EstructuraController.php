@@ -39,6 +39,7 @@ class EstructuraController extends AbstractController
      * @param EstructuraRepository $estructuraRepository
      * @return Response
      * @IsGranted("ROLE_ADMIN", "ROLE_GEST_ESTRUCT")
+     * 
      */
     public function index(Request $request, EstructuraRepository $estructuraRepository, FilterService $filterService, AdvancedFilterRepository $advancedFilterRepository)
     {
