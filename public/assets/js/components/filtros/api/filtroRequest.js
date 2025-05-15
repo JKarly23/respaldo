@@ -1,3 +1,5 @@
+import { resetCache, getCachedFiltersWithLoader, showFiltersSaved } from "../events/filtrosPanelEvents.js";
+
 // Función para mostrar notificaciones
 function mostrarNotificacion(mensaje, tipo = 'success') {
     const notificacion = document.createElement('div');
@@ -97,25 +99,39 @@ export const findAllByUser = async () => {
 };
 
 // Actualizar un filtro
-export const editarFiltro = async (payload) => {
-    console.log(payload);
-    // try {
-    //     const response = await fetch(`/filter/${id}`, {
-    //         method: 'PUT',
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //             'X-Requested-With': 'XMLHttpRequest'
-    //         },
-    //         body: JSON.stringify(payload)
-    //     });
-    //     if (!response.ok) {
-    //         throw new Error(`Error en la respuesta: ${response.status}`);
-    //     }
-    //     mostrarNotificacion('Filtro actualizado correctamente.');
-    // } catch (error) {
-    //     console.error('Error al actualizar el filtro:', error);
-    //     mostrarNotificacion('Hubo un problema al actualizar el filtro.', 'danger');
-    // }
+export const editarFiltro = async (filtro) => {
+    const { id, name, payload } = filtro;
+
+    const payloadTransformado = {
+        name,
+        filterJson: payload
+    };
+
+    try {
+        const response = await fetch(`/filter/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify(payloadTransformado)
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error en la respuesta: ${response.status}`);
+        }
+
+        const data = await response.json();
+        mostrarNotificacion(data.message || 'Filtro actualizado correctamente.');
+
+
+        resetCache();
+        const filters = await getCachedFiltersWithLoader();
+        showFiltersSaved(filters);
+    } catch (error) {
+        console.error('Error al actualizar el filtro:', error);
+        mostrarNotificacion('Hubo un problema al actualizar el filtro.', 'danger');
+    }
 };
 
 // Eliminar un filtro
@@ -131,14 +147,13 @@ export const deleteFilter = async (id) => {
         if (!response.ok) {
             throw new Error(`Error en la respuesta: ${response.status}`);
         }
-        const rowToDelete = document.querySelector(`#delete-filter-${id}`).closest(`tr`);
-        if (rowToDelete) {
-            rowToDelete.classList.add('fade'); // Agregar clase de fade de Bootstrap
-            rowToDelete.style.transition = 'opacity 0.5s ease'; // Asegurar transición suave
-            rowToDelete.style.opacity = '0'; // Iniciar desvanecimiento
-            setTimeout(() => rowToDelete.remove(), 500); // Eliminar la fila después de la animación
-        }
+
         mostrarNotificacion('Filtro eliminado correctamente.');
+
+
+        resetCache();
+        const filters = await getCachedFiltersWithLoader();
+        showFiltersSaved(filters);
     } catch (error) {
         console.error('Error al eliminar el filtro:', error);
         mostrarNotificacion('Hubo un problema al eliminar el filtro.', 'danger');

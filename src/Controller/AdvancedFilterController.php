@@ -94,42 +94,49 @@ class AdvancedFilterController extends AbstractController
             ], 500);
         }
     }
-    /**
-     * Actualiza un filtro existente.
-     *
-     * @Route("/{id}", name="update", methods={"PUT"})
-     *
-     * @param Request $request
-     * @param int $id
-     * @return JsonResponse
-     */
-    public function update(Request $request, int $id): JsonResponse
-    {
-        try {
-            $data = json_decode($request->getContent(), true);
+   /**
+ * Actualiza un filtro existente.
+ *
+ * @Route("/{id}", name="update", methods={"PUT"})
+ */
+public function update(Request $request, int $id): JsonResponse
+{
+    try {
+        $data = json_decode($request->getContent(), true);
 
-            $filter = $this->filterRepository->find($id);
-            if (!$filter) {
-                return $this->json([
-                    'success' => false,
-                    'message' => 'Filtro no encontrado.',
-                ], 404);
-            }
-
-            $filter->setName($data['name']);
-            $filter->setFilterJson($data['filterJson']);
-            $filter->setUpdatedAt(new \DateTime());
-
-            $this->entityManager->flush();
-
+        $filter = $this->filterRepository->find($id);
+        if (!$filter) {
             return $this->json([
-                'success' => true,
-                'message' => 'Filtro actualizado exitosamente.',
-            ]);
-        } catch (\Exception $e) {
-            return $this->handleException($e);
+                'success' => false,
+                'message' => 'Filtro no encontrado.',
+            ], 404);
         }
+
+        if (!isset($data['name'], $data['filterJson'])) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Datos incompletos.',
+            ], 400);
+        }
+
+        $filter->setName($data['name']);
+        $filter->setFilterJson($data['filterJson']); 
+        $filter->setUpdatedAt(new \DateTime());
+
+        $this->entityManager->flush();
+
+        return $this->json([
+            'success' => true,
+            'message' => 'Filtro actualizado exitosamente.',
+        ]);
+    } catch (\Exception $e) {
+        return $this->json([
+            'success' => false,
+            'message' => 'Error al actualizar el filtro.',
+            'error' => $e->getMessage()
+        ], 500);
     }
+}
 
     /**
      * Elimina un filtro existente.

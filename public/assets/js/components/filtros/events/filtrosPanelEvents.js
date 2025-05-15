@@ -1,5 +1,6 @@
-import { editarFiltro, findAllByUser } from "../api/filtroRequest.js";
+import { findAllByUser } from "../api/filtroRequest.js";
 import { inicializarModalDelete } from "./filtroDelete.js";
+import { inicializarModalUpdate } from "./filtrosEdit.js";
 
 let cachedFilters = null;
 
@@ -86,7 +87,7 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function showFiltersSaved(filters) {
+export function showFiltersSaved(filters) {
     const tablaBody = document.getElementById('saved_filters');
     if (!tablaBody) return;
 
@@ -152,8 +153,8 @@ function showFiltersSaved(filters) {
         // Eventos para editar y eliminar
         editButton.addEventListener('click', (event) => {
             event.preventDefault();
-            console.log(filter.filterJson);
-            editarFiltro(filter.filterJson);
+            console.log(filter);
+            inicializarModalUpdate(filter);
         });
 
         deleteButton.addEventListener('click', (event) => {
