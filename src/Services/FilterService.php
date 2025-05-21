@@ -281,7 +281,6 @@ class FilterService
     {
         static $cache = [];
 
-        // Generamos una clave única para esta combinación
         $cacheKey = $entityClass . ':' . md5(implode(',', $extraExcludedFields));
 
         if (isset($cache[$cacheKey])) {
@@ -296,7 +295,6 @@ class FilterService
             $this->getRelationFields($meta, $excluded)
         );
 
-        // Guardamos en caché
         $cache[$cacheKey] = $result;
         return $result;
     }
