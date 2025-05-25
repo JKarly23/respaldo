@@ -123,13 +123,7 @@ export const editarFiltro = async (filtro) => {
 
         const data = await response.json();
         mostrarNotificacion(data.message || 'Filtro actualizado correctamente.');
-
-
-        resetCache();
-        const filters = await getCachedFiltersWithLoader();
-        showFiltersSaved(filters);
     } catch (error) {
-        console.error('Error al actualizar el filtro:', error);
         mostrarNotificacion('Hubo un problema al actualizar el filtro.', 'danger');
     }
 };
@@ -150,12 +144,10 @@ export const deleteFilter = async (id) => {
 
         mostrarNotificacion('Filtro eliminado correctamente.');
 
-
         resetCache();
         const filters = await getCachedFiltersWithLoader();
         showFiltersSaved(filters);
     } catch (error) {
-        console.error('Error al eliminar el filtro:', error);
         mostrarNotificacion('Hubo un problema al eliminar el filtro.', 'danger');
     }
 };

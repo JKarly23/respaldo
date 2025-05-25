@@ -17,6 +17,7 @@ export async function inicializarEventosFiltrosPanel() {
         filtrosPanel.style.display = isVisible ? 'none' : 'block';
 
         if (!isVisible) {
+            resetCache();
             const filters = await getCachedFiltersWithLoader();
             showFiltersSaved(filters);
         }
