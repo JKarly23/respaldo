@@ -39,7 +39,6 @@ export function inicializarModalUpdate(filter) {
     const btnUpdate = document.getElementById('btnUpdate');
     const btnCancel = document.getElementById('btnCancel');
     const form = document.getElementById('filterEditForm');
-    const container = document.querySelector('.modal-body');
 
     if (!modalUpdate || !btnUpdate || !btnCancel || !form) return;
 
@@ -70,7 +69,6 @@ export function inicializarModalUpdate(filter) {
     nombreContainer.appendChild(nombreInput);
     form.appendChild(nombreContainer);
 
-    // Contenedor con scroll para condiciones
     const scrollContainer = document.createElement('div');
     scrollContainer.style.maxHeight = '400px';
     scrollContainer.style.overflowY = 'auto';
@@ -162,7 +160,6 @@ export function inicializarModalUpdate(filter) {
         }
     });
 
-    // Evento guardar
     nuevoBtnUpdate.addEventListener('click', () => {
         const nuevoNombre = nombreInput.value.trim();
         const errores = [];
@@ -175,16 +172,22 @@ export function inicializarModalUpdate(filter) {
         const nuevoPayload = filter.payload.map((cond, index) => {
             let valor = '';
             if (cond.operador === 'Entre') {
-                const start = form.querySelector(`[name="valor_${index}_start"]`)?.value || '';
-                const end = form.querySelector(`[name="valor_${index}_end"]`)?.value || '';
+                const start = form.querySelector(`[name="valor_${index}_start"]`)?.value.trim() || '';
+                const end = form.querySelector(`[name="valor_${index}_end"]`)?.value.trim() || '';
+                if (!start || !end) {
+                    errores.push(`La condición "${prettify(cond.campo)}" debe tener ambos valores (inicio y fin).`);
+                }
                 valor = `${start} - ${end}`;
             } else if (cond.tipo === 'boolean') {
-                valor = form.querySelector(`[name="valor_${index}"]`)?.checked ? 'true' : 'false';
+                const input = form.querySelector(`[name="valor_${index}"]`);
+                valor = input?.checked ? 'true' : 'false';
             } else {
-                valor = form.querySelector(`[name="valor_${index}"]`)?.value || '';
+                valor = form.querySelector(`[name="valor_${index}"]`)?.value.trim() || '';
+                if (!valor) {
+                    errores.push(`El valor de la condición "${prettify(cond.campo)}" no puede estar vacío.`);
+                }
             }
 
-            // El logico se toma del select anterior a esta condición (excepto la primera)
             let logico = null;
             if (index > 0) {
                 const select = form.querySelector(`[name="logico_${index}"]`);
@@ -198,18 +201,23 @@ export function inicializarModalUpdate(filter) {
             };
         });
 
-        const erroresCondiciones = validateConditions(container);
+        const erroresCondiciones = validateConditions(scrollContainer);
         if (erroresCondiciones.length) errores.push(...erroresCondiciones);
 
         let errorCard = document.getElementById('validationErrorCard');
         if (!errorCard) {
             errorCard = document.createElement('div');
             errorCard.id = 'validationErrorCard';
-            errorCard.className = 'alert alert-danger mt-3';
+            errorCard.className = 'alert alert-danger alert-dismissible fade show mt-3';
+            errorCard.role = 'alert';
         }
+
         errorCard.innerHTML = `
-            <strong>Errores detectados:</strong>
-            <ul>${errores.map(e => `<li>${e}</li>`).join('')}</ul>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <strong>Errores detectados: </strong>
+            <ul>${errores.map(e => `<li>${prettify(e.split('.')[0])}" no puede estar vacio</li>`).join('')}</ul>
         `;
 
         // Mostrar errores si los hay
@@ -222,6 +230,7 @@ export function inicializarModalUpdate(filter) {
             errorCard.remove();
         }
 
+        // Enviar datos actualizados
         editarFiltro({
             ...filter,
             name: nuevoNombre,

@@ -49,18 +49,25 @@ export function inicializarEventosAside() {
 
     // Lógica del operador lógico
     function actualizarOperadorActivo() {
-        document.querySelectorAll('input[name="operadorLogico"]').forEach(op => {
-            op.parentElement.classList.remove('active');
+        document.querySelectorAll('.operatorContainer').forEach(container => {
+            const operadorSpan = container.querySelector('.operador-logico');
+            const operadorInput = container.querySelector('input[name="operadorLogico"]');
+            if (operadorSpan && operadorInput) {
+                operadorSpan.textContent = operadorInput.value;
+                operadorSpan.classList.toggle('active', operadorInput.value === 'AND');
+            }
         });
-
-        const seleccionado = document.querySelector('input[name="operadorLogico"]:checked');
-        if (seleccionado) {
-            seleccionado.parentElement.classList.add('active');
-        }
     }
 
-    document.querySelectorAll('input[name="operadorLogico"]').forEach(input => {
-        input.addEventListener('change', actualizarOperadorActivo);
+    actualizarOperadorActivo();
+
+    // Manejar el cambio de operador lógico usando un span
+    document.querySelectorAll(".operatorContainer").forEach(div => {
+        div.addEventListener('click', () => {
+            const operador = div.textContent.trim().toUpperCase();
+            const nuevo = operador === "AND" ? "OR" : "AND";
+            div.innerHTML = `<span class="operador-logico btn btn-secondary" style="font-size: 0.6rem; padding: 2px 8px; min-width: 32px; min-height: 24px;">${nuevo}</span>`;
+        });
     });
 
     actualizarOperadorActivo();
@@ -115,8 +122,8 @@ export function inicializarEventosAside() {
         return; // Salir de la función si no hay condición base
     }
 
+
     function crearCondicion(esUltima = false, datos = null) {
-        console.log('Ejecutando crearCondicion, esUltima:', esUltima);
 
         if (condicionesContainer.children.length > 0) {
             // Verificar si las validaciones están funcionando correctamente
@@ -142,14 +149,15 @@ export function inicializarEventosAside() {
             }
 
             const ultima = condicionesContainer.lastElementChild;
+
             const operador = document.querySelector('input[name="operadorLogico"]:checked') || document.querySelector('input[name="operadorLogico"]');
             operador.checked = true;
 
             const operadorContainer = ultima.querySelector('.operatorContainer');
             if (operadorContainer) {
                 operadorContainer.innerHTML = `
-                    <span class="badge badge-secondary px-2 py-1 ml-2 mb-2">${operador.value}</span>
-                `;
+                <span class="badge badge-secondary px-2 py-1 ml-2 mb-2">${operador.value}</span>
+            `;
             }
         }
 
@@ -180,7 +188,7 @@ export function inicializarEventosAside() {
                         <button type="button" class="btn btn-link text-danger eliminar-condicion p-0 mb-2 mr-1" title="Eliminar condición">
                             <i class="fas fa-times"></i>
                         </button>
-                        <div class='operatorContainer'></div>
+                        <div class='operatorContainer cursor-pointer'></div>
                     </div>
                 </div>
             </div>
@@ -205,10 +213,15 @@ export function inicializarEventosAside() {
         }
 
         condicionesContainer.appendChild(nuevaCondicion);
+
+        
         actualizarBotonAgregar();
         actualizarOperadorActivo();
+        inicializarCambioOperadorLogico();
+        
     }
     window.crearCondicion = crearCondicion;
+
 
     function actualizarBotonAgregar() {
         document.querySelectorAll('.agregar-condicion').forEach(btn => btn.remove());
@@ -256,6 +269,7 @@ export function inicializarEventosAside() {
     guardarFiltroBtn?.addEventListener('click', () => {
         $('#guardarFiltroModal').modal('show');
     });
+    
 
     confirmarGuardarFiltroBtn?.addEventListener('click', () => {
         const nombre = document.getElementById('nombreFiltro').value.trim();
