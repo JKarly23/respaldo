@@ -2,39 +2,63 @@ import { mostrarMensajeError } from '../utils/mostrarMensajeError.js';
 
 export function validateCampoRepetido(container) {
     const condiciones = container.querySelectorAll('.condicion');
-    const camposUsados = new Map();
+
+    // Grupo actual: Map<campo, Set<operadores>>
+    let camposGrupoActual = new Map();
+    let grupoIndex = 0;
 
     for (let i = 0; i < condiciones.length; i++) {
         const condicion = condiciones[i];
         const campoSelect = condicion.querySelector('.campo-select');
+        const operadorSelect = condicion.querySelector('.operador-select'); // <-- Asegúrate que el select exista
+
         const campo = campoSelect?.value;
+        const operadorComparacion = operadorSelect?.value;
 
-        // El operador lógico que une la anterior con esta está en esta condición (excepto la primera)
-        const logicoSelect = condicion.querySelector('.operatorContainer');
-        const operadorLogico = i > 0
-            ? (logicoSelect?.textContent?.trim()?.toUpperCase() || 'AND')
-            : null;
-        console.log('Operador lógico:', operadorLogico);
-        if (!campo) continue;
+        if (!campo || !operadorComparacion) continue;
 
-        // Solo validar repetidos si el operador lógico es AND y no es la primera condición
-        if (operadorLogico === 'AND' && camposUsados.has(campo)) {
+        // Leer el operador lógico desde la condición ANTERIOR
+        let operadorLogico = 'AND'; // valor por defecto
+
+        if (i > 0) {
+            const condicionAnterior = condiciones[i - 1];
+            const operadorSpan = condicionAnterior.querySelector('.operatorContainer span.badge');
+            const texto = operadorSpan?.textContent?.trim()?.toUpperCase();
+            if (texto === 'OR') {
+                operadorLogico = 'OR';
+            }
+        }
+
+        // Si es OR, reiniciar grupo actual
+        if (operadorLogico === 'OR') {
+            camposGrupoActual = new Map();
+            grupoIndex++;
+        }
+
+        // Validación: campo ya existe con mismo operador de comparación
+        const operadoresExistentes = camposGrupoActual.get(campo);
+
+        if (operadoresExistentes?.has(operadorComparacion)) {
             const campoTexto = campoSelect.options[campoSelect.selectedIndex].text;
-            console.log('Campo ', campoTexto);
-            const mensaje = `El campo "${campoTexto}" ya fue usado en otra condición unida con AND.`;
+            const operadorTexto = operadorSelect.options[operadorSelect.selectedIndex].text;
+            const mensaje = `El campo "${campoTexto}" ya tiene la condición "${operadorTexto}" dentro del mismo grupo AND.`;
 
             mostrarMensajeError(container, mensaje);
-
             return {
                 isValid: false,
                 messageError: mensaje
             };
         }
 
-        camposUsados.set(campo, i);
+        // Agregar el operador al conjunto de operadores de ese campo
+        if (!camposGrupoActual.has(campo)) {
+            camposGrupoActual.set(campo, new Set([operadorComparacion]));
+        } else {
+            camposGrupoActual.get(campo).add(operadorComparacion);
+        }
     }
 
-    // Limpiar mensajes anteriores si todo está bien
+    // Limpiar errores previos si todo está bien
     const messageDiv = container.querySelector('.showMessage');
     if (messageDiv) messageDiv.innerHTML = '';
 

@@ -148,7 +148,6 @@ export function inicializarEventosAside() {
     }
 
     function crearCondicion(esUltima = false, datos = null) {
-        console.log('Ejecutando crearCondicion, esUltima:', esUltima);
 
         if (condicionesContainer.children.length > 0) {
 
@@ -298,7 +297,6 @@ export function inicializarEventosAside() {
             return;
         }
         savedFilters();
-        console.log('Filtro guardado:', nombre);
         $('#guardarFiltroModal').modal('hide');
         cerrarAside();
     });
@@ -328,7 +326,6 @@ export function inicializarEventosAside() {
             window.enviarFiltrosAlBackend(true);
         }, 50);
 
-        console.log('Filtro aplicado');
         messageDiv.innerHTML = `
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 <strong>Éxito:</strong> Filtro aplicado correctamente
