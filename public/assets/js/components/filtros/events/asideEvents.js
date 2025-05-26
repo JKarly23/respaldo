@@ -297,7 +297,14 @@ export function inicializarEventosAside() {
         const nombre = document.getElementById('nombreFiltro').value.trim();
 
         if (!nombre) {
-            mostrarMensajeError(messageModalSaved, 'El nombre del filtro no puede estar vacío');
+            messageModalSaved.innerHTML = `
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">   
+                    <strong>Error:</strong> El nombre del filtro no puede estar vacío.
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            `;
             return;
         }
         savedFilters();

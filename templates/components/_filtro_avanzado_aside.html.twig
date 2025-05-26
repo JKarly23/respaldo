@@ -19,7 +19,7 @@
 					id="condicionesContainer">
 					<!-- Condición inicial -->
 					<div class="condicion mb-3">
-						 <div class="showMessage mb-3"></div>
+						<div class="showMessage mb-3"></div>
 						<div class="form-row">
 							<div class="col-md-4">
 								<label>Campo</label>
@@ -96,11 +96,11 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title" id="guardarFiltroModalLabel">Guardar Filtro</h5>
-				<div id="showMessageModal"></div>
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
 			</div>
+			<div id="showMessageModal"></div>
 			<div class="modal-body">
 				<div class="form-group">
 					<label for="nombreFiltro">Nombre del filtro</label>
@@ -120,5 +120,5 @@
 {% endblock %}
 
 {% block javascripts %}
-    <script type="module" src="{{ asset('assets/js/components/filtros/main.js') }}"></script>
+	<script type="module" src="{{ asset('assets/js/components/filtros/main.js') }}"></script>
 {% endblock %}
