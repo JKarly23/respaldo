@@ -7,10 +7,13 @@ export function restaurarEstadoAside() {
         const aside = document.getElementById('filtroPersonalizadoAside');
         const condicionesContainer = document.getElementById('condicionesContainer');
         const aplicarFiltroBtn = document.getElementById('aplicarFiltro');
-        const btnGuardar = document.getElementById('btnGuardarFiltro'); // Ajusta si tu botón tiene otro ID
+        const btnGuardar = document.getElementById('btnGuardarFiltro')
+        const guardarFiltroBtn = document.getElementById('guardarFiltro');
 
-        // ✅ Eliminar el botón "Aplicar" si existe
-
+        // Mostrar el botón de guardar filtro si hay filtros activos en localStorage
+        if (localStorage.getItem('filtros_activos')) {
+            guardarFiltroBtn.style.display = 'block';
+        }
 
         const asideAbierto = localStorage.getItem('aside_abierto');
         const condicionesGuardadas = localStorage.getItem('condiciones_guardadas');
@@ -18,9 +21,11 @@ export function restaurarEstadoAside() {
         if (asideAbierto === '1' && condicionesGuardadas && aside && condicionesContainer) {
             aside.style.right = '0';
             document.body.style.overflow = 'hidden';
+             // Ocultar el botón de guardar filtro
             if (aplicarFiltroBtn) {
                 aplicarFiltroBtn.remove();
             }
+
 
             try {
                 const condiciones = JSON.parse(condicionesGuardadas);
