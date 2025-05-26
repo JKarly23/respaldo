@@ -34,7 +34,7 @@ export function validateConditions(container) {
     for (let i = 0; i < condiciones.length; i++) {
         const condicion = condiciones[i];
         const campoSelect = condicion.querySelector('.campo-select');
-        const operadorSelect = condicion.querySelector('.operador-logico');
+        const operadorSelect = condicion.querySelector('.operador-select');
         const valoresInputs = condicion.querySelectorAll('.valor-input');
         const valores = Array.from(valoresInputs).map(input => input.value.trim()).filter(v => v !== '');
 
