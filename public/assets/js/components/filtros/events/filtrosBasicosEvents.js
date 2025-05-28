@@ -1,30 +1,50 @@
+const hoy = new Date();
+const primerDiaMes = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
+const primerDiaAnno = new Date(hoy.getFullYear(), 0, 1);
+const haceCincoMeses = new Date(hoy.getFullYear(), hoy.getMonth() - 5, hoy.getDate());
+
+function formatoFecha(fecha) {
+    return fecha.toISOString().slice(0, 10);
+}
+
 const condicionesBasicas = {
-    'Instituciones activas': {
-        campo: 'estado',
-        operador: '=',
-        valor: 'activa'
+    'Habilitados': {
+        campo: 'activo',
+        operador: 'Igual',
+        valor: 'true',
+        logico: null,
+        tipo: 'boolean'
     },
-    'Con sitio web': {
-        campo: 'sitio_web',
-        operador: 'IS NOT',
-        valor: null
+    'Desabilitados': {
+        campo: 'activo',
+        operador: 'Igual',
+        valor: 'false',
+        logico: null,
+        tipo: 'boolean'
     },
-    'Con rector y grado académico': {
-        campo: 'rector_grado',
-        operador: '=',
-        valor: 'presente'
+    'Creados este mes': {
+        campo: 'creado',
+        operador: 'Entre',
+        valor: `${formatoFecha(primerDiaMes)} - ${formatoFecha(hoy)}`,
+        logico: null,
+        tipo: 'datetime'
     },
-    'Con teléfono disponible': {
-        campo: 'telefono',
-        operador: 'IS NOT',
-        valor: null
+    'Creados el último año': {
+        campo: 'creado',
+        operador: 'Entre',
+        valor: `${formatoFecha(primerDiaAnno)} - ${formatoFecha(hoy)}`,
+        logico: null,
+        tipo: 'datetime'
     },
-    'Acreditadas': {
-        campo: 'acreditacion',
-        operador: '=',
-        valor: 'true'
+    'Actualizados hace 5 meses': {
+        campo: 'actualizado',
+        operador: 'MayorIgual',
+        valor: formatoFecha(haceCincoMeses),
+        logico: null,
+        tipo: 'datetime'
     }
 };
+
 export function inicializarEventosFiltrosBasicos() {
     const filtrosPanel = document.getElementById('filtrosPanel');
 
@@ -40,8 +60,8 @@ export function inicializarEventosFiltrosBasicos() {
                 return;
             }
 
-            // Enviar directamente con payload
-            window.agregarFiltroActivo('basico', texto, payload, true);
+            // Enviar como array de condiciones
+            window.agregarFiltroActivo('basico', texto, [payload], true);
 
             if (filtrosPanel) {
                 filtrosPanel.style.display = 'none';
