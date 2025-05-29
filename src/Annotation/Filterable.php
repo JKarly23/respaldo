@@ -17,9 +17,24 @@ class Filterable
     public $entity;
 
     /**
-     * @var string|null
+     * @var array|null
      */
     public $conditions;
+
+    /**
+     * @var array|null
+     */
+    public $order;
+
+    /**
+     * @var array|null
+     */
+    public $relations;
+
+    /**
+     * @var array|null
+     */
+    public $headers;
 
     public function __construct(array $data)
     {
@@ -29,6 +44,23 @@ class Filterable
         }
 
         $this->entity = $data['entity'];
-        $this->conditions = $data['conditions'] ?? null; 
+
+        // Convertir strings JSON (si vienen como tales) a arrays
+        $this->conditions = $this->normalizeArray($data['conditions'] ?? null);
+        $this->order      = $this->normalizeArray($data['order'] ?? null);
+        $this->relations  = $this->normalizeArray($data['relations'] ?? null);
+        $this->headers    = $this->normalizeArray($data['headers'] ?? null);
+    }
+
+    /**
+     * Convierte cadenas JSON o arrays simples en arrays bien formados
+     */
+    private function normalizeArray($value): ?array
+    {
+        if (is_string($value)) {
+            $decoded = json_decode($value, true);
+            return is_array($decoded) ? $decoded : [$value];
+        }
+        return is_array($value) ? $value : null;
     }
 }

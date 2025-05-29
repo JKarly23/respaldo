@@ -92,6 +92,16 @@ services:
             - name: 'kernel.event_listener'
               event: 'Symfony\Component\Security\Http\Event\LogoutEvent'
               dispatcher: security.event_dispatcher.main
+    
+    App\EventListener\FilterableAnnotationListener:
+        arguments:
+            $reader: '@annotation_reader'
+            $session: '@session'
+        tags:
+            - name: kernel.event_listener
+              event: kernel.controller 
+              method: onKernelController 
+
 
     idxboost_api.event.jwt_created_listener:
         class: App\EventListener\JWTCreatedListener
