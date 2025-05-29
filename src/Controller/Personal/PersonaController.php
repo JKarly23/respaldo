@@ -57,13 +57,10 @@ class PersonaController extends AbstractController
             foreach ($registros as $value) {
                 $resp = $responsableRepository->findBy(['persona' => $value->getId(), 'activo' => true]);
                 $value->esResponsable = isset($resp[0]);
-            }
-
-            $result = $filterService->processFilters($request,Persona::class);
+            }         
         
             return $this->render('modules/personal/persona/index.html.twig', [
                 'registros' => $registros,
-                'filterableFields' => $result['filterableFields'],
             ]);
         } catch (\Exception $exception) {
             $this->addFlash('error', $exception->getMessage());

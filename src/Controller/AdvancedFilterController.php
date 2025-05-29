@@ -13,7 +13,6 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * @Route("/filter", name="filter")
  */
-
 class AdvancedFilterController extends AbstractController
 {
     private EntityManagerInterface $entityManager;
@@ -40,7 +39,7 @@ class AdvancedFilterController extends AbstractController
             $filters = $advancedFilterRepository->findBy([
                 'userId' => $userId,
                 'nameEntity' => $entity
-            ]);
+            ], ["id" => "DESC"]);
             $filtersData = [];
             foreach ($filters as $filter) {
                 $filtersData[] = [

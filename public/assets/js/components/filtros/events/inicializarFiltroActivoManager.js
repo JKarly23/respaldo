@@ -46,29 +46,36 @@ export function inicializarFiltroActivoManager() {
     }
     function enviarFiltrosAlBackend() {
         const filtros = window.obtenerFiltrosActivos(); // Implementada por ti
-    
+
         // Si no hay filtros, simplemente recargar sin query string
         if (!filtros || filtros.length === 0) {
             window.location.href = window.location.pathname;
             return;
         }
-    
+
         // Solo construir la URL si hay filtros nuevos
         const queryParam = encodeURIComponent(JSON.stringify(filtros[0]?.payload));
         const currentUrl = window.location.pathname;
         const fullUrl = `${currentUrl}?filtros_activos=${queryParam}`;
-    
+
         // Verifica si ya estás en la URL deseada para evitar recarga infinita
         if (window.location.href === window.location.origin + fullUrl) {
             return; // Ya estás en la misma URL con los filtros, no hagas nada
         }
-    
+
         // Spinner opcional
-        const loadingOverlay = document.createElement('div');
-        loadingOverlay.className = 'loading-overlay';
-        loadingOverlay.innerHTML = '<div class="spinner-border text-primary"></div>';
-        document.body.appendChild(loadingOverlay);
-    
+        // Mostrar loading estilo HoldOn
+        HoldOn.open({
+            theme: "sk-bounce", // o cualquier otro: "sk-circle", "sk-cube-grid", etc.
+            message: "Aplicando filtros...",
+            textColor: "white"
+        });
+
+        // Redirige después de un pequeño retardo para que el loader se muestre correctamente
+        setTimeout(() => {
+            window.location.href = fullUrl;
+        }, 300); // 
+
         // Redirige
         window.location.href = fullUrl;
     }
