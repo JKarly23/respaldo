@@ -46,24 +46,50 @@ class AdvancedFilterRepository extends ServiceEntityRepository
         }
     }
 
-    public function BuildBaseQuery(string $entityClass, $filters, array $order = []): array
+    public function BuildBaseQuery(array $data): array
     {
-        $qb = $this->entityManager->createQueryBuilder()
-        ->select('af')
-        ->from($entityClass, 'af');
+        $entity     = $data["entity"];
+        $conditions = $data["conditions"] ?? [];
+        $relations  = $data["relations"] ?? [];
+        $selects    = $data["selects"] ?? [];
+        $order      = $data["order"] ?? [];
 
-        if($filters){
-            $this->filterService->applyFiltersToQueryBuilder($qb, $filters, 'af');
+        $alias = 'af';
+
+        $qb = $this->entityManager->createQueryBuilder()
+            ->from("App\\Entity\\{$entity}", $alias);
+
+
+        $qb->select($alias);
+
+
+        if (!empty($relations)) {
+            foreach ($relations as $relation => $relationAlias) {
+                $qb->leftJoin("{$alias}.{$relation}", $relationAlias);
+            }
         }
+
+
+        if (!empty($selects)) {
+            foreach ($selects as $selectField) {
+                $qb->addSelect($selectField);
+            }
+        }
+
+
+        if (!empty($conditions)) {
+            $this->filterService->applyFiltersToQueryBuilder($qb, $conditions, $alias);
+        }
+
 
         if (!empty($order)) {
             foreach ($order as $field => $direction) {
-                $qb->addOrderBy("af.{$field}", $direction);
+
+                $direction = strtoupper($direction) === 'DESC' ? 'DESC' : 'ASC';
+                $qb->addOrderBy("{$alias}.{$field}", $direction);
             }
         }
-        // dd($qb);
-        $result = $qb->getQuery()->getResult();
-        // dd($result);
-        return $result;
+
+        return $qb->getQuery()->getArrayResult();
     }
 }

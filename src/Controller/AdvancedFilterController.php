@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\AdvancedFilter;
 use App\Repository\AdvancedFilterRepository;
+use App\Services\FilterService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -17,13 +18,31 @@ class AdvancedFilterController extends AbstractController
 {
     private EntityManagerInterface $entityManager;
     private AdvancedFilterRepository $filterRepository;
+    private FilterService $filterService;
 
     public function __construct(
         EntityManagerInterface $entityManager,
-        AdvancedFilterRepository $filterRepository
+        AdvancedFilterRepository $filterRepository,
+        FilterService $filterService
     ) {
         $this->entityManager = $entityManager;
         $this->filterRepository = $filterRepository;
+        $this->filterService = $filterService;
+    }
+    
+    /**
+     * @Route("/result", name="getResult", methods={"GET"})
+     */
+    public function getResult()
+    {
+        $data = $this->filterService->getData();
+        $headers = $data["headers"];
+        $result = $this->filterRepository->BuildBaseQuery($data);
+
+        return new JsonResponse([
+            "registros" => $result,
+            "headers" => $headers
+        ]);
     }
 
     /**
@@ -93,49 +112,49 @@ class AdvancedFilterController extends AbstractController
             ], 500);
         }
     }
-   /**
- * Actualiza un filtro existente.
- *
- * @Route("/{id}", name="update", methods={"PUT"})
- */
-public function update(Request $request, int $id): JsonResponse
-{
-    try {
-        $data = json_decode($request->getContent(), true);
+    /**
+     * Actualiza un filtro existente.
+     *
+     * @Route("/{id}", name="update", methods={"PUT"})
+     */
+    public function update(Request $request, int $id): JsonResponse
+    {
+        try {
+            $data = json_decode($request->getContent(), true);
 
-        $filter = $this->filterRepository->find($id);
-        if (!$filter) {
+            $filter = $this->filterRepository->find($id);
+            if (!$filter) {
+                return $this->json([
+                    'success' => false,
+                    'message' => 'Filtro no encontrado.',
+                ], 404);
+            }
+
+            if (!isset($data['name'], $data['filterJson'])) {
+                return $this->json([
+                    'success' => false,
+                    'message' => 'Datos incompletos.',
+                ], 400);
+            }
+
+            $filter->setName($data['name']);
+            $filter->setFilterJson($data['filterJson']);
+            $filter->setUpdatedAt(new \DateTime());
+
+            $this->entityManager->flush();
+
+            return $this->json([
+                'success' => true,
+                'message' => 'Filtro actualizado exitosamente.',
+            ]);
+        } catch (\Exception $e) {
             return $this->json([
                 'success' => false,
-                'message' => 'Filtro no encontrado.',
-            ], 404);
+                'message' => 'Error al actualizar el filtro.',
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        if (!isset($data['name'], $data['filterJson'])) {
-            return $this->json([
-                'success' => false,
-                'message' => 'Datos incompletos.',
-            ], 400);
-        }
-
-        $filter->setName($data['name']);
-        $filter->setFilterJson($data['filterJson']); 
-        $filter->setUpdatedAt(new \DateTime());
-
-        $this->entityManager->flush();
-
-        return $this->json([
-            'success' => true,
-            'message' => 'Filtro actualizado exitosamente.',
-        ]);
-    } catch (\Exception $e) {
-        return $this->json([
-            'success' => false,
-            'message' => 'Error al actualizar el filtro.',
-            'error' => $e->getMessage()
-        ], 500);
     }
-}
 
     /**
      * Elimina un filtro existente.

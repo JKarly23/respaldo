@@ -16,40 +16,33 @@ class Filterable
      */
     public $entity;
 
-    /**
-     * @var array|null
-     */
+    /** @var array|null */
     public $conditions;
 
-    /**
-     * @var array|null
-     */
+    /** @var array|null */
     public $order;
 
-    /**
-     * @var array|null
-     */
+    /** @var array|null */
     public $relations;
 
-    /**
-     * @var array|null
-     */
+    /** @var array|null */
     public $headers;
+
+    /** @var array|null Campos personalizados para SELECT */
+    public $selects;
 
     public function __construct(array $data)
     {
-        // Validar que la entidad sea obligatoria
         if (!isset($data['entity']) || empty($data['entity'])) {
             throw new \InvalidArgumentException('The "entity" attribute is required and cannot be null.');
         }
 
-        $this->entity = $data['entity'];
-
-        // Convertir strings JSON (si vienen como tales) a arrays
+        $this->entity     = $data['entity'];
         $this->conditions = $this->normalizeArray($data['conditions'] ?? null);
         $this->order      = $this->normalizeArray($data['order'] ?? null);
         $this->relations  = $this->normalizeArray($data['relations'] ?? null);
         $this->headers    = $this->normalizeArray($data['headers'] ?? null);
+        $this->selects    = $this->normalizeArray($data['selects'] ?? null);
     }
 
     /**

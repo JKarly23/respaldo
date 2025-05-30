@@ -40,6 +40,7 @@ class FilterableAnnotationListener
                     'order'      => $annotation->order,
                     'relations'  => $annotation->relations,
                     'headers'    => $annotation->headers,
+                    'selects'    => $annotation->selects,
                 ]);
             }
         }

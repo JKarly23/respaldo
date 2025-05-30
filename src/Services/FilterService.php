@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\QueryBuilder;
 use Psr\Log\LoggerInterface;
 
+
 /**
  * FilterService
  * 
@@ -23,16 +24,21 @@ class FilterService
 {
     private EntityManagerInterface $em;
     private LoggerInterface $logger;
+    private Request $request;
 
     /**
      * Constructor
      * 
      * @param EntityManagerInterface $em Doctrine Entity Manager for database operations
      */
-    public function __construct(EntityManagerInterface $em, LoggerInterface $logger)
-    {
+    public function __construct(
+        EntityManagerInterface $em,
+        LoggerInterface $logger,
+        Request $request
+    ) {
         $this->em = $em;
         $this->logger = $logger;
+        $this->request = $request;
     }
 
     /**
@@ -49,11 +55,27 @@ class FilterService
      *               - 'filters': Decoded JSON filters from the request
      *               - 'filterableFields': Array of fields that can be filtered
      */
-    public function getFilters(Request $request)
+    public function getData()
     {
-        $filterJson = $request->query->get('filtros_activos');
+        $session = $this->request->getSession();
+        $data = $session->get('filterable_data');
+        $filterJson = $this->request->query->get('filtros_activos');
         $filters = $filterJson ? json_decode($filterJson, true) : [];
-        return $filters;
+        $entity     = $data['entity'] ?? '';
+        $conditions = $data['conditions'] ?? [];
+        $order      = $data['order'] ?? [];
+        $relations  = $data['relations'] ?? [];
+        $headers    = $data['headers'] ?? [];
+
+        $conditions = array_merge($filters, $conditions);
+        
+        return [
+            "entity" => $entity,
+            "conditions" => $conditions,
+            "order" => $order,
+            "relations" => $relations,
+            "headers" => $headers
+        ];
     }
 
     public function applyFiltersToQueryBuilder(QueryBuilder $qb, array $filters, $alias = '')
