@@ -521,6 +521,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
 <script src="{{ asset('assets/ckeditor/build/ckeditor.js') }}"></script>
 
+<!-- Dependencia para exportar a Excel -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+<!-- Botones HTML5 (Excel, CSV, etc.) -->
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+
 {#<script src="{{ asset('assets/jquery/jquery-sortable.js') }}"></script>#}
 {% block javascripts %}{% endblock %}
 <script>

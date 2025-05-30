@@ -29,16 +29,15 @@ class AdvancedFilterController extends AbstractController
         $this->filterRepository = $filterRepository;
         $this->filterService = $filterService;
     }
-    
+
     /**
      * @Route("/result", name="getResult", methods={"GET"})
      */
-    public function getResult()
+    public function getResult(Request $request)
     {
-        $data = $this->filterService->getData();
+        $data = $this->filterService->getData($request);
         $headers = $data["headers"];
         $result = $this->filterRepository->BuildBaseQuery($data);
-
         return new JsonResponse([
             "registros" => $result,
             "headers" => $headers

@@ -59,37 +59,37 @@ class AdvancedFilterRepository extends ServiceEntityRepository
         $qb = $this->entityManager->createQueryBuilder()
             ->from("App\\Entity\\{$entity}", $alias);
 
-
+        // Siempre selecciona al menos el alias principal
         $qb->select($alias);
 
-
+        // Procesar relaciones, usar alias iguales al nombre
         if (!empty($relations)) {
-            foreach ($relations as $relation => $relationAlias) {
-                $qb->leftJoin("{$alias}.{$relation}", $relationAlias);
+            foreach ($relations as $relationName) {
+                $qb->leftJoin("{$alias}.{$relationName}", $relationName);
+                // Además, seleccionar explícitamente todos los campos de la relación
+                $qb->addSelect($relationName);
             }
         }
 
-
+        // Añadir selects extra, ejemplo: "concat('(', siglas, ') ', nombre) as nombre_siglas"
         if (!empty($selects)) {
             foreach ($selects as $selectField) {
                 $qb->addSelect($selectField);
             }
         }
 
-
         if (!empty($conditions)) {
             $this->filterService->applyFiltersToQueryBuilder($qb, $conditions, $alias);
         }
 
-
         if (!empty($order)) {
             foreach ($order as $field => $direction) {
-
                 $direction = strtoupper($direction) === 'DESC' ? 'DESC' : 'ASC';
                 $qb->addOrderBy("{$alias}.{$field}", $direction);
             }
         }
 
+        // Ejecutar y traer resultado como array
         return $qb->getQuery()->getArrayResult();
     }
 }

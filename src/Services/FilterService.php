@@ -4,7 +4,6 @@ namespace App\Services;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
-use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\QueryBuilder;
 use Psr\Log\LoggerInterface;
 
@@ -24,7 +23,6 @@ class FilterService
 {
     private EntityManagerInterface $em;
     private LoggerInterface $logger;
-    private Request $request;
 
     /**
      * Constructor
@@ -33,12 +31,10 @@ class FilterService
      */
     public function __construct(
         EntityManagerInterface $em,
-        LoggerInterface $logger,
-        Request $request
+        LoggerInterface $logger
     ) {
         $this->em = $em;
         $this->logger = $logger;
-        $this->request = $request;
     }
 
     /**
@@ -55,11 +51,11 @@ class FilterService
      *               - 'filters': Decoded JSON filters from the request
      *               - 'filterableFields': Array of fields that can be filtered
      */
-    public function getData()
+    public function getData($request)
     {
-        $session = $this->request->getSession();
+        $session = $request->getSession();
         $data = $session->get('filterable_data');
-        $filterJson = $this->request->query->get('filtros_activos');
+        $filterJson = $request->query->get('filtros_activos');
         $filters = $filterJson ? json_decode($filterJson, true) : [];
         $entity     = $data['entity'] ?? '';
         $conditions = $data['conditions'] ?? [];

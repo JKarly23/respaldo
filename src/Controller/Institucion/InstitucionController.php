@@ -47,6 +47,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Serializer\SerializerInterface;
 
 use App\Services\FilterService;
+use App\Annotation\Filterable;
 
 /**
  * @Route("/institucion/institucion")
@@ -59,18 +60,29 @@ class InstitucionController extends AbstractController
      * @Route("/", name="app_institucion_index", methods={"GET"})
      * @param InstitucionRepository $institucionRepository
      * @return Response
+     *  @Filterable(
+     *     entity="Institucion\Institucion",
+     *     relations={"gradoAcademicoRector"},
+     *     order={"nombre": "ASC"},
+     *     selects={
+     *         "concat('(', siglas, ') ', nombre) as nombre_siglas",
+     *         "concat(gradoAcademicoRector.siglas, ' ', rector) as rector"
+     *     },
+     *     headers={
+     *         {"label": "Nombre", "field": "nombre_siglas"},
+     *         {"label": "Siglas", "field": "siglas"},
+     *         {"label": "Rector", "field": "rector"},
+     *         {"label": "Estado", "field": "activo"}
+     *     }
+     * )
      */
     public function index(
         InstitucionRepository $institucionRepository,
-        FilterService $filterService,
-        Request $request
+        FilterService $filterService
     ): Response {
         $fields = $filterService->getFilterableFields(Institucion::class);
-        $filtros = $filterService->getFilters($request);
 
-        $registros = $filtros
-            ? $institucionRepository->getInstituciones($filtros)
-            : $institucionRepository->getInstituciones();
+        $registros = $institucionRepository->getInstituciones();
 
         return $this->render('modules/institucion/institucion/index.html.twig', [
             'registros' => $registros,

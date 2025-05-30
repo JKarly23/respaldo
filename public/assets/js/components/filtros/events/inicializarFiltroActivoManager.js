@@ -1,3 +1,5 @@
+import { showDataFilterable } from "./showDataFilterable.js";
+
 export function inicializarFiltroActivoManager() {
     const filtrosActivosWrapper = document.getElementById('filtrosActivosWrapper');
     const filtrosActivosDiv = document.getElementById('filtrosActivos');
@@ -47,37 +49,55 @@ export function inicializarFiltroActivoManager() {
     function enviarFiltrosAlBackend() {
         const filtros = window.obtenerFiltrosActivos(); // Implementada por ti
 
-        // Si no hay filtros, simplemente recargar sin query string
+        // Si no hay filtros, opcionalmente limpiar tabla o hacer algo
         if (!filtros || filtros.length === 0) {
-            window.location.href = window.location.pathname;
+            // Por ejemplo, podrías vaciar la tabla o recargar datos sin filtro
             return;
         }
 
-        // Solo construir la URL si hay filtros nuevos
-        const queryParam = encodeURIComponent(JSON.stringify(filtros[0]?.payload));
-        const currentUrl = window.location.pathname;
-        const fullUrl = `${currentUrl}?filtros_activos=${queryParam}`;
+        // Extraer payload para enviar
+        const filtrosPayload = filtros[0]?.payload || {};
 
-        // Verifica si ya estás en la URL deseada para evitar recarga infinita
-        if (window.location.href === window.location.origin + fullUrl) {
-            return; // Ya estás en la misma URL con los filtros, no hagas nada
-        }
-
-        // Spinner opcional
-        // Mostrar loading estilo HoldOn
+        // Mostrar spinner HoldOn
         HoldOn.open({
-            theme: "sk-bounce", // o cualquier otro: "sk-circle", "sk-cube-grid", etc.
+            theme: "sk-bounce",
             message: "Aplicando filtros...",
             textColor: "white"
         });
 
-        // Redirige después de un pequeño retardo para que el loader se muestre correctamente
-        setTimeout(() => {
-            window.location.href = fullUrl;
-        }, 300); // 
+        // Hacer petición AJAX GET con fetch
+        // Pasamos filtros como query param codificado JSON
+        const queryParam = encodeURIComponent(JSON.stringify(filtrosPayload));
+        const url = `/filter/result?filtros_activos=${queryParam}`;
 
-        // Redirige
-        window.location.href = fullUrl;
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            },
+        })
+            .then(response => {
+                if (!response.ok) throw new Error('Error en la respuesta del servidor');
+                return response.json();
+            })
+            .then(data => {
+                HoldOn.close();
+
+                // data debe tener { registros, headers }
+                if (data.registros && data.headers) {
+                    // Aquí llamas a tu función para actualizar la tabla con registros y headers
+                    // Por ejemplo:
+                    showDataFilterable(data.registros, data.headers);
+                  
+                } else {
+                    console.error('Respuesta JSON inválida:', data);
+                }
+            })
+            .catch(error => {
+                HoldOn.close();
+                console.error('Error al enviar filtros:', error);
+                // Mostrar mensaje de error si quieres
+            });
     }
 
     window.enviarFiltrosAlBackend = function (forceSubmit = true) {
@@ -227,42 +247,47 @@ export function inicializarFiltroActivoManager() {
     verificarEstadoColapso();
     limpiarUrl(); // Limpieza inicial si había filtros colapsados
 }
+export function restaurarDataTable() {
+    const container = document.querySelector(".card-body");
 
-function restaurarDataTable() {
-    // Destruir cualquier instancia existente
-    if ($.fn.dataTable.isDataTable('#contenedorTabla table')) {
-        $('#contenedorTabla table').DataTable().destroy();
+    // Destruir instancia previa
+    const oldTable = container.querySelector(".table");
+    if (oldTable) {
+        if ($.fn.DataTable.isDataTable(oldTable)) {
+            $(oldTable).DataTable().destroy();
+        }
+        oldTable.remove();
     }
 
-    // Inicializar el dataTable en la tabla, no en el div
+    // Inicializar DataTable y guardar la instancia
     const tabla = $('.dataTable').DataTable({
         lengthMenu: [[5, 25, 50, -1], [5, 25, 50, "All"]],
-        responsive: false,
-        lengthChange: true,
-        autoWidth: false,
+        responsive: true,
         scrollX: true,
+        dom: 'Bfrtip',
+        buttons: [
+            'copy',
+            'colvis',
+            {
+                extend: 'excelHtml5',
+                text: 'Exportar a Excel',
+                className: 'btn btn-success'
+            }
+        ],
         language: {
             sProcessing: "Procesando...",
             sLengthMenu: "Mostrar _MENU_ registros",
             sZeroRecords: "No se encontraron resultados",
             sEmptyTable: "No existen resultados",
-            sInfo: "Registros del _START_ al _END_ de  _TOTAL_ ",
-            sInfoEmpty: "Rregistros del 0 al 0 de  0 ",
+            sInfo: "Registros del _START_ al _END_ de _TOTAL_ ",
+            sInfoEmpty: "Registros del 0 al 0 de 0",
             sInfoFiltered: "(filtrado de un total de _MAX_ registros)",
-            sInfoPostFix: "",
             sSearch: "Buscar:",
-            sUrl: "",
-            sInfoThousands: ",",
-            sLoadingRecords: "Cargando...",
             oPaginate: {
                 sFirst: "Primero",
                 sLast: "Último",
                 sNext: "Siguiente",
                 sPrevious: "Anterior"
-            },
-            oAria: {
-                sSortAscending: ": Activar para ordenar la columna de manera ascendente",
-                sSortDescending: ": Activar para ordenar la columna de manera descendente"
             },
             buttons: {
                 copy: "Copiar",
@@ -271,13 +296,7 @@ function restaurarDataTable() {
         }
     });
 
-    // Restaurar los botones de la tabla
-    new $.fn.dataTable.Buttons(tabla, {
-        buttons: [
-            'copy', 'colvis'
-        ]
-    });
-
+    // Mover contenedor botones si quieres colocarlos en otro lugar
     tabla.buttons().container()
         .appendTo('#contenedorTabla_wrapper .col-md-6:eq(0)');
 }

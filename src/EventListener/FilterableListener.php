@@ -8,6 +8,7 @@ use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use ReflectionMethod;
+use ReflectionClass;
 
 class FilterableAnnotationListener
 {
@@ -24,25 +25,34 @@ class FilterableAnnotationListener
     {
         $controller = $event->getController();
 
-        // Si el controlador es una clase: [ControllerClass, method]
-        if (is_array($controller)) {
-            $reflection = new ReflectionMethod($controller[0], $controller[1]);
-            $annotation = $this->reader->getMethodAnnotation($reflection, Filterable::class);
-
-            if ($annotation instanceof Filterable) {
-                // Limpiar sesión previa para filtros
-                $this->session->remove('filterable_data');
-
-                // Cargar nueva información en sesión
-                $this->session->set('filterable_data', [
-                    'entity'     => $annotation->entity,
-                    'conditions' => $annotation->conditions,
-                    'order'      => $annotation->order,
-                    'relations'  => $annotation->relations,
-                    'headers'    => $annotation->headers,
-                    'selects'    => $annotation->selects,
-                ]);
-            }
+        if (!is_array($controller)) {
+            return;
         }
+
+        $className = get_class($controller[0]);
+        $methodName = $controller[1];
+
+        $classReflection = new \ReflectionClass($className);
+        $methodReflection = new \ReflectionMethod($className, $methodName);
+
+        $annotation = $this->reader->getMethodAnnotation($methodReflection, Filterable::class);
+
+        if (!$annotation) {
+            $annotation = $this->reader->getClassAnnotation($classReflection, Filterable::class);
+        }
+
+        if ($annotation instanceof Filterable) {
+            if (!$this->session->isStarted()) {
+                $this->session->start();
+            }
+            $this->session->set('filterable_data', [
+                'entity'     => $annotation->entity,
+                'conditions' => $annotation->conditions,
+                'order'      => $annotation->order,
+                'relations'  => $annotation->relations,
+                'headers'    => $annotation->headers,
+                'selects'    => $annotation->selects,
+            ]);
+        } 
     }
 }

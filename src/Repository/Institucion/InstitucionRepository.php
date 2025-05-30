@@ -52,7 +52,7 @@ class InstitucionRepository extends ServiceEntityRepository
         }
     }
 
-    public function getInstituciones(array $filters = [])
+    public function getInstituciones()
     {
         
         $qb = $this->createQueryBuilder('qb')
@@ -66,9 +66,6 @@ class InstitucionRepository extends ServiceEntityRepository
                         qb.codigo,                      
                         concat(gradoAcademicoR.siglas,' ', qb.rector) as rector");
         $qb->leftJoin('qb.gradoAcademicoRector', 'gradoAcademicoR');
-        if($filters){
-            $this->filterService->applyFiltersToQueryBuilder($qb, $filters, 'qb');
-        }
         $qb->orderBy('qb.nombre');
         $resul = $qb->getQuery()->getArrayResult();
         return $resul;

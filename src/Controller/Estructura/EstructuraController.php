@@ -25,7 +25,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 use App\Services\FilterService;
-use App\Annotation;
+use App\Annotation\Filterable;
 
 /**
  * @Route("/estructura/estructura")
@@ -39,7 +39,17 @@ class EstructuraController extends AbstractController
      * @return Response
      * @IsGranted("ROLE_ADMIN", "ROLE_GEST_ESTRUCT")
      * @Filterable(
-     *  
+     *     entity="Estructura\Estructura",
+     *     relations={"categoriaEstructura"},
+     *     order={"nombre": "ASC"},
+     *     selects={
+     *         "concat('(', siglas, ') ', nombre) as nombre_siglas"
+     *     },
+     *     headers={
+     *         {"label": "Nombre", "field": "nombre_siglas"},
+     *         {"label": "Categoría de estructura", "field": "categoriaEstructura.nombre"},
+     *         {"label": "Estado", "field": "activo"}
+     *     }
      * )
      */
     public function index(EstructuraRepository $estructuraRepository, FilterService $filterService)
