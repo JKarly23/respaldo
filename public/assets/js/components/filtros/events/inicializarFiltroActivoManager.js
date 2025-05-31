@@ -154,13 +154,16 @@ export function inicializarFiltroActivoManager() {
 
         return 'Filtro';
     }
-
+    /**
+     * Hay que modificar la implementacion para permitir que los filtros de diferentes tipos se apliquen 
+     */
     window.agregarFiltroActivo = function (tipo, label, payload = null, enviar = null) {
         if (['basico', 'guardado', 'personalizado'].includes(tipo)) {
             [...filtrosActivosDiv.children].forEach(child => {
-                if (child.dataset.tipo === tipo) {
-                    filtrosActivosDiv.removeChild(child);
-                }
+                // if (child.dataset.tipo === tipo) {
+                //     filtrosActivosDiv.removeChild(child);
+                // }
+                filtrosActivosDiv.removeChild(child);
             });
         }
 
@@ -243,7 +246,6 @@ export function inicializarFiltroActivoManager() {
         if (estanColapsados) {
             filtrosActivosDiv.classList.add('filtros-colapsado');
             toggleBtn.innerHTML = '<i class="fas fa-chevron-down"></i>';
-            limpiarUrl();
         }
     }
 

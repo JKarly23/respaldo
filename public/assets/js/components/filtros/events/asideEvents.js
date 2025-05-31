@@ -3,11 +3,10 @@ import { validateUltimaCondicion } from '../validators/validateUltimaCondicion.j
 import { actualizarOperadoresYValorInput } from '../transforms/asideDynamicInputs.js';
 import { mostrarMensajeError } from '../utils/mostrarMensajeError.js';
 import { validateCantidadCondiciones, validateConditions } from '../validators/validateConditions.js';
-import { restaurarEstadoAside } from './restaurarCondiciones.js';
 import { savedFilters } from '../api/filtroRequest.js';
 
 
-restaurarEstadoAside();
+
 
 export function inicializarEventosAside() {
     const crearFiltroBtn = document.getElementById('crearFiltroPersonalizado');
@@ -23,16 +22,24 @@ export function inicializarEventosAside() {
 
     if (!crearFiltroBtn || !aside) return;
 
-    
-    // Ocultar el botón de guardar filtro si no hay filtros activos
-    if (!localStorage.getItem('filtros_activos')) {
-        guardarFiltroBtn.style.display = 'none';
-    } else {
-        aplicarFiltroBtn.style.display = 'none';
-        guardarFiltroBtn.style.display = 'block';
 
+    // Ocultar el botón de guardar filtro si no hay filtros activos
+
+    const filtrosActivos = localStorage.getItem('filtros_activos');
+    let tipoFiltro = '';
+
+
+    try {
+        tipoFiltro = filtrosActivos ? JSON.parse(filtrosActivos).tipo : '';
+    } catch (e) {
+        tipoFiltro = '';
     }
 
+    if (!filtrosActivos || tipoFiltro !== 'personalizado') {
+        guardarFiltroBtn.style.display = 'none';
+    }
+
+    // Ocultar el botón de guardar filtro si no hay filtros activos o no es tipo personalizado
     crearFiltroBtn.addEventListener('click', (e) => {
         e.preventDefault();
         aside.style.right = '0';
@@ -341,7 +348,13 @@ export function inicializarEventosAside() {
         // Enviar los filtros una sola vez
         setTimeout(() => {
             window.enviarFiltrosAlBackend(true);
+            aplicarFiltroBtn.style.display = 'none';
+            guardarFiltroBtn.style.display = 'block';
         }, 50);
+
+
+
+
 
         messageDiv.innerHTML = `
             <div class="alert alert-success alert-dismissible fade show" role="alert">
