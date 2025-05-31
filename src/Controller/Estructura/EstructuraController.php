@@ -46,7 +46,7 @@ class EstructuraController extends AbstractController
      *         "concat('(', siglas, ') ', nombre) as nombre_siglas"
      *     },
      *     headers={
-     *         {"label": "Nombre", "field": "nombre_siglas"},
+     *         {"label": "Nombre", "field": "nombre"},
      *         {"label": "Categoría de estructura", "field": "categoriaEstructura.nombre"},
      *         {"label": "Estado", "field": "activo"}
      *     }

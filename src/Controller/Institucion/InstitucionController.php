@@ -65,10 +65,11 @@ class InstitucionController extends AbstractController
      *     relations={"gradoAcademicoRector"},
      *     order={"nombre": "ASC"},
      *     selects={
-     *         "concat('(', siglas, ') ', nombre) as nombre_siglas",
+     *         "concat(siglas, ' ', nombre) as nombre_siglas",
      *         "concat(gradoAcademicoRector.siglas, ' ', rector) as rector"
      *     },
      *     headers={
+     *         {"label": "Logo", "field": "logo"},
      *         {"label": "Nombre", "field": "nombre_siglas"},
      *         {"label": "Siglas", "field": "siglas"},
      *         {"label": "Rector", "field": "rector"},

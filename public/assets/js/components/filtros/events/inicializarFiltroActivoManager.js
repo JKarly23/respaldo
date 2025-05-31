@@ -1,4 +1,4 @@
-import { showDataFilterable } from "./showDataFilterable.js";
+import { restoreOldTable, showDataFilterable } from "./showDataFilterable.js";
 
 export function inicializarFiltroActivoManager() {
     const filtrosActivosWrapper = document.getElementById('filtrosActivosWrapper');
@@ -8,6 +8,10 @@ export function inicializarFiltroActivoManager() {
     const STORAGE_KEY = 'filtros_activos';
     const SESSION_KEY = 'filtros_ya_enviados';
     const URL_ORIGINAL_KEY = 'url_original';
+
+    if (!localStorage.getItem('filtros_activos')) {
+        restoreOldTable();
+    }
 
     toggleBtn?.addEventListener('click', () => {
         const estaOculto = filtrosActivosDiv.classList.toggle('filtros-colapsado');
@@ -88,7 +92,7 @@ export function inicializarFiltroActivoManager() {
                     // Aquí llamas a tu función para actualizar la tabla con registros y headers
                     // Por ejemplo:
                     showDataFilterable(data.registros, data.headers);
-                  
+
                 } else {
                     console.error('Respuesta JSON inválida:', data);
                 }
@@ -246,57 +250,4 @@ export function inicializarFiltroActivoManager() {
     restaurarDesdeStorage();
     verificarEstadoColapso();
     limpiarUrl(); // Limpieza inicial si había filtros colapsados
-}
-export function restaurarDataTable() {
-    const container = document.querySelector(".card-body");
-
-    // Destruir instancia previa
-    const oldTable = container.querySelector(".table");
-    if (oldTable) {
-        if ($.fn.DataTable.isDataTable(oldTable)) {
-            $(oldTable).DataTable().destroy();
-        }
-        oldTable.remove();
-    }
-
-    // Inicializar DataTable y guardar la instancia
-    const tabla = $('.dataTable').DataTable({
-        lengthMenu: [[5, 25, 50, -1], [5, 25, 50, "All"]],
-        responsive: true,
-        scrollX: true,
-        dom: 'Bfrtip',
-        buttons: [
-            'copy',
-            'colvis',
-            {
-                extend: 'excelHtml5',
-                text: 'Exportar a Excel',
-                className: 'btn btn-success'
-            }
-        ],
-        language: {
-            sProcessing: "Procesando...",
-            sLengthMenu: "Mostrar _MENU_ registros",
-            sZeroRecords: "No se encontraron resultados",
-            sEmptyTable: "No existen resultados",
-            sInfo: "Registros del _START_ al _END_ de _TOTAL_ ",
-            sInfoEmpty: "Registros del 0 al 0 de 0",
-            sInfoFiltered: "(filtrado de un total de _MAX_ registros)",
-            sSearch: "Buscar:",
-            oPaginate: {
-                sFirst: "Primero",
-                sLast: "Último",
-                sNext: "Siguiente",
-                sPrevious: "Anterior"
-            },
-            buttons: {
-                copy: "Copiar",
-                colvis: "Visibilidad"
-            }
-        }
-    });
-
-    // Mover contenedor botones si quieres colocarlos en otro lugar
-    tabla.buttons().container()
-        .appendTo('#contenedorTabla_wrapper .col-md-6:eq(0)');
 }

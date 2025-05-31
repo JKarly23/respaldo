@@ -1,0 +1,560 @@
+<?xml version="1.0"?>
+<root>
+  <filters_header/>
+  <header>
+    <element>
+      <column>nombre</column>
+      <column_title>Nombre</column_title>
+      <width>60%</width>
+    </element>
+    <element>
+      <column>categoria</column>
+      <column_title>Categor&#xED;a de estructura</column_title>
+      <width>20%</width>
+    </element>
+    <element>
+      <column>activo</column>
+      <column_title>Estado</column_title>
+      <width>16%</width>
+    </element>
+  </header>
+  <data>
+    <element>
+      <nombre>Organizaci&#xF3;n Derechos Laborales</nombre>
+      <categoria>Red Tem&#xE1;tica</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Proyecto Arrecifes</nombre>
+      <categoria>Comisi&#xF3;n Sectorial</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Asociaci&#xF3;n Conservaci&#xF3;n Marina</nombre>
+      <categoria>Comisi&#xF3;n Sectorial</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Programa Escuelas Digitales</nombre>
+      <categoria>Fondo de Investigaci&#xF3;n</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Fundaci&#xF3;n Tecnolog&#xED;a Educativa</nombre>
+      <categoria>Fondo de Investigaci&#xF3;n</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Comit&#xE9; de Investigaci&#xF3;n</nombre>
+      <categoria>Laboratorio Virtual</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Taller de Teatro</nombre>
+      <categoria>Alianza Estrat&#xE9;gica</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Programa Ni&#xF1;ez</nombre>
+      <categoria>Red Tem&#xE1;tica</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Proyecto Fauna Silvestre</nombre>
+      <categoria>Comisi&#xF3;n Sectorial</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Programa Alfabetizaci&#xF3;n</nombre>
+      <categoria>Fondo de Investigaci&#xF3;n</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Empresa de Software</nombre>
+      <categoria>Polo de Conocimiento</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Departamento de Microcr&#xE9;ditos</nombre>
+      <categoria>Complejo Cient&#xED;fico</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Banco de Desarrollo</nombre>
+      <categoria>Complejo Cient&#xED;fico</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Divisi&#xF3;n L&#xE1;cteos</nombre>
+      <categoria>Unidad de Desarrollo Regional</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Corporaci&#xF3;n Alimentaria</nombre>
+      <categoria>Unidad de Desarrollo Regional</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>&#xC1;rea de Prevenci&#xF3;n</nombre>
+      <categoria>Aceleradora de Innovaci&#xF3;n</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Departamento de Calidad</nombre>
+      <categoria>Centro de Excelencia</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>&#xC1;rea de Soporte T&#xE9;cnico</nombre>
+      <categoria>Polo de Conocimiento</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Departamento de Inversiones</nombre>
+      <categoria>Complejo Cient&#xED;fico</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Divisi&#xF3;n Metal&#xFA;rgica</nombre>
+      <categoria>Unidad de Desarrollo Regional</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Centro de Salud Occidente</nombre>
+      <categoria>Laboratorio Nacional</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Unidad de Fisioterapia</nombre>
+      <categoria>Observatorio Cient&#xED;fico</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Cl&#xED;nica del Deporte</nombre>
+      <categoria>Observatorio Cient&#xED;fico</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Departamento de Ginecolog&#xED;a</nombre>
+      <categoria>Plataforma Tecnol&#xF3;gica</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Hospital Regional Este</nombre>
+      <categoria>Plataforma Tecnol&#xF3;gica</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Departamento de Bacteriolog&#xED;a</nombre>
+      <categoria>Instituto Tecnol&#xF3;gico Especializado</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Unidad de Terapia Ocupacional</nombre>
+      <categoria>Centro de Transferencia Tecnol&#xF3;gica</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>&#xC1;rea de Pediatr&#xED;a</nombre>
+      <categoria>Laboratorio Nacional</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Unidad de Neurolog&#xED;a</nombre>
+      <categoria>Observatorio Cient&#xED;fico</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Departamento de Cirug&#xED;a</nombre>
+      <categoria>Plataforma Tecnol&#xF3;gica</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Instituto de Idiomas</nombre>
+      <categoria>Hub de Innovaci&#xF3;n</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Taller de Mec&#xE1;nica</nombre>
+      <categoria>Cl&#xFA;ster Educativo</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Colegio T&#xE9;cnico</nombre>
+      <categoria>Cl&#xFA;ster Educativo</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Facultad de Arquitectura</nombre>
+      <categoria>Parque Cient&#xED;fico-Tecnol&#xF3;gico</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Universidad T&#xE9;cnica</nombre>
+      <categoria>Parque Cient&#xED;fico-Tecnol&#xF3;gico</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Departamento de Piano</nombre>
+      <categoria>Consorcio Acad&#xE9;mico</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Escuela de Navegaci&#xF3;n</nombre>
+      <categoria>Red de Investigaci&#xF3;n</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Escuela de Electr&#xF3;nica</nombre>
+      <categoria>Hub de Innovaci&#xF3;n</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Departamento de Ciencias</nombre>
+      <categoria>Cl&#xFA;ster Educativo</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Facultad de Derecho</nombre>
+      <categoria>Parque Cient&#xED;fico-Tecnol&#xF3;gico</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Secretar&#xED;a de Transporte</nombre>
+      <categoria>Grupo empresarial</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>&#xC1;rea de Nutrici&#xF3;n</nombre>
+      <categoria>&#xD3;rgano Central</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Direcci&#xF3;n Regional de Salud Sur</nombre>
+      <categoria>&#xD3;rgano Central</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Departamento de Patrimonio</nombre>
+      <categoria>Instituci&#xF3;n de Educaci&#xF3;n Superior</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Direcci&#xF3;n de Cultura</nombre>
+      <categoria>Instituci&#xF3;n de Educaci&#xF3;n Superior</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Departamento de Recursos H&#xED;dricos</nombre>
+      <categoria>Centro de Investigaci&#xF3;n Universitario</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Direcci&#xF3;n de Comercio</nombre>
+      <categoria>Entidad de Ciencias,
+             Tecnolog&#xED;a e Innovaci&#xF3;n</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Divisi&#xF3;n de Transporte</nombre>
+      <categoria>Grupo empresarial</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>&#xC1;rea de Salud P&#xFA;blica</nombre>
+      <categoria>&#xD3;rgano Central</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Departamento de Educaci&#xF3;n Especial</nombre>
+      <categoria>Instituci&#xF3;n de Educaci&#xF3;n Superior</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Comit&#xE9; de &#xC9;tica</nombre>
+      <categoria>Laboratorio Virtual</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Asociaci&#xF3;n de Profesionales</nombre>
+      <categoria>Laboratorio Virtual</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Talleres Comunitarios</nombre>
+      <categoria>Alianza Estrat&#xE9;gica</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Fundaci&#xF3;n Arte y Cultura</nombre>
+      <categoria>Alianza Estrat&#xE9;gica</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Programa Mujeres</nombre>
+      <categoria>Red Tem&#xE1;tica</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Organizaci&#xF3;n Derechos Humanos</nombre>
+      <categoria>Red Tem&#xE1;tica</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Proyecto Reforestaci&#xF3;n</nombre>
+      <categoria>Comisi&#xF3;n Sectorial</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Asociaci&#xF3;n Ecol&#xF3;gica</nombre>
+      <categoria>Comisi&#xF3;n Sectorial</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Programa Escuelas Rurales</nombre>
+      <categoria>Fondo de Investigaci&#xF3;n</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Fundaci&#xF3;n Educaci&#xF3;n para Todos</nombre>
+      <categoria>Fondo de Investigaci&#xF3;n</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>&#xC1;rea de Siniestros</nombre>
+      <categoria>Aceleradora de Innovaci&#xF3;n</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Compa&#xF1;&#xED;a de Seguros</nombre>
+      <categoria>Aceleradora de Innovaci&#xF3;n</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Departamento de Abastecimiento</nombre>
+      <categoria>Centro de Excelencia</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Cadena de Supermercados</nombre>
+      <categoria>Centro de Excelencia</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>&#xC1;rea de Redes</nombre>
+      <categoria>Polo de Conocimiento</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Empresa de Telecomunicaciones</nombre>
+      <categoria>Polo de Conocimiento</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Departamento de Cr&#xE9;ditos</nombre>
+      <categoria>Complejo Cient&#xED;fico</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Banco Comercial</nombre>
+      <categoria>Complejo Cient&#xED;fico</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Divisi&#xF3;n Automotriz</nombre>
+      <categoria>Unidad de Desarrollo Regional</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Corporaci&#xF3;n Industrial</nombre>
+      <categoria>Unidad de Desarrollo Regional</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Departamento de Virolog&#xED;a</nombre>
+      <categoria>Instituto Tecnol&#xF3;gico Especializado</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Laboratorio Nacional</nombre>
+      <categoria>Instituto Tecnol&#xF3;gico Especializado</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Unidad de Terapia F&#xED;sica</nombre>
+      <categoria>Centro de Transferencia Tecnol&#xF3;gica</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Instituto de Rehabilitaci&#xF3;n</nombre>
+      <categoria>Centro de Transferencia Tecnol&#xF3;gica</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>&#xC1;rea de Vacunaci&#xF3;n</nombre>
+      <categoria>Laboratorio Nacional</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Centro de Salud Primario</nombre>
+      <categoria>Laboratorio Nacional</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Unidad de Cardiolog&#xED;a</nombre>
+      <categoria>Observatorio Cient&#xED;fico</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Cl&#xED;nica Especializada</nombre>
+      <categoria>Observatorio Cient&#xED;fico</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Departamento de Pediatr&#xED;a</nombre>
+      <categoria>Plataforma Tecnol&#xF3;gica</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Hospital Central</nombre>
+      <categoria>Plataforma Tecnol&#xF3;gica</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Conservatorio Nacional de M&#xFA;sica</nombre>
+      <categoria>Consorcio Acad&#xE9;mico</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Escuela de Ingenier&#xED;a Naval</nombre>
+      <categoria>Red de Investigaci&#xF3;n</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Academia Naval</nombre>
+      <categoria>Red de Investigaci&#xF3;n</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Escuela de Inform&#xE1;tica</nombre>
+      <categoria>Hub de Innovaci&#xF3;n</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Instituto T&#xE9;cnico Superior</nombre>
+      <categoria>Hub de Innovaci&#xF3;n</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Departamento de Matem&#xE1;ticas</nombre>
+      <categoria>Cl&#xFA;ster Educativo</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Colegio Nacional de Ciencias</nombre>
+      <categoria>Cl&#xFA;ster Educativo</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Facultad de Medicina</nombre>
+      <categoria>Parque Cient&#xED;fico-Tecnol&#xF3;gico</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Facultad de Ingenier&#xED;a</nombre>
+      <categoria>Parque Cient&#xED;fico-Tecnol&#xF3;gico</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Rectorado Universidad Nacional</nombre>
+      <categoria>Parque Cient&#xED;fico-Tecnol&#xF3;gico</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Secretar&#xED;a de Ambiente</nombre>
+      <categoria>Centro de Investigaci&#xF3;n Universitario</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Direcci&#xF3;n de Estad&#xED;sticas</nombre>
+      <categoria>Entidad de Ciencias,
+             Tecnolog&#xED;a e Innovaci&#xF3;n</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Ministerio de Econom&#xED;a</nombre>
+      <categoria>Entidad de Ciencias,
+             Tecnolog&#xED;a e Innovaci&#xF3;n</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Divisi&#xF3;n de Infraestructura</nombre>
+      <categoria>Grupo empresarial</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Secretar&#xED;a de Obras P&#xFA;blicas</nombre>
+      <categoria>Grupo empresarial</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>&#xC1;rea de Epidemiolog&#xED;a</nombre>
+      <categoria>&#xD3;rgano Central</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Direcci&#xF3;n Regional de Salud Norte</nombre>
+      <categoria>&#xD3;rgano Central</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Departamento de Secundaria</nombre>
+      <categoria>Instituci&#xF3;n de Educaci&#xF3;n Superior</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Departamento de Primaria</nombre>
+      <categoria>Instituci&#xF3;n de Educaci&#xF3;n Superior</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Direcci&#xF3;n General de Educaci&#xF3;n</nombre>
+      <categoria>Instituci&#xF3;n de Educaci&#xF3;n Superior</categoria>
+      <activo>Habilitado</activo>
+    </element>
+    <element>
+      <nombre>Inicial</nombre>
+      <categoria>Entidad de Ciencias,
+             Tecnolog&#xED;a e Innovaci&#xF3;n</categoria>
+      <activo>Habilitado</activo>
+    </element>
+  </data>
+  <user>
+    <email>admin@admin.cu</email>
+    <password>$2y$13$sjVE4oHhSYKZlRbdpLvO/evVqB4XRG9pi./oJFFzmdx0zO878mEjW</password>
+    <role>ROLE_ADMIN</role>
+    <activo>1</activo>
+    <userRoles>
+      <element>
+        <nombre>Administrador</nombre>
+        <descripcion/>
+        <roleKey>ROLE_ADMIN</roleKey>
+        <activo>1</activo>
+        <funcionalidades/>
+        <id>1</id>
+        <creado>06/04/2025</creado>
+        <actualizado>06/04/2025</actualizado>
+      </element>
+    </userRoles>
+    <passwordChangeFirstTime>1</passwordChangeFirstTime>
+    <passwordPlainOld/>
+    <passwordPlainText/>
+    <id>1</id>
+    <creado>06/04/2025</creado>
+    <actualizado>06/04/2025</actualizado>
+    <username>admin@admin.cu</username>
+    <create_date>31/05/2025 16:23</create_date>
+    <title_document>Lista de estructuras</title_document>
+    <table_title>Lista de estructuras</table_title>
+  </user>
+</root>

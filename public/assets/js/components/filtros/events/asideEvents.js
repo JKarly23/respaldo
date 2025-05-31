@@ -22,9 +22,15 @@ export function inicializarEventosAside() {
     const messageModalSaved = document.getElementById('showMessageModal');
 
     if (!crearFiltroBtn || !aside) return;
+
+    
     // Ocultar el botón de guardar filtro si no hay filtros activos
     if (!localStorage.getItem('filtros_activos')) {
         guardarFiltroBtn.style.display = 'none';
+    } else {
+        aplicarFiltroBtn.style.display = 'none';
+        guardarFiltroBtn.style.display = 'block';
+
     }
 
     crearFiltroBtn.addEventListener('click', (e) => {
