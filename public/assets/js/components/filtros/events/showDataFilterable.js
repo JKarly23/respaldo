@@ -73,7 +73,7 @@ export const showDataFilterable = (registros, headers) => {
                 let value = getNestedValue(registro, header.field);
 
                 if (header.field === 'activo') {
-                    value = value === '1' || value === 1 || value === true || value === 'true'
+                    value = value === true 
                         ? `<span class="ms-status -active">Habilitado</span>`
                         : `<span class="ms-status">Deshabilitado</span>`;
                 }

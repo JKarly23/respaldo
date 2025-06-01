@@ -42,9 +42,6 @@ class EstructuraController extends AbstractController
      *     entity="Estructura\Estructura",
      *     relations={"categoriaEstructura"},
      *     order={"nombre": "ASC"},
-     *     selects={
-     *         "concat('(', siglas, ') ', nombre) as nombre_siglas"
-     *     },
      *     headers={
      *         {"label": "Nombre", "field": "nombre"},
      *         {"label": "Categoría de estructura", "field": "categoriaEstructura.nombre"},

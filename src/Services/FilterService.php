@@ -58,7 +58,9 @@ class FilterService
         $filterJson = $request->query->get('filtros_activos');
         $filters = $filterJson ? json_decode($filterJson, true) : [];
         $entity     = $data['entity'] ?? '';
+        $fields     = $data['fields'] ??  [];
         $conditions = $data['conditions'] ?? [];
+        $selects = $data['selects'] ?? [];
         $order      = $data['order'] ?? [];
         $relations  = $data['relations'] ?? [];
         $headers    = $data['headers'] ?? [];
@@ -67,6 +69,8 @@ class FilterService
         
         return [
             "entity" => $entity,
+            "fields" => $fields,
+            "selects" => $selects,
             "conditions" => $conditions,
             "order" => $order,
             "relations" => $relations,

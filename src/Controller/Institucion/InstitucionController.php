@@ -60,14 +60,15 @@ class InstitucionController extends AbstractController
      * @Route("/", name="app_institucion_index", methods={"GET"})
      * @param InstitucionRepository $institucionRepository
      * @return Response
-     *  @Filterable(
+     * @Filterable(
      *     entity="Institucion\Institucion",
+     *     fields={"id", "nombre", "siglas", "logo", "activo", "codigo"},
      *     relations={"gradoAcademicoRector"},
      *     order={"nombre": "ASC"},
      *     selects={
-     *         "concat(siglas, ' ', nombre) as nombre_siglas",
-     *         "concat(gradoAcademicoRector.siglas, ' ', rector) as rector"
-     *     },
+     *         "CONCAT('(', af.siglas, ') ', af.nombre) as nombre_siglas",
+     *         "CONCAT(gradoAcademicoRector.siglas, ' ', af.rector) as rector"
+     *   },
      *     headers={
      *         {"label": "Logo", "field": "logo"},
      *         {"label": "Nombre", "field": "nombre_siglas"},

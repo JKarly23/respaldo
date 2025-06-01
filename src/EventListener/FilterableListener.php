@@ -47,6 +47,7 @@ class FilterableAnnotationListener
             }
             $this->session->set('filterable_data', [
                 'entity'     => $annotation->entity,
+                'fields'     => $annotation ->fields,
                 'conditions' => $annotation->conditions,
                 'order'      => $annotation->order,
                 'relations'  => $annotation->relations,

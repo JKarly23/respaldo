@@ -55,33 +55,48 @@ class AdvancedFilterRepository extends ServiceEntityRepository
         $order      = $data["order"] ?? [];
 
         $alias = 'af';
-
         $qb = $this->entityManager->createQueryBuilder()
             ->from("App\\Entity\\{$entity}", $alias);
 
-        // Siempre selecciona al menos el alias principal
-        $qb->select($alias);
+        // SELECT
+        if (!empty($data["fields"])) {
+            $fields = [];
+            foreach ($data["fields"] as $field) {
+                $fields[] = "{$alias}.{$field}";
+            }
 
-        // Procesar relaciones, usar alias iguales al nombre
+            // Combinar campos base y selects extra
+            $selectsFinal = [];
+            if (!empty($fields)) {
+                $selectsFinal[] = implode(', ', $fields);
+            }
+            if (!empty($selects)) {
+                foreach ($selects as $selectField) {
+                    $selectsFinal[] = $selectField;
+                }
+            }
+
+            $qb->select(implode(', ', $selectsFinal));
+        } else {
+            $qb->select($alias);
+        }
+
+        // RELACIONES: solo procesar una vez
         if (!empty($relations)) {
             foreach ($relations as $relationName) {
                 $qb->leftJoin("{$alias}.{$relationName}", $relationName);
-                // Además, seleccionar explícitamente todos los campos de la relación
-                $qb->addSelect($relationName);
+                if (empty($data["fields"])) {
+                    $qb->addSelect($relationName); // Solo si queremos todas las propiedades
+                }
             }
         }
 
-        // Añadir selects extra, ejemplo: "concat('(', siglas, ') ', nombre) as nombre_siglas"
-        if (!empty($selects)) {
-            foreach ($selects as $selectField) {
-                $qb->addSelect($selectField);
-            }
-        }
-
+        // CONDICIONES
         if (!empty($conditions)) {
             $this->filterService->applyFiltersToQueryBuilder($qb, $conditions, $alias);
         }
 
+        // ORDEN
         if (!empty($order)) {
             foreach ($order as $field => $direction) {
                 $direction = strtoupper($direction) === 'DESC' ? 'DESC' : 'ASC';
@@ -89,7 +104,8 @@ class AdvancedFilterRepository extends ServiceEntityRepository
             }
         }
 
-        // Ejecutar y traer resultado como array
-        return $qb->getQuery()->getArrayResult();
+        // Ejecutar la query y retornar resultados como array
+        $result = $qb->getQuery()->getArrayResult();
+        return $result;
     }
 }

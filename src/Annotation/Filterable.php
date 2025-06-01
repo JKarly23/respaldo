@@ -17,6 +17,10 @@ class Filterable
     public $entity;
 
     /** @var array|null */
+    public $fields;
+
+
+    /** @var array|null */
     public $conditions;
 
     /** @var array|null */
@@ -38,6 +42,7 @@ class Filterable
         }
 
         $this->entity     = $data['entity'];
+        $this->fields = $this->normalizeArray($data['fields'] ?? null);
         $this->conditions = $this->normalizeArray($data['conditions'] ?? null);
         $this->order      = $this->normalizeArray($data['order'] ?? null);
         $this->relations  = $this->normalizeArray($data['relations'] ?? null);
